@@ -13,6 +13,8 @@ if sys.platform == 'win32':
 
 import telebot
 import openpyxl
+import threading
+from http.server import HTTPServer, BaseHTTPRequestHandler
 
 # ==============================================================================
 # CẤU HÌNH THÔNG TIN BOT TELEGRAM
@@ -23,6 +25,9 @@ ALLOWED_CHAT_ID = "ĐIỀN_CHAT_ID_VÀO_ĐÂY"  # Dãy số ID lấy từ @useri
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CONFIG_FILE = os.path.join(BASE_DIR, "telegram_config.json")
+
+def is_valid_token(tok):
+    return bool(tok and ":" in tok and not tok.startswith("DIEN_") and not tok.startswith("ĐIỀN_"))
 
 # Tự động nạp từ Biến môi trường (Cloud Server / Render / VPS) hoặc file telegram_config.json
 BOT_TOKEN = os.environ.get("BOT_TOKEN", BOT_TOKEN)
@@ -38,9 +43,6 @@ if os.path.exists(CONFIG_FILE):
                 ALLOWED_CHAT_ID = str(cfg.get("allowed_chat_id", ALLOWED_CHAT_ID))
     except Exception as e:
         print(f"Lỗi đọc config: {e}")
-
-def is_valid_token(tok):
-    return tok and ":" in tok and not tok.startswith("DIEN_") and not tok.startswith("ĐIỀN_")
 
 if not is_valid_token(BOT_TOKEN):
     print("\n" + "=" * 65)
@@ -301,11 +303,43 @@ def run_pipeline(message):
     except Exception as e:
         bot.send_message(chat_id, f"❌ Có lỗi không mong muốn: {str(e)}")
 
+class HealthCheckHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header("Content-type", "text/html; charset=utf-8")
+        self.end_headers()
+        html = """
+        <html>
+        <head><title>CVS & BHX Telegram Bot</title></head>
+        <body style="font-family: Arial, sans-serif; text-align: center; margin-top: 60px;">
+            <h1 style="color: #2e7d32;">🤖 Bot Telegram Doanh Số CVS + BHX</h1>
+            <p style="font-size: 18px;">Trạng thái: <b style="color: green;">ĐANG HOẠT ĐỘNG 24/7 (ONLINE)</b></p>
+            <p>Sẵn sàng nhận file từ Telegram và xuất báo cáo tự động.</p>
+        </body>
+        </html>
+        """
+        self.wfile.write(html.encode("utf-8"))
+
+    def log_message(self, format, *args):
+        pass  # Không ghi log HTTP để tránh tràn màn hình log
+
+def start_health_check_server():
+    port = int(os.environ.get("PORT", 8080))
+    try:
+        server = HTTPServer(("0.0.0.0", port), HealthCheckHandler)
+        print(f"[{datetime.now().strftime('%H:%M:%S')}] 🌐 Đã mở cổng Web {port} cho Render thành công!")
+        server.serve_forever()
+    except Exception as e:
+        print(f"Lỗi mở cổng Web: {e}")
+
 if __name__ == "__main__":
     if "ĐIỀN_" in BOT_TOKEN:
         print("⚠️ Vui lòng cấu hình BOT_TOKEN trước khi chạy bot.")
         print(f"File config tại: {CONFIG_FILE}")
         sys.exit(1)
+
+    # Khởi động web server trên luồng phụ để Render Web Service nhận diện cổng mạng
+    threading.Thread(target=start_health_check_server, daemon=True).start()
 
     print(f"[{datetime.now().strftime('%H:%M:%S')}] 🤖 Bot Telegram đang hoạt động và lắng nghe tin nhắn...")
     try:
