@@ -2,6 +2,7 @@ import os
 import sys
 import subprocess
 import json
+import time
 from datetime import datetime
 
 if sys.platform == 'win32':
@@ -14,7 +15,9 @@ if sys.platform == 'win32':
 import telebot
 import openpyxl
 import threading
-from http.server import HTTPServer, BaseHTTPRequestHandler
+import logging
+from flask import Flask, jsonify, render_template_string
+
 
 # ==============================================================================
 # CẤU HÌNH THÔNG TIN BOT TELEGRAM
@@ -303,34 +306,150 @@ def run_pipeline(message):
     except Exception as e:
         bot.send_message(chat_id, f"❌ Có lỗi không mong muốn: {str(e)}")
 
-class HealthCheckHandler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        self.send_response(200)
-        self.send_header("Content-type", "text/html; charset=utf-8")
-        self.end_headers()
-        html = """
-        <html>
-        <head><title>CVS & BHX Telegram Bot</title></head>
-        <body style="font-family: Arial, sans-serif; text-align: center; margin-top: 60px;">
-            <h1 style="color: #2e7d32;">🤖 Bot Telegram Doanh Số CVS + BHX</h1>
-            <p style="font-size: 18px;">Trạng thái: <b style="color: green;">ĐANG HOẠT ĐỘNG 24/7 (ONLINE)</b></p>
-            <p>Sẵn sàng nhận file từ Telegram và xuất báo cáo tự động.</p>
-        </body>
-        </html>
-        """
-        self.wfile.write(html.encode("utf-8"))
+# ==============================================================================
+# FLASK WEB SERVER (Phục vụ Render Web Service & UptimeRobot Ping 24/7)
+# ==============================================================================
+flask_app = Flask(__name__)
+logging.getLogger('werkzeug').setLevel(logging.ERROR)
 
-    def log_message(self, format, *args):
-        pass  # Không ghi log HTTP để tránh tràn màn hình log
+BOT_START_TIME = datetime.now()
 
-def start_health_check_server():
+HTML_PAGE = """<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CVS & BHX Telegram Bot Service</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #333;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px 30px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+            text-align: center;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 20px;
+        }
+        .pulse-dot {
+            width: 10px;
+            height: 10px;
+            background-color: #2e7d32;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 1.8s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 125, 50, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(46, 125, 50, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 125, 50, 0); }
+        }
+        h1 {
+            font-size: 22px;
+            color: #1a202c;
+            margin-bottom: 12px;
+        }
+        p.subtitle {
+            color: #4a5568;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .info-box {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: left;
+            font-size: 13px;
+            color: #4a5568;
+            line-height: 1.8;
+        }
+        .info-box code {
+            background: #edf2f7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #2b6cb0;
+            font-family: Consolas, monospace;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #a0aec0;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="badge"><span class="pulse-dot"></span> ĐANG HOẠT ĐỘNG 24/7</div>
+        <h1>🤖 Bot Báo Cáo Doanh Số CVS + BHX</h1>
+        <p class="subtitle">Máy chủ Flask Web Server đang chạy song song hỗ trợ UptimeRobot Ping giữ thức và giám sát trạng thái trên Render.</p>
+        
+        <div class="info-box">
+            <div>🕒 <b>Khởi động lúc:</b> {{ start_time }}</div>
+            <div>🌐 <b>Cổng lắng nghe (PORT):</b> <code>{{ port }}</code></div>
+            <div>📡 <b>Healthcheck URL:</b> <code>/ping</code> hoặc <code>/health</code></div>
+            <div>💬 <b>Telegram Bot:</b> <span style="color: #2e7d32; font-weight: bold;">ONLINE</span></div>
+        </div>
+
+        <div class="footer">
+            CVS & BHX Tracker • Flask Server + TeleBot
+        </div>
+    </div>
+</body>
+</html>
+"""
+
+@flask_app.route("/")
+def home():
+    port = os.environ.get("PORT", "8080")
+    return render_template_string(
+        HTML_PAGE,
+        start_time=BOT_START_TIME.strftime("%H:%M:%S ngày %d/%m/%Y"),
+        port=port
+    ), 200
+
+@flask_app.route("/ping")
+@flask_app.route("/health")
+def ping():
+    return jsonify({
+        "status": "ok",
+        "service": "CVS & BHX Telegram Bot",
+        "bot_online": True,
+        "started_at": BOT_START_TIME.isoformat(),
+        "current_time": datetime.now().isoformat()
+    }), 200
+
+def start_flask_server():
     port = int(os.environ.get("PORT", 8080))
     try:
-        server = HTTPServer(("0.0.0.0", port), HealthCheckHandler)
-        print(f"[{datetime.now().strftime('%H:%M:%S')}] 🌐 Đã mở cổng Web {port} cho Render thành công!")
-        server.serve_forever()
+        print(f"[{datetime.now().strftime('%H:%M:%S')}] 🌐 Đang khởi động Flask Web Server trên cổng {port} cho Render...")
+        flask_app.run(host="0.0.0.0", port=port, debug=False, use_reloader=False)
     except Exception as e:
-        print(f"Lỗi mở cổng Web: {e}")
+        print(f"❌ Lỗi khởi động Flask Web Server: {e}")
 
 if __name__ == "__main__":
     if "ĐIỀN_" in BOT_TOKEN:
@@ -338,11 +457,17 @@ if __name__ == "__main__":
         print(f"File config tại: {CONFIG_FILE}")
         sys.exit(1)
 
-    # Khởi động web server trên luồng phụ để Render Web Service nhận diện cổng mạng
-    threading.Thread(target=start_health_check_server, daemon=True).start()
+    # 1. Khởi động Flask Web Server chạy trên luồng phụ (daemon thread) song song với Telegram Bot
+    web_thread = threading.Thread(target=start_flask_server, daemon=True)
+    web_thread.start()
 
+    # 2. Khởi động vòng lặp polling nhận tin nhắn từ Telegram
     print(f"[{datetime.now().strftime('%H:%M:%S')}] 🤖 Bot Telegram đang hoạt động và lắng nghe tin nhắn...")
-    try:
-        bot.infinity_polling()
-    except Exception as e:
-        print(f"Lỗi polling: {e}")
+    while True:
+        try:
+            bot.infinity_polling(timeout=20, long_polling_timeout=20)
+        except Exception as e:
+            print(f"[{datetime.now().strftime('%H:%M:%S')}] Cảnh báo kết nối Telegram: {e}")
+            print("Đang tự động thử kết nối lại sau 5 giây...")
+            time.sleep(5)
+

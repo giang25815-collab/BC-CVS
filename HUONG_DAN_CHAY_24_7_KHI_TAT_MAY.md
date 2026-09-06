@@ -11,29 +11,43 @@ Khi đưa code lên máy chủ đám mây, bot sẽ luôn luôn thức 24/24.
 
 ---
 
-### 🌟 CÁCH 1: DÙNG RENDER.COM (KHUYÊN DÙNG - CỰC NHANH VÀ TIỆN)
-Render.com là nền tảng điện toán đám mây cho phép chạy ứng dụng Python.
+### 🌟 CÁCH 1: DÙNG RENDER.COM + UPTIMEROBOT (MIỄN PHÍ 100% - KHUYÊN DÙNG)
+Render.com cung cấp gói **Web Service miễn phí**. Kết hợp với **Flask Web Server** vừa được tích hợp vào Bot và dịch vụ ping tự động **UptimeRobot**, Bot sẽ thức 24/24 mà không bao giờ ngủ!
 
-1. **Đưa mã nguồn lên GitHub:**
-   - Tạo tài khoản tại [github.com](https://github.com).
-   - Tạo một kho lưu trữ mới (Repository) ở chế độ **Private** (Riêng tư).
-   - Tải toàn bộ các file trong thư mục này lên Repo đó (bao gồm: `telegram_bot.py`, `team_leader_report_v4.py`, `update_data_and_config.py`, `requirements.txt`, `Procfile`, `team_config.csv`, `team_cvs_stores.csv`, `team_employees.csv`).
+#### Bước 1: Đưa mã nguồn lên GitHub
+1. Tạo tài khoản tại [github.com](https://github.com).
+2. Tạo một kho lưu trữ mới (Repository) ở chế độ **Private** (Riêng tư).
+3. Tải toàn bộ các file trong thư mục này lên Repo đó (hoặc giải nén từ file `bot_cvs_deploy.zip` rồi đẩy lên).
 
-2. **Kết nối với Render:**
-   - Vào [render.com](https://render.com) đăng ký tài khoản (đăng nhập nhanh bằng GitHub).
-   - Chọn **New +** -> **Background Worker**.
-   - Chọn Repository GitHub bạn vừa tạo ở Bước 1.
-   - Cấu hình:
-     - **Name**: `cvs-bhx-telegram-bot`
-     - **Runtime**: `Python 3`
-     - **Build Command**: `pip install -r requirements.txt`
-     - **Start Command**: `python telegram_bot.py`
-   - Mục **Environment Variables** (Thêm 2 biến):
-     - `BOT_TOKEN`: `<Token bot của bạn>`
-     - `ALLOWED_CHAT_ID`: `<ID chat Telegram của bạn>`
-   - Bấm **Create Background Worker**.
+#### Bước 2: Tạo Web Service trên Render
+1. Vào [render.com](https://render.com) đăng ký/đăng nhập bằng GitHub.
+2. Chọn **New +** -> **Web Service** (chọn Web Service để Render cấp URL công khai).
+3. Chọn Repository GitHub vừa tạo.
+4. Điền các thông số:
+   - **Name**: `cvs-bhx-telegram-bot`
+   - **Language / Runtime**: `Python 3`
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `python telegram_bot.py`
+   - **Instance Type**: Chọn **Free** ($0/month)
+5. Mục **Environment Variables** (Thêm 2 biến):
+   - `BOT_TOKEN`: `<Token bot của bạn>`
+   - `ALLOWED_CHAT_ID`: `<ID chat Telegram của bạn>`
+6. Bấm **Create Web Service**.
+7. Đợi 1-2 phút Render build xong, bạn sẽ thấy link web dạng:  
+   `https://cvs-bhx-telegram-bot.onrender.com`  
+   (Nhấp vào link thấy màn hình báo *ONLINE 24/7* là web server đã hoạt động).
 
-👉 **Xong!** Từ giờ Render sẽ giữ bot chạy 24/7 trên mạng. Bạn có thể tắt máy tính thoải mái.
+#### Bước 3: Cài đặt UptimeRobot để Bot KHÔNG BAO GIỜ NGỦ
+Gói Free của Render sẽ tạm dừng (sleep) sau 15 phút nếu không có lượt truy cập web. Để bot thức liên tục:
+1. Vào trang miễn phí [uptimerobot.com](https://uptimerobot.com) tạo tài khoản.
+2. Bấm **Add New Monitor**:
+   - **Monitor Type**: `HTTP(s)`
+   - **Friendly Name**: `Bot Doanh So Render`
+   - **URL (or IP)**: Điền link web Render của bạn kèm `/ping` (Ví dụ: `https://cvs-bhx-telegram-bot.onrender.com/ping`)
+   - **Monitoring Interval**: `5 minutes` (hoặc `10 minutes`)
+3. Bấm **Create Monitor**.
+
+👉 **XONG!** Cứ mỗi 5 phút UptimeRobot sẽ "đánh thức" server một lần qua cổng Flask web. Bot Telegram và Web Server sẽ luôn thức 24/7 để bạn gửi file bất kỳ lúc nào!
 
 ---
 
