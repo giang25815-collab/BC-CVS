@@ -8,7 +8,7 @@ Version: 4.1
 
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
-from openpyxl.formatting.rule import ColorScaleRule
+from openpyxl.formatting.rule import CellIsRule, ColorScaleRule
 from openpyxl.utils import get_column_letter
 from datetime import datetime
 import calendar
@@ -174,6 +174,32 @@ def add_borders(ws, cell_range):
     for row in ws[cell_range]:
         for cell in row:
             cell.border = Border(top=side, left=side, right=side, bottom=side)
+
+
+def apply_timegone_conditional_formatting(ws, cell_range, time_pct):
+    """
+    Quy tắc màu sắc so sánh với % Timegone:
+    1. Vượt / Đạt Timegone (>= Timegone): Màu Xanh Lá (#C6EFCE / #006100)
+    2. Cận Timegone ít (>= 75% Timegone và < Timegone): Màu Cam Cảnh Báo (#FCE4D6 / #C65911)
+    3. Thấp hơn Timegone nhiều (< 75% Timegone): Màu Đỏ (#FFC7CE / #9C0006)
+    """
+    tg = round(time_pct / 100, 4)
+    warn_threshold = round(tg * 0.75, 4)
+
+    green_fill = PatternFill(start_color='C6EFCE', end_color='C6EFCE', fill_type='solid')
+    green_font = Font(color='006100', bold=True)
+    orange_fill = PatternFill(start_color='FCE4D6', end_color='FCE4D6', fill_type='solid')
+    orange_font = Font(color='C65911', bold=True)
+    red_fill = PatternFill(start_color='FFC7CE', end_color='FFC7CE', fill_type='solid')
+    red_font = Font(color='9C0006', bold=True)
+
+    rule_green = CellIsRule(operator='greaterThanOrEqual', formula=[str(tg)], stopIfTrue=True, fill=green_fill, font=green_font)
+    rule_orange = CellIsRule(operator='between', formula=[str(warn_threshold), str(tg)], stopIfTrue=True, fill=orange_fill, font=orange_font)
+    rule_red = CellIsRule(operator='lessThan', formula=[str(warn_threshold)], stopIfTrue=True, fill=red_fill, font=red_font)
+
+    ws.conditional_formatting.add(cell_range, rule_green)
+    ws.conditional_formatting.add(cell_range, rule_orange)
+    ws.conditional_formatting.add(cell_range, rule_red)
 
 
 CHAIN_COLORS = {
@@ -597,14 +623,7 @@ def build_fm_sku_sheet(wb, config):
     ws.auto_filter.ref = f"A5:{last_col_letter}{end_data_row}"
 
     # Conditional format % Dat (Col H)
-    ws.conditional_formatting.add(
-        f'H{start_data_row}:H{end_data_row}',
-        ColorScaleRule(
-            start_type='num', start_value=0.5, start_color='F8696B',
-            mid_type='num', mid_value=time_pct / 100, mid_color='FFEB84',
-            end_type='num', end_value=1.0, end_color='63BE7B'
-        )
-    )
+    apply_timegone_conditional_formatting(ws, f'H{start_data_row}:H{end_data_row}', time_pct)
 
     # Freeze panes at column I (scroll horizontally while keeping store master info & targets visible)
     ws.freeze_panes = 'I6'
@@ -735,14 +754,7 @@ def create_team_report(config, employees, cvs_data, output_file):
         pct_cell.alignment = Alignment(horizontal='center')
 
     last_rank_row = 12 + len(ranked)
-    ws.conditional_formatting.add(
-        f'H13:H{last_rank_row}',
-        ColorScaleRule(
-            start_type='num', start_value=0.5, start_color='F8696B',
-            mid_type='num', mid_value=time_pct/100, mid_color='FFEB84',
-            end_type='num', end_value=1.0, end_color='63BE7B'
-        )
-    )
+    apply_timegone_conditional_formatting(ws, f'H13:H{last_rank_row}', time_pct)
     add_borders(ws, f'B12:H{last_rank_row}')
 
     for col_letter, width in [('A', 3), ('B', 10), ('C', 22), ('D', 18),
@@ -868,22 +880,16 @@ def create_team_report(config, employees, cvs_data, output_file):
     for col, w in widths.items():
         ws2.column_dimensions[col].width = w
 
-    ws2.conditional_formatting.add(
-        f'M7:M{total_row-1}',
-        ColorScaleRule(
-            start_type='num', start_value=0.5, start_color='F8696B',
-            mid_type='num', mid_value=time_pct/100, mid_color='FFEB84',
-            end_type='num', end_value=1.0, end_color='63BE7B'
-        )
-    )
+    apply_timegone_conditional_formatting(ws2, f'M7:M{total_row-1}', time_pct)
 
     add_borders(ws2, f'B6:M{total_row}')
     ws2.freeze_panes = 'D7'
 
     legend_row = total_row + 2
+    warn_pct = time_pct * 0.75
     ws2.merge_cells(f'B{legend_row}:M{legend_row}')
     ws2.cell(row=legend_row, column=2,
-             value=f"📌 % Đạt ≥ % Timegone ({time_pct:.1f}%) → Đạt tiến độ 🟢 | Thấp hơn → Cần đẩy nhanh 🔴")
+             value=f"📌 % Đạt ≥ % Timegone ({time_pct:.1f}%) → Vượt/Đạt tiến độ 🟢 | Cận Timegone ({warn_pct:.1f}% - <{time_pct:.1f}%) → Cảnh báo 🟠 | Thấp hơn nhiều (<{warn_pct:.1f}%) → Cần đẩy nhanh 🔴")
     ws2.cell(row=legend_row, column=2).font = Font(italic=True, size=10, color='555555')
     ws2.cell(row=legend_row, column=2).alignment = Alignment(horizontal='center')
 
