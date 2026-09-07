@@ -176,22 +176,27 @@ def add_borders(ws, cell_range):
             cell.border = Border(top=side, left=side, right=side, bottom=side)
 
 
+COLOR_RED = 'DD2323'
+COLOR_GREEN = '28E11F'
+COLOR_ORANGE = 'F5991F'
+
+
 def apply_timegone_conditional_formatting(ws, cell_range, time_pct):
     """
-    Quy tắc màu sắc so sánh với % Timegone:
-    1. Vượt / Đạt Timegone (>= Timegone): Màu Xanh Lá (#C6EFCE / #006100)
-    2. Cận Timegone ít (>= 75% Timegone và < Timegone): Màu Cam Cảnh Báo (#FCE4D6 / #C65911)
-    3. Thấp hơn Timegone nhiều (< 75% Timegone): Màu Đỏ (#FFC7CE / #9C0006)
+    Quy tắc màu sắc so sánh với % Timegone theo bảng màu chuẩn của User:
+    1. Vượt / Đạt Timegone (>= Timegone): Màu Xanh Lá (#28E11F), chữ đen bold
+    2. Cận Timegone ít (>= 75% Timegone và < Timegone): Màu Cam Cảnh Báo (#F5991F), chữ trắng bold
+    3. Thấp hơn Timegone nhiều (< 75% Timegone): Màu Đỏ (#DD2323), chữ trắng bold
     """
     tg = round(time_pct / 100, 4)
     warn_threshold = round(tg * 0.75, 4)
 
-    green_fill = PatternFill(start_color='C6EFCE', end_color='C6EFCE', fill_type='solid')
-    green_font = Font(color='006100', bold=True)
-    orange_fill = PatternFill(start_color='FCE4D6', end_color='FCE4D6', fill_type='solid')
-    orange_font = Font(color='C65911', bold=True)
-    red_fill = PatternFill(start_color='FFC7CE', end_color='FFC7CE', fill_type='solid')
-    red_font = Font(color='9C0006', bold=True)
+    green_fill = PatternFill(start_color=COLOR_GREEN, end_color=COLOR_GREEN, fill_type='solid')
+    green_font = Font(color='000000', bold=True)
+    orange_fill = PatternFill(start_color=COLOR_ORANGE, end_color=COLOR_ORANGE, fill_type='solid')
+    orange_font = Font(color='FFFFFF', bold=True)
+    red_fill = PatternFill(start_color=COLOR_RED, end_color=COLOR_RED, fill_type='solid')
+    red_font = Font(color='FFFFFF', bold=True)
 
     rule_green = CellIsRule(operator='greaterThanOrEqual', formula=[str(tg)], stopIfTrue=True, fill=green_fill, font=green_font)
     rule_orange = CellIsRule(operator='between', formula=[str(warn_threshold), str(tg)], stopIfTrue=True, fill=orange_fill, font=orange_font)
@@ -432,13 +437,32 @@ def build_fm_sku_sheet(wb, config):
     pct_total = (tot_act / tot_tgt * 100) if tot_tgt > 0 else 0
     passed_count = sum(1 for m in store_matrix if (m['actual'] / m['store']['target'] * 100 if m['store']['target'] > 0 else 0) >= time_pct)
 
+    if pct_total >= time_pct:
+        kpi_eval_text = f"🟢 VƯỢT ({pct_total - time_pct:+.1f}%)"
+        kpi_eval_bg = COLOR_GREEN
+        kpi_eval_fg = '000000'
+        pct_bg = COLOR_GREEN
+        pct_fg = '000000'
+    elif pct_total >= time_pct * 0.75:
+        kpi_eval_text = f"🟠 CẬN ({pct_total - time_pct:+.1f}%)"
+        kpi_eval_bg = COLOR_ORANGE
+        kpi_eval_fg = 'FFFFFF'
+        pct_bg = COLOR_ORANGE
+        pct_fg = 'FFFFFF'
+    else:
+        kpi_eval_text = f"🔴 CHẬM ({pct_total - time_pct:+.1f}%)"
+        kpi_eval_bg = COLOR_RED
+        kpi_eval_fg = 'FFFFFF'
+        pct_bg = COLOR_RED
+        pct_fg = 'FFFFFF'
+
     kpis = [
         ("Số Cửa Hàng", f"{len(store_matrix)} CH", '1F4E78', 'FFFFFF'),
         ("Tổng Chỉ Tiêu", f"{tot_tgt:,.0f} đ", '2E75B6', 'FFFFFF'),
         ("Tổng Thực Hiện", f"{tot_act:,.0f} đ", '70AD47', 'FFFFFF'),
-        ("% Đạt", f"{pct_total:.1f}%", '00B050' if pct_total >= time_pct else 'C00000', 'FFFFFF'),
+        ("% Đạt", f"{pct_total:.1f}%", pct_bg, pct_fg),
         ("% Timegone", f"{time_pct:.1f}%", 'ED7D31', 'FFFFFF'),
-        ("Đánh Giá", f"🟢 VƯỢT ({pct_total - time_pct:+.1f}%)" if pct_total >= time_pct else f"🔴 CHẬM ({pct_total - time_pct:+.1f}%)", '00B050' if pct_total >= time_pct else 'C00000', 'FFFFFF'),
+        ("Đánh Giá", kpi_eval_text, kpi_eval_bg, kpi_eval_fg),
         ("CH Đạt Tiến Độ", f"{passed_count}/{len(store_matrix)} CH ({passed_count/len(store_matrix)*100:.0f}%)", '4472C4', 'FFFFFF'),
     ]
 
@@ -691,14 +715,14 @@ def create_team_report(config, employees, cvs_data, output_file):
         ("Thực Hiện BHX", total_bhx, '#,##0', '70AD47'),
         ("Thực Hiện CVS", total_cvs, '#,##0', 'ED7D31'),
         ("Tổng Thực Hiện", total_actual, '#,##0', '2E75B6'),
-        ("Thiếu", total_target - total_actual, '#,##0;[Red](#,##0)', 'C00000'),
-        ("% Đạt Team", team_pct / 100, '0.0%', '00B050' if team_pct >= time_pct else 'C00000'),
+        ("Thiếu", total_target - total_actual, '#,##0;[Red](#,##0)', COLOR_RED),
+        ("% Đạt Team", team_pct / 100, '0.0%', COLOR_GREEN if team_pct >= time_pct else (COLOR_ORANGE if team_pct >= time_pct * 0.75 else COLOR_RED)),
     ]
 
     for idx, (label, value, fmt, color) in enumerate(kpis):
         col = 2 + idx
         lbl_cell = ws.cell(row=6, column=col, value=label)
-        lbl_cell.font = Font(bold=True, color='FFFFFF', size=10)
+        lbl_cell.font = Font(bold=True, color='000000' if color == COLOR_GREEN else 'FFFFFF', size=10)
         lbl_cell.fill = PatternFill('solid', fgColor=color)
         lbl_cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
         val_cell = ws.cell(row=7, column=col, value=value)
@@ -713,11 +737,24 @@ def create_team_report(config, employees, cvs_data, output_file):
     # Status bar
     ws.merge_cells('B9:H9')
     diff = team_pct - time_pct
-    status_icon = "🟢" if team_pct >= time_pct else ("🟡" if team_pct >= time_pct - 5 else "🔴")
-    status_text = "VƯỢT tiến độ" if diff >= 0 else "CHẬM tiến độ"
+    if team_pct >= time_pct:
+        status_icon = "🟢"
+        status_text = "VƯỢT tiến độ"
+        status_bg = COLOR_GREEN
+        status_fg = '000000'
+    elif team_pct >= time_pct * 0.75:
+        status_icon = "🟠"
+        status_text = "CẬN tiến độ (CẢNH BÁO)"
+        status_bg = COLOR_ORANGE
+        status_fg = 'FFFFFF'
+    else:
+        status_icon = "🔴"
+        status_text = "CHẬM tiến độ"
+        status_bg = COLOR_RED
+        status_fg = 'FFFFFF'
     ws['B9'] = f"{status_icon} Team đang {status_text}: % Đạt ({team_pct:.1f}%) vs % Timegone ({time_pct:.1f}%) → chênh lệch {diff:+.1f}%"
-    ws['B9'].font = Font(bold=True, size=11, color='FFFFFF')
-    ws['B9'].fill = PatternFill('solid', fgColor='00B050' if diff >= 0 else 'C00000')
+    ws['B9'].font = Font(bold=True, size=11, color=status_fg)
+    ws['B9'].fill = PatternFill('solid', fgColor=status_bg)
     ws['B9'].alignment = Alignment(horizontal='center', vertical='center')
     ws.row_dimensions[9].height = 25
 
@@ -803,7 +840,7 @@ def create_team_report(config, employees, cvs_data, output_file):
 
     ws2.merge_cells('L5:M5')
     ws2['L5'] = "ĐÁNH GIÁ"
-    style_header_cell(ws2['L5'], bg='C00000', size=11)
+    style_header_cell(ws2['L5'], bg=COLOR_RED, size=11)
 
     headers = [
         ('B', 'STT'), ('C', 'Nhân Viên'), ('D', 'Target'),
@@ -889,7 +926,7 @@ def create_team_report(config, employees, cvs_data, output_file):
     warn_pct = time_pct * 0.75
     ws2.merge_cells(f'B{legend_row}:M{legend_row}')
     ws2.cell(row=legend_row, column=2,
-             value=f"📌 % Đạt ≥ % Timegone ({time_pct:.1f}%) → Vượt/Đạt tiến độ 🟢 | Cận Timegone ({warn_pct:.1f}% - <{time_pct:.1f}%) → Cảnh báo 🟠 | Thấp hơn nhiều (<{warn_pct:.1f}%) → Cần đẩy nhanh 🔴")
+             value=f"📌 % Đạt ≥ % Timegone ({time_pct:.1f}%) → Vượt/Đạt tiến độ 🟢 (#28E11F) | Cận Timegone ({warn_pct:.1f}% - <{time_pct:.1f}%) → Cảnh báo 🟠 (#F5991F) | Thấp hơn nhiều (<{warn_pct:.1f}%) → Cần đẩy nhanh 🔴 (#DD2323)")
     ws2.cell(row=legend_row, column=2).font = Font(italic=True, size=10, color='555555')
     ws2.cell(row=legend_row, column=2).alignment = Alignment(horizontal='center')
 
