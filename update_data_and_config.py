@@ -398,9 +398,11 @@ for s in old_stores:
                     raw_amt = amt
                     found = True
                     break
-        new_act = round(T_ck + raw_amt)
         if found and raw_amt > 0:
+            new_act = round(T_ck + raw_amt)
             ck_matched_count += 1
+        else:
+            new_act = 0
 
     elif 'Hoàng Đức' in ch or ch in ['Hoàng Đức Long Khánh', 'Hoàng Đức Gia Kiệm']:
         if '198' in addr or 'hùng vương' in addr.lower() or 'hung vuong' in addr.lower():
