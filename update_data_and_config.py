@@ -46,14 +46,25 @@ xlsb_candidates = list(set([f for f in xlsb_candidates if not os.path.basename(f
 st_xlsb = None
 cvs_xlsb = None
 
-for f in xlsb_candidates:
-    bn = os.path.basename(f)
-    if 'HNTRINH_ST' in bn:
-        if not st_xlsb or os.path.getmtime(f) > os.path.getmtime(st_xlsb):
-            st_xlsb = f
-    elif 'HNTRINH_KD6' in bn or 'HNTRINH' in bn:
-        if not cvs_xlsb or os.path.getmtime(f) > os.path.getmtime(cvs_xlsb):
-            cvs_xlsb = f
+if len(sys.argv) >= 3 and os.path.exists(sys.argv[1]) and os.path.exists(sys.argv[2]):
+    arg1, arg2 = sys.argv[1], sys.argv[2]
+    if 'ST' in os.path.basename(arg1).upper():
+        st_xlsb, cvs_xlsb = arg1, arg2
+    else:
+        cvs_xlsb, st_xlsb = arg1, arg2
+    print(f"Sử dụng file được chỉ định trực tiếp:")
+    print(f"  ST: {st_xlsb}")
+    print(f"  CVS: {cvs_xlsb}")
+else:
+    for f in xlsb_candidates:
+        bn = os.path.basename(f)
+        mt = os.path.getmtime(f)
+        if 'HNTRINH_ST' in bn:
+            if not st_xlsb or mt > os.path.getmtime(st_xlsb):
+                st_xlsb = f
+        elif 'HNTRINH_KD6' in bn or 'HNTRINH' in bn:
+            if not cvs_xlsb or mt > os.path.getmtime(cvs_xlsb):
+                cvs_xlsb = f
 
 # Fallback if only 1 xlsb found
 if not st_xlsb and cvs_xlsb:
@@ -158,9 +169,12 @@ total_se_dcs = 0
 # ----------------------------------------------------
 ck_kho_kho_amt = 0
 ck_stores_so = defaultdict(float)
+hoang_duc_stores = defaultdict(float)
+detected_month = None
+detected_year = None
 
 # ----------------------------------------------------
-# 6. ĐỌC DỮ LIỆU CVS (GS25, 7E, CK, FM) TỪ CVS XLSB
+# 6. ĐỌC DỮ LIỆU CVS (GS25, 7E, CK, FM, HOÀNG ĐỨC) TỪ CVS XLSB
 # ----------------------------------------------------
 with pyxlsb.open_workbook(cvs_xlsb) as wb:
     sheet_name = 'SO' if 'SO' in wb.sheets else ('PO' if 'PO' in wb.sheets else wb.sheets[0])
@@ -174,12 +188,25 @@ with pyxlsb.open_workbook(cvs_xlsb) as wb:
                 idx_a = header.index('Address')
                 idx_m = header.index('SumOfAMOUNT')
                 idx_n = header.index('CUST_NAME') if 'CUST_NAME' in header else idx_c
+                idx_mo = header.index('Month') if 'Month' in header else -1
+                idx_yr = header.index('Year') if 'Year' in header else -1
                 continue
             cust = str(vals[idx_c] or '')
             cname = str(vals[idx_n] or '')
             addr = str(vals[idx_a] or '').strip()
             amt = float(vals[idx_m] or 0)
             norm_a = normalize_text(addr)
+
+            if not detected_month and idx_mo >= 0 and vals[idx_mo] is not None:
+                try:
+                    detected_month = int(float(vals[idx_mo]))
+                except Exception:
+                    pass
+            if not detected_year and idx_yr >= 0 and vals[idx_yr] is not None:
+                try:
+                    detected_year = int(float(vals[idx_yr]))
+                except Exception:
+                    pass
 
             # GS25 (GS0003)
             if cust == 'GS0003':
@@ -201,6 +228,13 @@ with pyxlsb.open_workbook(cvs_xlsb) as wb:
                     ck_kho_kho_amt += amt
                 else:
                     ck_stores_so[addr] += amt
+
+            # Hoàng Đức (HD3024 / Công Ty TNHH Hoàng Đức Long Khánh)
+            if cust == 'HD3024' or 'hoàng đức' in cname.lower() or 'hoang duc' in cname.lower():
+                if '198' in addr or 'hùng vương' in addr.lower() or 'hung vuong' in addr.lower():
+                    hoang_duc_stores['198 Hùng Vương'] += amt
+                elif 'bạch lâm' in addr.lower() or 'bach lam' in addr.lower() or '166' in addr or 'thống nhất' in addr.lower():
+                    hoang_duc_stores['Bạch Lâm'] += amt
 
 print("\n--- CHI TIẾT 2 KHO DC GS25 ---")
 for d in gs25_dcs_def:
@@ -230,6 +264,11 @@ print(f"  + Doanh số Kho khô Tân Uyên: {ck_kho_kho_amt:15,.0f} VNĐ")
 total_stores_ck_system = 233
 T_ck = ck_kho_kho_amt / total_stores_ck_system if total_stores_ck_system > 0 else 0
 print(f"  => HỆ SỐ T (Kho khô ÷ {total_stores_ck_system}): {T_ck:15,.2f} VNĐ (~ {round(T_ck):,d} VNĐ)")
+
+print("\n--- CHI TIẾT CHUỖI SIÊU THỊ HOÀNG ĐỨC ---")
+for hk, hamt in hoang_duc_stores.items():
+    print(f"  + {hk}: {hamt:15,.0f} VNĐ")
+print(f"  => TỔNG HOÀNG ĐỨC: {sum(hoang_duc_stores.values()):15,.0f} VNĐ")
 
 # ----------------------------------------------------
 # 7. PARSE FAMILYMART MATRIX
@@ -359,12 +398,12 @@ for s in old_stores:
             ck_matched_count += 1
 
     elif 'Hoàng Đức' in ch or ch in ['Hoàng Đức Long Khánh', 'Hoàng Đức Gia Kiệm']:
-        if '198 Hùng Vương' in addr:
-            new_act = 74676300
-        elif 'Bạch Lâm' in addr:
-            new_act = 75553900
+        if '198' in addr or 'hùng vương' in addr.lower() or 'hung vuong' in addr.lower():
+            new_act = round(hoang_duc_stores.get('198 Hùng Vương', 0))
+        elif 'bạch lâm' in addr.lower() or 'bach lam' in addr.lower() or '166' in addr or 'thống nhất' in addr.lower():
+            new_act = round(hoang_duc_stores.get('Bạch Lâm', 0))
         else:
-            new_act = old_act
+            new_act = 0
 
     elif ch == 'FamilyMart':
         first_part = addr.split(',')[0].strip().lower()
@@ -419,7 +458,8 @@ print(f"WinMart+: Đã cập nhật 4 CH cho Nguyễn Đức Hòa (Tổng: {sum(
 # Ghi file team_cvs_stores.csv
 target_dirs = [
     script_dir,
-    r'C:\Users\giang\.gemini\config\skills\team-cvs-bhx-tracker'
+    r'C:\Users\giang\.gemini\config\skills\team-cvs-bhx-tracker',
+    os.path.join(script_dir, 'bot_cvs_deploy')
 ]
 
 for td in set(target_dirs):
@@ -451,8 +491,8 @@ if os.path.exists(cfg_file_path):
         print(f"Lỗi đọc config cũ: {e}")
 
 from datetime import datetime
-cur_month = int(cur_cfg.get('month', datetime.now().month))
-cur_year = int(cur_cfg.get('year', datetime.now().year))
+cur_month = detected_month if detected_month else int(cur_cfg.get('month', datetime.now().month))
+cur_year = detected_year if detected_year else int(cur_cfg.get('year', datetime.now().year))
 cur_target_bhx = cur_cfg.get('total_target_bhx', '37382000000')
 cur_team_lead = cur_cfg.get('team_lead', 'Trần Thị Cẩm Giang')
 
@@ -479,3 +519,17 @@ for td in set(target_dirs):
         print(f"Đã lưu: {target_path} (Tháng {cur_month}/{cur_year}, BHX Total: {total_actual_bhx:,.0f} VNĐ, % Timegone: {realtime_time_pct}%)")
 
 print("\n=== ĐÃ HOÀN TẤT CẬP NHẬT CONFIG & DANH SÁCH CỬA HÀNG CVS THÀNH CÔNG ===")
+
+print("\n--- ĐANG TẠO BÁO CÁO EXCEL TEAM_CAMGIANG_REPORT.XLSX ---")
+import subprocess
+try:
+    subprocess.run([sys.executable, os.path.join(script_dir, 'team_leader_report_v4.py')], check=True)
+    report_file = os.path.join(script_dir, 'Team_CamGiang_Report.xlsx')
+    deploy_report = os.path.join(script_dir, 'bot_cvs_deploy', 'Team_CamGiang_Report.xlsx')
+    if os.path.exists(report_file):
+        import shutil
+        shutil.copy2(report_file, deploy_report)
+        print(f"Đã đồng bộ báo cáo vào {deploy_report}")
+except Exception as e:
+    print(f"Lỗi khi chạy team_leader_report_v4.py: {e}")
+

@@ -635,7 +635,12 @@ def handle_docs(message):
 
 def extract_summary_kpi():
     """Đọc tóm tắt các chỉ số KPI từ file Report vừa tạo"""
-    report_path = os.path.join(BASE_DIR, "Team_CamGiang_Report.xlsx")
+    f_main = os.path.join(BASE_DIR, "Team_CamGiang_Report.xlsx")
+    f_moi = os.path.join(BASE_DIR, "Team_CamGiang_Report_moi.xlsx")
+    report_path = f_main
+    if os.path.exists(f_moi) and (not os.path.exists(f_main) or os.path.getmtime(f_moi) > os.path.getmtime(f_main)):
+        report_path = f_moi
+
     if not os.path.exists(report_path):
         return None
 
@@ -643,13 +648,13 @@ def extract_summary_kpi():
         wb = openpyxl.load_workbook(report_path, data_only=True)
         ws = wb["Dashboard"] if "Dashboard" in wb.sheetnames else wb.active
 
-        # Đọc dữ liệu thẻ KPI
-        target = ws["B5"].value or 0
-        actual_bhx = ws["C5"].value or 0
-        actual_cvs = ws["D5"].value or 0
-        actual_total = ws["E5"].value or 0
-        pct_achieved = ws["F5"].value or 0
-        status_text = ws["B8"].value or ""
+        # Đọc dữ liệu thẻ KPI từ HÀNG 7 (Hàng 5: Tiêu đề thẻ, Hàng 6: Header cột, Hàng 7: Số liệu thực tế)
+        target = ws["B7"].value or 0
+        actual_bhx = ws["C7"].value or 0
+        actual_cvs = ws["D7"].value or 0
+        actual_total = ws["E7"].value or 0
+        pct_achieved = ws["G7"].value or 0
+        status_text = ws["B9"].value or ""
         
         return {
             "target": target,
@@ -677,9 +682,15 @@ def run_pipeline(message):
     )
 
     try:
-        # Bước 1: Chạy update_data_and_config.py
+        # Bước 1: Chạy update_data_and_config.py với 2 file vừa upload (nếu có)
+        st_file = user_files.get('st')
+        cvs_file = user_files.get('cvs')
+        cmd = [sys.executable, "update_data_and_config.py"]
+        if st_file and cvs_file:
+            cmd.extend([st_file, cvs_file])
+
         p1 = subprocess.run(
-            [sys.executable, "update_data_and_config.py"],
+            cmd,
             cwd=BASE_DIR,
             capture_output=True,
             text=True,
@@ -707,9 +718,14 @@ def run_pipeline(message):
             bot.send_message(chat_id, f"❌ **Lỗi ở bước tạo báo cáo Excel:**\n```{err_snippet}```", parse_mode='Markdown')
             return
 
-        report_file = os.path.join(BASE_DIR, "Team_CamGiang_Report.xlsx")
+        f_main = os.path.join(BASE_DIR, "Team_CamGiang_Report.xlsx")
+        f_moi = os.path.join(BASE_DIR, "Team_CamGiang_Report_moi.xlsx")
+        report_file = f_main
+        if os.path.exists(f_moi) and (not os.path.exists(f_main) or os.path.getmtime(f_moi) > os.path.getmtime(f_main)):
+            report_file = f_moi
+
         if not os.path.exists(report_file):
-            bot.send_message(chat_id, "❌ Không tìm thấy file `Team_CamGiang_Report.xlsx` sau khi xuất.")
+            bot.send_message(chat_id, "❌ Không tìm thấy file báo cáo sau khi xuất.")
             return
 
         # Bước 3: Đọc tóm tắt KPI
