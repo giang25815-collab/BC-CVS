@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.log
+Team_CamGiang_Report*.xlsx
+*HNTRINH*.xlsb
+*HNTRINH*.xlsx
+bot_cvs_deploy/
+~$*

@@ -435,13 +435,34 @@ for td in set(target_dirs):
 # 9. CẬP NHẬT TEAM_CONFIG.CSV
 # ----------------------------------------------------
 from team_leader_report_v4 import get_realtime_timegone
-realtime_time_pct = get_realtime_timegone(8, 2026)
+
+# Đọc cấu hình hiện tại để giữ nguyên Tháng, Năm, Target BHX đã cấu hình
+cur_cfg = {}
+cfg_file_path = os.path.join(script_dir, 'team_config.csv')
+if os.path.exists(cfg_file_path):
+    try:
+        with open(cfg_file_path, 'r', encoding='utf-8-sig') as f:
+            reader = csv.reader(f)
+            header = next(reader, None)
+            for r in reader:
+                if len(r) >= 2:
+                    cur_cfg[r[0].strip()] = r[1].strip()
+    except Exception as e:
+        print(f"Lỗi đọc config cũ: {e}")
+
+from datetime import datetime
+cur_month = int(cur_cfg.get('month', datetime.now().month))
+cur_year = int(cur_cfg.get('year', datetime.now().year))
+cur_target_bhx = cur_cfg.get('total_target_bhx', '37382000000')
+cur_team_lead = cur_cfg.get('team_lead', 'Trần Thị Cẩm Giang')
+
+realtime_time_pct = get_realtime_timegone(cur_month, cur_year)
 
 config_data = [
-    ('team_lead', 'Trần Thị Cẩm Giang'),
-    ('month', '8'),
-    ('year', '2026'),
-    ('total_target_bhx', '37382000000'),
+    ('team_lead', cur_team_lead),
+    ('month', str(cur_month)),
+    ('year', str(cur_year)),
+    ('total_target_bhx', str(cur_target_bhx)),
     ('total_actual_bhx', str(round(total_actual_bhx))),
     ('total_stores_bhx', str(total_stores_bhx)),
     ('time_percentage', str(realtime_time_pct)),
@@ -455,6 +476,6 @@ for td in set(target_dirs):
             writer = csv.writer(f)
             writer.writerow(['key', 'value'])
             writer.writerows(config_data)
-        print(f"Đã lưu: {target_path} (BHX Total: {total_actual_bhx:,.0f} VNĐ, % Timegone: {realtime_time_pct}%)")
+        print(f"Đã lưu: {target_path} (Tháng {cur_month}/{cur_year}, BHX Total: {total_actual_bhx:,.0f} VNĐ, % Timegone: {realtime_time_pct}%)")
 
 print("\n=== ĐÃ HOÀN TẤT CẬP NHẬT CONFIG & DANH SÁCH CỬA HÀNG CVS THÀNH CÔNG ===")
