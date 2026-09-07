@@ -259,11 +259,16 @@ se_per_store = (total_se_dcs * 0.0362) / total_stores_7e if total_stores_7e > 0 
 print(f"  => TỔNG 2 KHO DC 7-ELEVEN: {total_se_dcs:15,.0f} VNĐ")
 print(f"  => ĐƠN GIÁ 7-ELEVEN / CỬA HÀNG ((Tổng × 3.62%) ÷ {total_stores_7e}): {se_per_store:15,.2f} VNĐ (~ {round(se_per_store):,d} VNĐ)")
 
-print("\n--- CHI TIẾT CIRCLE K KHO KHÔ & HỆ SỐ T ---")
-print(f"  + Doanh số Kho khô Tân Uyên: {ck_kho_kho_amt:15,.0f} VNĐ")
-total_stores_ck_system = 233
+# ----------------------------------------------------
+# 5. TÍNH DOANH SỐ CIRCLE K: KHO KHÔ / TỔNG SỐ CH THỰC TẾ + TỪNG CỬA HÀNG
+# ----------------------------------------------------
+total_stores_ck_system = len(ck_stores_so) if len(ck_stores_so) > 0 else 233
 T_ck = ck_kho_kho_amt / total_stores_ck_system if total_stores_ck_system > 0 else 0
-print(f"  => HỆ SỐ T (Kho khô ÷ {total_stores_ck_system}): {T_ck:15,.2f} VNĐ (~ {round(T_ck):,d} VNĐ)")
+
+print("\n--- CHI TIẾT CIRCLE K KHO KHÔ & HỆ SỐ T ĐỘNG ---")
+print(f"  + Doanh số Kho khô Tân Uyên: {ck_kho_kho_amt:15,.0f} VNĐ")
+print(f"  + Số cửa hàng CK thực tế trong file (không tính kho khô): {total_stores_ck_system} CH")
+print(f"  => HỆ SỐ T ĐỘNG (Kho khô ÷ {total_stores_ck_system}): {T_ck:15,.2f} VNĐ (~ {round(T_ck):,d} VNĐ)")
 
 print("\n--- CHI TIẾT CHUỖI SIÊU THỊ HOÀNG ĐỨC ---")
 for hk, hamt in hoang_duc_stores.items():
