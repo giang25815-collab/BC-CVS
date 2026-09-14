@@ -767,57 +767,57 @@ const DEFAULT_FM_STORES = [
 // Master Data for Team Sales Reporting (CVS and BHX)
 const MASTER_DATA = {
   "team_lead": "Trần Thị Cẩm Giang",
-  "total_stores_bhx": 232,
+  "total_stores_bhx": 178,
   "employees": [
     {
       "name": "Bùi Thị Sen",
       "bhx_stores": 21,
-      "target": 1181190660
+      "target": 820982667
     },
     {
       "name": "Chắng Lý Quỳnh",
       "bhx_stores": 25,
-      "target": 1354847566
+      "target": 938811549
     },
     {
       "name": "Kim Hoàng Khang",
       "bhx_stores": 25,
-      "target": 1399499656
+      "target": 972817335
     },
     {
       "name": "Lê Thị Thùy Châu",
       "bhx_stores": 21,
-      "target": 1240952244
+      "target": 900508409
     },
     {
       "name": "Lê Trần Bá Kiện",
       "bhx_stores": 24,
-      "target": 1292631579
+      "target": 895234721
     },
     {
       "name": "Não Thị Anh Đào",
       "bhx_stores": 11,
-      "target": 864811602
+      "target": 530222702
     },
     {
       "name": "Nguyễn Đức Hoà",
       "bhx_stores": 0,
-      "target": 401037884
+      "target": 311379421
     },
     {
       "name": "Nguyễn Thanh Nhàn",
       "bhx_stores": 25,
-      "target": 1346491228
+      "target": 932536168
     },
     {
       "name": "Nguyễn Thị Thanh Thủy",
       "bhx_stores": 6,
-      "target": 583256268
+      "target": 471771655
     },
     {
       "name": "Phạm Thị Kim Nhung",
       "bhx_stores": 20,
-      "target": 1161621042
+      "target": 831606968
     }
   ],
   "stores": [

@@ -1021,6 +1021,9 @@
           <span>Mục Cập Nhật KPI / Target Tháng Mới</span>
         </div>
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn btn-outline" onclick="resetToDefaultMonth9Target()" style="border-color:#10b981; color:#047857;" title="Khôi phục về bảng chỉ tiêu chuẩn Tháng 9 (7.6 Tỷ)">
+            🔄 Target Chuẩn T9 (7.6 Tỷ)
+          </button>
           <button class="btn btn-telegram-nav" onclick="openTelegramConfigModal()" title="Cài đặt Bot Token & Chat ID nhận báo cáo">
             🤖 Cấu Hình Bot Telegram
           </button>
@@ -1525,10 +1528,12 @@
 
   <!-- Loading Modal -->
   <div class="modal-overlay" id="loadingModal">
-    <div class="modal-content" style="text-align:center; max-width:480px;">
+    <div class="modal-content" style="text-align:center; max-width:480px; position:relative;">
+      <button type="button" onclick="closeModal('loadingModal')" style="position:absolute; top:12px; right:14px; background:none; border:none; font-size:22px; cursor:pointer; color:#94a3b8; line-height:1; padding:4px;" title="Đóng popup">✕</button>
       <div class="spinner"></div>
       <h3 id="modalLoadingTitle" style="font-size:18px; font-weight:700; margin-bottom:8px;">Đang xử lý dữ liệu...</h3>
-      <p id="modalLoadingDesc" style="font-size:13.5px; color:var(--text-muted);">Vui lòng chờ trong giây lát.</p>
+      <p id="modalLoadingDesc" style="font-size:13.5px; color:var(--text-muted); margin-bottom:12px;">Vui lòng chờ trong giây lát.</p>
+      <button class="btn btn-outline" id="btnCancelLoading" onclick="closeModal('loadingModal')" style="display:none; margin:0 auto; font-size:12.5px; padding:6px 16px;">✕ Hủy / Đóng cửa sổ này</button>
     </div>
   </div>
 
@@ -2327,18 +2332,18 @@ const DEFAULT_FM_STORES = [
       team_lead: 'Trần Thị Cẩm Giang',
       month: 9,
       year: 2026,
-      total_stores_bhx: 232,
+      total_stores_bhx: 178,
       employees: [
-        { name: 'Bùi Thị Sen', bhx_stores: 21, target: 1181190660 },
-        { name: 'Chắng Lý Quỳnh', bhx_stores: 25, target: 1354847566 },
-        { name: 'Kim Hoàng Khang', bhx_stores: 25, target: 1399499656 },
-        { name: 'Lê Thị Thùy Châu', bhx_stores: 21, target: 1240952244 },
-        { name: 'Lê Trần Bá Kiện', bhx_stores: 24, target: 1292631579 },
-        { name: 'Não Thị Anh Đào', bhx_stores: 11, target: 864811602 },
-        { name: 'Nguyễn Đức Hoà', bhx_stores: 0, target: 401037884 },
-        { name: 'Nguyễn Thanh Nhàn', bhx_stores: 25, target: 1346491228 },
-        { name: 'Nguyễn Thị Thanh Thủy', bhx_stores: 6, target: 583256268 },
-        { name: 'Phạm Thị Kim Nhung', bhx_stores: 20, target: 1161621042 }
+        { name: 'Bùi Thị Sen', bhx_stores: 21, target: 820982667 },
+        { name: 'Chắng Lý Quỳnh', bhx_stores: 25, target: 938811549 },
+        { name: 'Kim Hoàng Khang', bhx_stores: 25, target: 972817335 },
+        { name: 'Lê Thị Thùy Châu', bhx_stores: 21, target: 900508409 },
+        { name: 'Lê Trần Bá Kiện', bhx_stores: 24, target: 895234721 },
+        { name: 'Não Thị Anh Đào', bhx_stores: 11, target: 530222702 },
+        { name: 'Nguyễn Đức Hoà', bhx_stores: 0, target: 311379421 },
+        { name: 'Nguyễn Thanh Nhàn', bhx_stores: 25, target: 932536168 },
+        { name: 'Nguyễn Thị Thanh Thủy', bhx_stores: 6, target: 471771655 },
+        { name: 'Phạm Thị Kim Nhung', bhx_stores: 20, target: 831606968 }
       ],
       bhx_hubs: [
         'Ấp 4, Xã Châu Pha, Thành phố Hồ Chí Minh, Việt Nam',
@@ -2377,9 +2382,16 @@ const DEFAULT_FM_STORES = [
       return (Math.round(num || 0)).toLocaleString('vi-VN');
     }
 
+    function removeVietnameseDiacritics(str) {
+      if (!str) return '';
+      return String(str).normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/đ/g, 'd').replace(/Đ/g, 'D');
+    }
+
     function normalizeText(text) {
       if (!text) return '';
-      return String(text).toLowerCase().replace(/[,.\s\-_/()]/g, '');
+      return removeVietnameseDiacritics(String(text)).toLowerCase().replace(/[,.\s\-_/()]/g, '');
     }
 
     function calculateRealtimeTimegone(month, year) {
@@ -2526,157 +2538,247 @@ const DEFAULT_FM_STORES = [
       try {
         const reader = new FileReader();
         reader.onload = async function(e) {
-          const data = new Uint8Array(e.target.result);
-          const wb = XLSX.read(data, { type: 'array' });
+          try {
+            const data = new Uint8Array(e.target.result);
+            const wb = XLSX.read(data, { type: 'array' });
 
-          // 1. Nhận diện tháng từ tên file hoặc sheet
-          let detectedMonth = null;
-          let detectedYear = null;
-          const fn = file.name.toLowerCase();
-          const matchFn = fn.match(/(?:t|thang|tháng)[ _-]?(\d{1,2})/);
-          if (matchFn) detectedMonth = parseInt(matchFn[1]);
+            // 1. Nhận diện tháng từ tên file hoặc sheet
+            let detectedMonth = 9;
+            let detectedYear = 2026;
+            const fn = file.name.toLowerCase();
+            const matchFn = fn.match(/(?:t|thang|tháng)[ _-]?(\d{1,2})/);
+            if (matchFn) detectedMonth = parseInt(matchFn[1]);
 
-          for (let sname of wb.SheetNames) {
-            const m = sname.toLowerCase().match(/(?:t|thang|tháng)[ _-]?(\d{1,2})/);
-            if (m) {
-              detectedMonth = parseInt(m[1]);
-              break;
-            }
-          }
-
-          // 2. Tìm dòng header chứa PG/Nhân Viên và Chỉ Tiêu/Target
-          let foundTargets = {};
-          let foundBhxStores = {};
-
-          for (let sname of wb.SheetNames) {
-            const ws = wb.Sheets[sname];
-            const rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
-            if (rows.length < 2) continue;
-
-            let headerRowIdx = -1;
-            let headers = [];
-            for (let r = 0; r < Math.min(10, rows.length); r++) {
-              const rowStr = rows[r].map(c => String(c || '').trim().toUpperCase());
-              if (rowStr.some(c => c.includes('PG') || c.includes('NHÂN VIÊN') || c.includes('HỌ TÊN')) &&
-                  rowStr.some(c => c.includes('CHỈ TIÊU') || c.includes('TARGET') || c.includes('DOANH SỐ'))) {
-                headerRowIdx = r;
-                headers = rowStr;
+            for (let sname of wb.SheetNames) {
+              const m = sname.toLowerCase().match(/(?:t|thang|tháng)[ _-]?(\d{1,2})/);
+              if (m) {
+                detectedMonth = parseInt(m[1]);
                 break;
               }
             }
 
-            if (headerRowIdx >= 0) {
-              const pgCol = headers.findIndex(h => h.includes('PG') || h.includes('NHÂN VIÊN') || h.includes('HỌ TÊN'));
-              const tgtCol = headers.findIndex(h => h.includes('CHỈ TIÊU') || h.includes('TARGET') || h.includes('DOANH SỐ'));
-              const storeCol = headers.findIndex(h => h.includes('TÊN ST') || h.includes('STORE') || h.includes('CỬA HÀNG'));
-              const leadCol = headers.findIndex(h => h.includes('LEADER') || h.includes('QUẢN LÝ'));
+            // 2. Tìm dòng header chứa PG/Nhân Viên và Chỉ Tiêu/Target
+            let foundTargets = {};
+            let foundBhxStores = {};
 
-              for (let r = headerRowIdx + 1; r < rows.length; r++) {
-                const row = rows[r];
-                const pgVal = String(row[pgCol] || '').trim();
-                if (!pgVal || pgVal.toUpperCase().startsWith('TỔNG') || pgVal.toUpperCase().startsWith('TOTAL')) continue;
+            // 2. Tìm sheet Tổng Hợp Team (ưu tiên tuyệt đối vì chứa bảng tổng kết chuẩn của 10 nhân viên)
+            let summarySheetName = wb.SheetNames.find(s => {
+              const norm = normalizeText(s);
+              return norm.includes('tonghop') || norm.includes('chitieuteam') || norm.includes('summary');
+            });
 
-                const tgtVal = parseFloat(row[tgtCol]) || 0;
-                const storeVal = storeCol >= 0 ? String(row[storeCol] || '').toUpperCase() : '';
-                const leadVal = leadCol >= 0 ? String(row[leadCol] || '').toUpperCase() : '';
+            // QUY TẮC BẮT BUỘC: CHỈ ĐỌC DUY NHẤT 1 SHEET ĐÍCH!
+            // Tuyệt đối không duyệt qua nhiều sheet để cộng dồn khiến Target bị nhân dồn (nhân ba lên 32.5 tỷ)!
+            let sheetToParse = summarySheetName;
+            if (!sheetToParse) {
+              for (let sname of wb.SheetNames) {
+                const ws = wb.Sheets[sname];
+                const rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
+                for (let r = 0; r < Math.min(10, rows.length); r++) {
+                  const rowStr = (rows[r] || []).map(c => normalizeText(c).toUpperCase());
+                  if (rowStr.some(c => c.includes('PG') || c.includes('NHANVIEN') || c.includes('HOTEN')) &&
+                      rowStr.some(c => c.includes('CHITIEU') || c.includes('TARGET') || c.includes('DOANHSO'))) {
+                    sheetToParse = sname;
+                    break;
+                  }
+                }
+                if (sheetToParse) break;
+              }
+            }
+            if (!sheetToParse) sheetToParse = wb.SheetNames[0];
 
-                // Lọc nếu có cột Leader
-                if (leadCol >= 0 && !leadVal.includes('CẨM GIANG') && !currentMaster.employees.some(e => e.name.toLowerCase() === pgVal.toLowerCase())) {
-                  continue;
+            const isSummary = (sheetToParse === summarySheetName);
+            const ws = wb.Sheets[sheetToParse];
+            const rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
+
+            if (rows.length >= 2) {
+              let headerRowIdx = -1;
+              let headers = [];
+              for (let r = 0; r < Math.min(10, rows.length); r++) {
+                const rowStr = (rows[r] || []).map(c => normalizeText(c).toUpperCase());
+                if (rowStr.some(c => c.includes('PG') || c.includes('NHANVIEN') || c.includes('HOTEN')) &&
+                    rowStr.some(c => c.includes('CHITIEU') || c.includes('TARGET') || c.includes('DOANHSO'))) {
+                  headerRowIdx = r;
+                  headers = rowStr;
+                  break;
+                }
+              }
+
+              if (headerRowIdx >= 0) {
+                // Ưu tiên cột họ tên PG (tránh cột Mã PG, Mã PG Leader)
+                let pgCol = headers.findIndex(h => (h.includes('HOTEN') || h.includes('HOVATEN') || h.includes('TENPG') || h.includes('TENNHANVIEN')) && !h.includes('LEADER'));
+                if (pgCol < 0) {
+                  pgCol = headers.findIndex(h => (h.includes('NHANVIEN') || h.includes('PG')) && !h.includes('MA') && !h.includes('LEADER'));
                 }
 
-                // Khớp nhân viên
-                let matchedEmp = currentMaster.employees.find(e => e.name.toLowerCase() === pgVal.toLowerCase());
-                if (!matchedEmp) {
-                  matchedEmp = currentMaster.employees.find(e => normalizeText(e.name) === normalizeText(pgVal) || e.name.toLowerCase().includes(pgVal.toLowerCase()) || pgVal.toLowerCase().includes(e.name.toLowerCase()));
+                // QUY TẮC BẮT BUỘC: LẤY TARGET THÁNG HIỆN TẠI (vd T9 / Tháng 9 / Chính thức)
+                // TUYỆT ĐỐI LOẠI TRỪ THÁNG CŨ (T8/Tháng 8), CỘT CHÊNH LỆCH VÀ % THAY ĐỔI
+                let tgtCol = headers.findIndex(h => (h.includes('T' + detectedMonth) || h.includes('THANG' + detectedMonth) || h.includes('CHINHTHUC') || h.includes('HIENTAI')) && (h.includes('TARGET') || h.includes('CHITIEU')));
+                if (tgtCol < 0) {
+                  tgtCol = headers.findIndex(h => (h.includes('TARGET') || h.includes('CHITIEU')) &&
+                    !h.includes('T' + (detectedMonth - 1)) &&
+                    !h.includes('THANG' + (detectedMonth - 1)) &&
+                    !h.includes('T8') &&
+                    !h.includes('THANG8') &&
+                    !h.includes('CHENHLECH') &&
+                    !h.includes('THAYDOI')
+                  );
+                }
+                if (tgtCol < 0) {
+                  for (let c = headers.length - 1; c >= 0; c--) {
+                    if ((headers[c].includes('CHITIEU') || headers[c].includes('TARGET')) && !headers[c].includes('CHENHLECH') && !headers[c].includes('THAYDOI')) {
+                      tgtCol = c;
+                      break;
+                    }
+                  }
                 }
 
-                if (matchedEmp) {
-                  foundTargets[matchedEmp.name] = (foundTargets[matchedEmp.name] || 0) + tgtVal;
-                  if (storeVal.includes('BHX') || storeVal.includes('BÁCH HOÁ XANH') || storeVal.includes('BÁCH HÓA XANH')) {
-                    foundBhxStores[matchedEmp.name] = (foundBhxStores[matchedEmp.name] || 0) + 1;
+                let bhxCol = headers.findIndex(h => h.includes('BHX') && (h.includes('SOCH') || h.includes('CH') || h.includes('CUAHANG')));
+                let storeCol = headers.findIndex(h => h.includes('TENST') || h.includes('STORE') || h.includes('CUAHANG'));
+                let leadCol = headers.findIndex(h => h.includes('LEADER') || h.includes('QUANLY'));
+
+                for (let r = headerRowIdx + 1; r < rows.length; r++) {
+                  const row = rows[r];
+                  if (!row) continue;
+                  const pgVal = String(row[pgCol] || '').trim();
+                  const normPg = normalizeText(pgVal).toUpperCase();
+                  if (!pgVal || normPg.startsWith('TONG') || normPg.startsWith('TOTAL') || normPg.includes('CONGTEAM')) continue;
+
+                  const tgtVal = parseFloat(row[tgtCol]) || 0;
+                  const storeVal = storeCol >= 0 ? normalizeText(row[storeCol]).toUpperCase() : '';
+                  const leadVal = leadCol >= 0 ? normalizeText(row[leadCol]).toUpperCase() : '';
+
+                  if (leadCol >= 0 && !leadVal.includes('CAMGIANG') && !currentMaster.employees.some(e => normalizeText(e.name) === normPg)) {
+                    continue;
+                  }
+
+                  let matchedEmp = currentMaster.employees.find(e => normalizeText(e.name) === normPg);
+                  if (!matchedEmp) {
+                    matchedEmp = currentMaster.employees.find(e => normalizeText(e.name).includes(normPg) || normPg.includes(normalizeText(e.name)));
+                  }
+
+                  if (matchedEmp) {
+                    if (isSummary) {
+                      foundTargets[matchedEmp.name] = Math.round(tgtVal);
+                      if (bhxCol >= 0 && row[bhxCol] !== undefined && row[bhxCol] !== null && row[bhxCol] !== '') {
+                        foundBhxStores[matchedEmp.name] = parseInt(row[bhxCol]) || 0;
+                      }
+                    } else {
+                      foundTargets[matchedEmp.name] = (foundTargets[matchedEmp.name] || 0) + tgtVal;
+                      if (storeVal.includes('BHX') || storeVal.includes('BACHHOAXANH')) {
+                        foundBhxStores[matchedEmp.name] = (foundBhxStores[matchedEmp.name] || 0) + 1;
+                      }
+                    }
                   }
                 }
               }
             }
-          }
 
-          // 2B. Cập nhật danh sách điểm bán & Target FamilyMart nếu có trong file
-          let newFmStores = [];
-          for (let sname of wb.SheetNames) {
-            const ws = wb.Sheets[sname];
-            const rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
-            if (rows.length < 2) continue;
-            for (let r = 1; r < rows.length; r++) {
-              const row = rows[r];
-              if (!row) continue;
-              const chainName = String(row[5] || '').trim();
-              if (chainName === 'Family Mart' || chainName.toLowerCase().includes('family')) {
-                const code = String(row[6] || '').trim();
-                const storeCode = String(row[7] || '').trim();
-                const addr = String(row[10] || '').trim();
-                const loc = String(row[11] || 'ST00_CVS_FM').trim();
-                const maPg = String(row[12] || '').trim();
-                const tenPg = String(row[13] || '').trim();
-                const vtcv = String(row[14] || 'SR').trim();
-                const tgt = parseFloat(row[19]) || 0;
+            // 2B. Cập nhật danh sách điểm bán & Target FamilyMart nếu có trong file
+            let newFmStores = [];
+            for (let sname of wb.SheetNames) {
+              const ws = wb.Sheets[sname];
+              const rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
+              if (rows.length < 2) continue;
+              for (let r = 1; r < rows.length; r++) {
+                const row = rows[r];
+                if (!row) continue;
+                const chainName = String(row[5] || '').trim();
+                if (chainName === 'Family Mart' || chainName.toLowerCase().includes('family')) {
+                  const code = String(row[4] || row[6] || '').trim();
+                  const storeCode = String(row[7] || row[8] || '').trim();
+                  const addr = String(row[10] || '').trim();
+                  const loc = String(row[11] || 'ST00_CVS_FM').trim();
+                  const maPg = String(row[12] || '').trim();
+                  const tenPg = String(row[13] || '').trim();
+                  const vtcv = String(row[14] || 'SR').trim();
+                  // Cột target T9 (Chính thức) thường là index 20, fallback sang index 19
+                  const tgt = parseFloat(row[20]) || parseFloat(row[19]) || 0;
 
-                newFmStores.push({
-                  code: code,
-                  store_code: storeCode,
-                  addr: addr,
-                  location: loc,
-                  ma_pg: maPg,
-                  ten_pg: tenPg,
-                  vtcv: vtcv,
-                  target: tgt,
-                  actual: 0,
-                  orders: {}
-                });
+                  newFmStores.push({
+                    code: code,
+                    store_code: storeCode,
+                    addr: addr,
+                    location: loc,
+                    ma_pg: maPg,
+                    ten_pg: tenPg,
+                    vtcv: vtcv,
+                    target: Math.round(tgt),
+                    actual: 0,
+                    orders: {}
+                  });
+                }
               }
+              if (newFmStores.length >= 25) break;
             }
-            if (newFmStores.length >= 10) break;
-          }
 
-          if (newFmStores.length > 0) {
-            currentMaster.fm_stores = newFmStores;
-          }
+            if (newFmStores.length > 0) {
+              currentMaster.fm_stores = newFmStores;
+            }
 
-          if (Object.keys(foundTargets).length === 0) {
+            if (Object.keys(foundTargets).length === 0) {
+              closeModal('loadingModal');
+              alert('❌ Không tìm thấy dữ liệu chỉ tiêu nhân viên trong file. Vui lòng kiểm tra file có chứa cột "Họ tên PG" và "Target Tháng 9".\nBạn cũng có thể dùng nút "✏️ Sửa Nhanh Bảng Chỉ Tiêu" để nhập trực tiếp.');
+              return;
+            }
+
+            // Cập nhật Master
+            if (detectedMonth) currentMaster.month = detectedMonth;
+            currentMaster.year = 2026;
+            currentMaster.employees.forEach(emp => {
+              if (foundTargets[emp.name] !== undefined) {
+                emp.target = Math.round(foundTargets[emp.name]);
+              }
+              if (foundBhxStores[emp.name] !== undefined) {
+                emp.bhx_stores = foundBhxStores[emp.name];
+              }
+            });
+
+            const totalBhxCount = currentMaster.employees.reduce((acc, e) => acc + (e.bhx_stores || 0), 0);
+            if (totalBhxCount > 0) {
+              currentMaster.total_stores_bhx = totalBhxCount;
+            }
+
+            // Lưu vào localStorage (Vercel & Offline)
+            localStorage.setItem('CUSTOM_MASTER_DATA', JSON.stringify(currentMaster));
+
+            // Lưu vĩnh viễn lên Apps Script backend
+            if (typeof google !== 'undefined' && google.script && google.script.run) {
+              google.script.run.saveCustomMasterData(currentMaster);
+            }
+
+            updateTargetBannerUI();
             closeModal('loadingModal');
-            alert('❌ Không tìm thấy dữ liệu chỉ tiêu nhân viên trong file. Vui lòng kiểm tra file có chứa cột "Nhân viên / PG" và "Chỉ tiêu / Target".\nBạn cũng có thể dùng nút "✏️ Sửa Nhanh Bảng Chỉ Tiêu" để nhập trực tiếp.');
-            return;
-          }
 
-          // Cập nhật Master
-          if (detectedMonth) currentMaster.month = detectedMonth;
-          currentMaster.employees.forEach(emp => {
-            if (foundTargets[emp.name] !== undefined) {
-              emp.target = Math.round(foundTargets[emp.name]);
+            const totalTgt = currentMaster.employees.reduce((a, b) => a + (b.target || 0), 0);
+            const feedback = document.getElementById('targetUploadFeedback');
+            if (feedback) {
+              feedback.style.display = 'block';
+              feedback.style.background = '#DCFCE7';
+              feedback.style.color = '#15803D';
+              feedback.innerText = '✅ ĐÃ ÁP DỤNG TARGET THÁNG ' + currentMaster.month + '/' + currentMaster.year + ' CHO TOÀN TEAM!\n(Tổng Target: ' + formatNumber(totalTgt) + ' đ | ' + currentMaster.total_stores_bhx + ' CH BHX)';
             }
-            if (foundBhxStores[emp.name] !== undefined) {
-              emp.bhx_stores = foundBhxStores[emp.name];
+
+            alert('🎉 ĐÃ ÁP DỤNG THÀNH CÔNG TARGET THÁNG ' + currentMaster.month + '/' + currentMaster.year + ' CHO TOÀN BỘ 10 NHÂN VIÊN!\n\n' +
+                  '• Tổng Chỉ Tiêu Toàn Team: ' + formatNumber(totalTgt) + ' đ\n' +
+                  '• Tổng Cửa Hàng BHX Phụ Trách: ' + currentMaster.total_stores_bhx + ' CH\n' +
+                  '• Đã cập nhật thành công: ' + Object.keys(foundTargets).length + '/10 Nhân Viên\n\n' +
+                  'Dữ liệu đã được lưu và áp dụng ngay lập tức!');
+
+            // Nếu đã có dữ liệu tính toán trước đó thì tính lại ngay
+            if (processedReportData) {
+              processUploadedFiles();
             }
-          });
-
-          // Lưu vĩnh viễn lên Apps Script backend
-          if (typeof google !== 'undefined' && google.script && google.script.run) {
-            google.script.run.saveCustomMasterData(currentMaster);
+          } catch (innerErr) {
+            console.error('Lỗi phân tích file Target:', innerErr);
+            closeModal('loadingModal');
+            alert('❌ Lỗi phân tích file Target: ' + innerErr.message);
           }
-
-          updateTargetBannerUI();
+        };
+        reader.onerror = function(readErr) {
+          console.error('Lỗi đọc file Target:', readErr);
           closeModal('loadingModal');
-
-          const feedback = document.getElementById('targetUploadFeedback');
-          feedback.style.display = 'block';
-          feedback.style.background = '#DCFCE7';
-          feedback.style.color = '#15803D';
-          feedback.innerText = '✅ Đã nạp thành công Target Tháng ' + currentMaster.month + '/' + currentMaster.year + ' cho ' + Object.keys(foundTargets).length + ' nhân viên từ file ' + file.name + '!';
-
-          // Nếu đã có dữ liệu tính toán trước đó thì tính lại ngay
-          if (processedReportData) {
-            processUploadedFiles();
-          }
+          alert('❌ Không thể đọc file: ' + readErr);
         };
         reader.readAsArrayBuffer(file);
       } catch (err) {
@@ -2749,6 +2851,22 @@ const DEFAULT_FM_STORES = [
       }
     }
 
+    function resetToDefaultMonth9Target() {
+      if (confirm('Bạn có chắc muốn khôi phục lại bảng Target chuẩn Tháng 9 (Tổng: 7,605,871,595 đ - 178 CH BHX)?')) {
+        localStorage.removeItem('CUSTOM_MASTER_DATA');
+        currentMaster = JSON.parse(JSON.stringify(DEFAULT_MASTER));
+        updateTargetBannerUI();
+        if (document.getElementById('editTargetModal') && document.getElementById('editTargetModal').classList.contains('active')) {
+          closeModal('editTargetModal');
+        }
+        alert('✅ ĐÃ KHÔI PHỤC THÀNH CÔNG TARGET CHUẨN THÁNG 9!\n\n• Tổng Target: ' + formatNumber(currentMaster.employees.reduce((a,b)=>a+(b.target||0),0)) + ' đ\n• Số CH BHX: ' + currentMaster.total_stores_bhx + ' CH\n\nToàn bộ 10 nhân sự đã được áp dụng target chuẩn!');
+        if (processedReportData) {
+          calculateReportData();
+          renderAllReports();
+        }
+      }
+    }
+
     // =========================================================================
     // 4. DAILY SALES UPLOAD & PARSER
     // =========================================================================
@@ -2784,18 +2902,31 @@ const DEFAULT_FM_STORES = [
 
       showModal('loadingModal', 'Đang nhận diện file...', 'Hệ thống đang tự động phân loại File Siêu Thị và File CVS...');
 
-      for (let f of fileList) {
-        await classifyAndAssignFile(f);
+      try {
+        for (let f of fileList) {
+          await classifyAndAssignFile(f);
+        }
+      } catch (err) {
+        console.error('Lỗi nhận diện file:', err);
+        alert('Lỗi nhận diện file: ' + err.message);
+      } finally {
+        closeModal('loadingModal');
+        checkBothFilesReady(true);
       }
-
-      closeModal('loadingModal');
-      checkBothFilesReady(true);
     }
 
     async function handleSingleFile(file, preferredType) {
       if (!file) return;
-      await classifyAndAssignFile(file, preferredType);
-      checkBothFilesReady(false);
+      showModal('loadingModal', 'Đang đọc file...', 'Hệ thống đang kiểm tra cấu trúc dữ liệu...');
+      try {
+        await classifyAndAssignFile(file, preferredType);
+      } catch (err) {
+        console.error('Lỗi đọc file đơn:', err);
+        alert('Lỗi nạp file: ' + err.message);
+      } finally {
+        closeModal('loadingModal');
+        checkBothFilesReady(false);
+      }
     }
 
     async function classifyAndAssignFile(file, preferredType) {
@@ -2810,53 +2941,90 @@ const DEFAULT_FM_STORES = [
         } else if (fn.includes('KD6') || fn.includes('KD06') || fn.includes('CVS') || fn.includes('NPP') || fn.includes('FAMILY')) {
           type = 'CVS';
         } else {
-          // Rule 2: Inspect content if filename is generic
+          // Rule 2: Inspect content if filename is generic (e.g. "doanh số tháng 9.xlsx")
           try {
             const wb = await readWorkbookFromFile(file);
-            if (wb.SheetNames.includes('NPP')) {
+
+            // Kiểm tra nếu người dùng nạp nhầm file Target KPI vào ô nạp doanh số ngày
+            const hasTargetSummary = wb.SheetNames.some(s => {
+              const n = normalizeText(s).toLowerCase();
+              return n.includes('tong hop') || n.includes('chitieuteam');
+            });
+            if (hasTargetSummary && !wb.SheetNames.includes('SO') && !wb.SheetNames.includes('PO') && !wb.SheetNames.includes('NPP')) {
+              closeModal('loadingModal');
+              const applyTarget = confirm('📋 Phát hiện file "' + file.name + '" là BẢNG CHỈ TIÊU / TARGET THÁNG ' + (file.name.includes('9') ? '9' : '') + ' CỦA TOÀN TEAM!\n\nBạn có muốn ÁP DỤNG NGAY LÀM BẢNG TARGET MỚI cho toàn bộ 10 nhân viên không?');
+              if (applyTarget) {
+                await handleTargetFile(file);
+              }
+              return;
+            }
+
+            // Cảnh báo nếu nạp file Báo cáo tổng hợp thay vì dữ liệu thô
+            if (wb.SheetNames.includes('Tiến độ Team') || wb.SheetNames.includes('Chi tiết CVS')) {
+              alert('⚠️ File "' + file.name + '" là File Báo Cáo Xuất Ra (Team_CamGiang_Report), không phải file dữ liệu bán hàng thô (SO/PO/NPP) từ hệ thống công ty.\n\nHệ thống cần file dữ liệu bán hàng gốc (như file HNTRINH_ST_KD6... và HNTRINH_KD6...) để tổng hợp doanh số.');
+              return;
+            }
+
+            let hasST = false, hasCVS = false;
+            if (wb.SheetNames.includes('NPP') || wb.SheetNames.some(s => s.toUpperCase().includes('FAMILY'))) {
+              hasCVS = true;
+            }
+
+            for (let sName of wb.SheetNames) {
+              const sUpper = sName.toUpperCase();
+              if (sUpper === 'SO' || sUpper === 'PO' || sUpper.includes('DATA') || sUpper.includes('DOANH')) {
+                const ws = wb.Sheets[sName];
+                if (!ws) continue;
+                const rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
+                for (let i = 0; i < Math.min(60, rows.length); i++) {
+                  const rStr = JSON.stringify(rows[i] || '');
+                  if (rStr.includes('XH4001') || rStr.includes('Châu Pha') || rStr.includes('WMP_')) hasST = true;
+                  if (rStr.includes('GS0003') || rStr.includes('SS4001') || rStr.includes('VT4050') || rStr.includes('HD3024')) hasCVS = true;
+                }
+              }
+            }
+
+            // Nếu 1 file Excel chứa cả 2 loại dữ liệu (Siêu Thị và CVS)
+            if (hasST && hasCVS) {
+              type = 'BOTH';
+            } else if (hasST && !hasCVS) {
+              type = 'ST';
+            } else if (hasCVS && !hasST) {
               type = 'CVS';
             } else {
-              const sName = wb.SheetNames[0];
-              const rows = XLSX.utils.sheet_to_json(wb.Sheets[sName], { header: 1 });
-              let hasST = false, hasCVS = false;
-              for (let i = 0; i < Math.min(40, rows.length); i++) {
-                const rStr = JSON.stringify(rows[i] || '');
-                if (rStr.includes('XH4001') || rStr.includes('Châu Pha') || rStr.includes('WMP_')) hasST = true;
-                if (rStr.includes('GS0003') || rStr.includes('SS4001') || rStr.includes('VT4050')) hasCVS = true;
-              }
-              if (hasST && !hasCVS) type = 'ST';
-              else if (hasCVS && !hasST) type = 'CVS';
-              else if (!fileST) type = 'ST';
-              else type = 'CVS';
+              type = !fileST ? 'ST' : 'CVS';
             }
           } catch (err) {
+            console.warn('Không thể đọc chi tiết nội dung file, dùng vị trí mặc định:', err);
             type = !fileST ? 'ST' : 'CVS';
           }
         }
       }
 
-      if (type === 'ST') {
+      if (type === 'BOTH') {
         fileST = file;
-        const card = document.getElementById('cardST');
-        const st = document.getElementById('statusST');
-        const badge = document.getElementById('badgeST');
-        if (card) card.classList.add('loaded');
-        if (st) st.innerHTML = '<span style="color:#059669; font-weight:700;">File Siêu Thị đã sẵn sàng</span> (' + (file.size / 1024 / 1024).toFixed(1) + ' MB)';
-        if (badge) {
-          badge.className = 'badge-success';
-          badge.innerText = '✅ Đã nạp xong';
-        }
+        fileCVS = file;
+        updateFileStatusCard('ST', file);
+        updateFileStatusCard('CVS', file);
+      } else if (type === 'ST') {
+        fileST = file;
+        updateFileStatusCard('ST', file);
       } else if (type === 'CVS') {
         fileCVS = file;
-        const card = document.getElementById('cardCVS');
-        const st = document.getElementById('statusCVS');
-        const badge = document.getElementById('badgeCVS');
-        if (card) card.classList.add('loaded');
-        if (st) st.innerHTML = '<span style="color:#059669; font-weight:700;">File CVS & NPP đã sẵn sàng</span> (' + (file.size / 1024 / 1024).toFixed(1) + ' MB)';
-        if (badge) {
-          badge.className = 'badge-success';
-          badge.innerText = '✅ Đã nạp xong';
-        }
+        updateFileStatusCard('CVS', file);
+      }
+    }
+
+    function updateFileStatusCard(type, file) {
+      const card = document.getElementById('card' + type);
+      const st = document.getElementById('status' + type);
+      const badge = document.getElementById('badge' + type);
+      const label = type === 'ST' ? 'File Siêu Thị (BHX)' : 'File CVS & NPP';
+      if (card) card.classList.add('loaded');
+      if (st) st.innerHTML = '<span style="color:#059669; font-weight:700;">' + label + ' đã sẵn sàng</span> (' + (file.size / 1024 / 1024).toFixed(1) + ' MB - ' + file.name + ')';
+      if (badge) {
+        badge.className = 'badge-success';
+        badge.innerText = '✅ Đã nạp xong';
       }
     }
 
@@ -2865,7 +3033,7 @@ const DEFAULT_FM_STORES = [
       const msg = document.getElementById('uploadMessage');
       if (fileST && fileCVS) {
         btn.disabled = false;
-        msg.innerHTML = '✨ <b>Đã nhận diện đủ 2 file!</b> Hệ thống đang tự động tổng hợp dữ liệu...';
+        msg.innerHTML = '✨ <b>Đã nhận diện đủ dữ liệu!</b> Hệ thống đang tự động tổng hợp dữ liệu...';
         msg.style.color = '#059669';
 
         if (autoTrigger) {
@@ -2876,11 +3044,11 @@ const DEFAULT_FM_STORES = [
       } else {
         btn.disabled = true;
         if (fileST && !fileCVS) {
-          msg.innerHTML = '⏳ <b>Đã nhận diện File Siêu Thị (BHX).</b> Vui lòng chọn tiếp file CVS & NPP.';
-          msg.style.color = '#2563EB';
+          msg.innerHTML = '⏳ <b>Đã nhận diện: ' + fileST.name + ' (File Siêu Thị BHX).</b><br>👉 <b style="color:#D97706;">CHƯA CÓ FILE CVS!</b> Vui lòng bấm vào ô "2. File CVS & NPP" để chọn tiếp file CVS & NPP còn lại.';
+          msg.style.color = '#D97706';
         } else if (!fileST && fileCVS) {
-          msg.innerHTML = '⏳ <b>Đã nhận diện File CVS & NPP.</b> Vui lòng chọn tiếp file Siêu Thị (BHX).';
-          msg.style.color = '#2563EB';
+          msg.innerHTML = '⏳ <b>Đã nhận diện: ' + fileCVS.name + ' (File CVS & NPP).</b><br>👉 <b style="color:#D97706;">CHƯA CÓ FILE SIÊU THỊ!</b> Vui lòng bấm vào ô "1. File Siêu Thị" để chọn tiếp file Siêu Thị (BHX) còn lại.';
+          msg.style.color = '#D97706';
         } else {
           msg.innerText = '';
         }
@@ -2888,12 +3056,14 @@ const DEFAULT_FM_STORES = [
     }
 
     async function readWorkbookFromFile(file) {
+      if (file._parsedWb) return file._parsedWb;
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = (e) => {
           try {
             const data = new Uint8Array(e.target.result);
             const wb = XLSX.read(data, { type: 'array' });
+            file._parsedWb = wb;
             resolve(wb);
           } catch (err) { reject(err); }
         };
@@ -7052,14 +7222,38 @@ const DEFAULT_FM_STORES = [
       setupTablePinchZoom();
     }
 
+    let loadingModalTimer = null;
     function showModal(id, title, desc) {
-      if (title && document.getElementById(id + 'Title')) document.getElementById(id + 'Title').innerText = title;
-      if (desc && document.getElementById(id + 'Desc')) document.getElementById(id + 'Desc').innerText = desc;
-      document.getElementById(id).classList.add('active');
+      const titleEl = document.getElementById(id + 'Title') || document.getElementById('modalLoadingTitle') || document.getElementById('loadingModalTitle');
+      const descEl = document.getElementById(id + 'Desc') || document.getElementById('modalLoadingDesc') || document.getElementById('loadingModalDesc');
+      if (title && titleEl) titleEl.innerText = title;
+      if (desc && descEl) descEl.innerText = desc;
+      const modal = document.getElementById(id);
+      if (modal) modal.classList.add('active');
+
+      if (id === 'loadingModal') {
+        const cancelBtn = document.getElementById('btnCancelLoading');
+        if (cancelBtn) cancelBtn.style.display = 'none';
+        clearTimeout(loadingModalTimer);
+        // Sau 4s nếu modal vẫn chưa tắt, hiện nút đóng để người dùng không bị kẹt
+        loadingModalTimer = setTimeout(() => {
+          if (cancelBtn) cancelBtn.style.display = 'inline-block';
+        }, 4000);
+      }
     }
 
     function closeModal(id) {
-      document.getElementById(id).classList.remove('active');
+      const modal = document.getElementById(id);
+      if (modal) modal.classList.remove('active');
+      if (id === 'loadingModal') {
+        clearTimeout(loadingModalTimer);
+        const cancelBtn = document.getElementById('btnCancelLoading');
+        if (cancelBtn) cancelBtn.style.display = 'none';
+      }
+    }
+
+    function hideModal(id) {
+      closeModal(id);
     }
 
     // Khởi tạo
@@ -7070,7 +7264,16 @@ const DEFAULT_FM_STORES = [
         if (savedMaster) {
           const parsed = JSON.parse(savedMaster);
           if (parsed && parsed.employees) {
-            currentMaster = parsed;
+            const sumTgt = parsed.employees.reduce((a, b) => a + (b.target || 0), 0);
+            // Kiểm tra tính hợp lệ: Target toàn team chuẩn là 7.6 tỷ - 10.8 tỷ.
+            // Nếu cache cũ bị cộng dồn vượt quá 15 tỷ (do lỗi nhân 3 cũ) hoặc sai tháng, tự động xóa cache và nạp chuẩn Target Tháng 9!
+            if (sumTgt > 15000000000 || parsed.month !== 9) {
+              console.warn('Phát hiện cache Target cũ không chính xác (>15 tỷ hoặc sai tháng), tự động reset về Target chuẩn Tháng 9!');
+              localStorage.removeItem('CUSTOM_MASTER_DATA');
+              currentMaster = JSON.parse(JSON.stringify(DEFAULT_MASTER));
+            } else {
+              currentMaster = parsed;
+            }
           }
         }
       } catch (e) {
