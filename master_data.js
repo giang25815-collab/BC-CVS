@@ -235,7 +235,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Kim Hoàng Khang",
     "vtcv": "SR",
     "target": 2870400.0,
-    "actual": 0.0,
+    "actual": 1816100,
     "orders": {
       "07OI20": 523200.0,
       "07KD12": 71400.0,
@@ -249,7 +249,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Nguyễn Thị Thanh Thủy",
     "vtcv": "SR",
     "target": 6513600.0,
-    "actual": 0.0,
+    "actual": 1930350,
     "orders": {}
   },
   {
@@ -259,7 +259,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Nguyễn Thị Thanh Thủy",
     "vtcv": "SR",
     "target": 8846550.0,
-    "actual": 0.0,
+    "actual": 2628150,
     "orders": {
       "07TR33": 142800.0,
       "01SX11": 318750.0,
@@ -273,7 +273,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Nguyễn Thị Thanh Thủy",
     "vtcv": "SR",
     "target": 5192250.0,
-    "actual": 0.0,
+    "actual": 2735700,
     "orders": {}
   },
   {
@@ -283,7 +283,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Nguyễn Thị Thanh Thủy",
     "vtcv": "SR",
     "target": 6924900.0,
-    "actual": 0.0,
+    "actual": 3307200,
     "orders": {
       "07UI31": 95400.0,
       "01SX11": 255000.0,
@@ -298,7 +298,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Nguyễn Thị Thanh Thủy",
     "vtcv": "SR",
     "target": 6491100.0,
-    "actual": 0.0,
+    "actual": 692400,
     "orders": {}
   },
   {
@@ -308,7 +308,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Nguyễn Thị Thanh Thủy",
     "vtcv": "SR",
     "target": 5192250.0,
-    "actual": 0.0,
+    "actual": 2907600,
     "orders": {
       "07OI20": 261600.0,
       "07UI40": 138600.0,
@@ -323,7 +323,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Nguyễn Thị Thanh Thủy",
     "vtcv": "SR",
     "target": 7022550.0,
-    "actual": 0.0,
+    "actual": 1909500,
     "orders": {}
   },
   {
@@ -333,7 +333,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Nguyễn Đức Hoà",
     "vtcv": "SR",
     "target": 7731300.0,
-    "actual": 0.0,
+    "actual": 2679150,
     "orders": {
       "01SX11": 318750.0,
       "01TD60": 212400.0,
@@ -347,7 +347,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Nguyễn Đức Hoà",
     "vtcv": "SR",
     "target": 6750450.0,
-    "actual": 0.0,
+    "actual": 855750,
     "orders": {
       "07TP11": 145200.0,
       "07KD12": 142800.0
@@ -360,7 +360,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Nguyễn Đức Hoà",
     "vtcv": "SR",
     "target": 12073650.0,
-    "actual": 0.0,
+    "actual": 4786500,
     "orders": {
       "07TP11": 435600.0,
       "07KD12": 142800.0,
@@ -386,7 +386,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Nguyễn Đức Hoà",
     "vtcv": "SR",
     "target": 6569600.0,
-    "actual": 0.0,
+    "actual": 2925450,
     "orders": {
       "07KD12": 142800.0,
       "07ID11": 142800.0,
@@ -402,7 +402,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Nguyễn Đức Hoà",
     "vtcv": "SR",
     "target": 13829500.0,
-    "actual": 0.0,
+    "actual": 2459250,
     "orders": {
       "05AN25": 270000.0
     }
@@ -414,7 +414,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Nguyễn Đức Hoà",
     "vtcv": "SR",
     "target": 9678900.0,
-    "actual": 0.0,
+    "actual": 3793500,
     "orders": {
       "07TP11": 145200.0,
       "07KD12": 142800.0,
@@ -437,7 +437,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Nguyễn Đức Hoà",
     "vtcv": "SR",
     "target": 5523600.0,
-    "actual": 0.0,
+    "actual": 1248600,
     "orders": {
       "07KD12": 142800.0,
       "07ID11": 142800.0
@@ -450,7 +450,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Nguyễn Đức Hoà",
     "vtcv": "SR",
     "target": 13829500.0,
-    "actual": 0.0,
+    "actual": 1423050,
     "orders": {
       "07UI31": 95400.0,
       "07UR31": 95400.0,
@@ -466,7 +466,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Nguyễn Đức Hoà",
     "vtcv": "SR",
     "target": 3859200.0,
-    "actual": 0.0,
+    "actual": 825600,
     "orders": {}
   },
   {
@@ -476,7 +476,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Nguyễn Đức Hoà",
     "vtcv": "SR",
     "target": 3651900.0,
-    "actual": 0.0,
+    "actual": 1681350,
     "orders": {
       "07ND21": 171600.0,
       "07UR31": 95400.0,
@@ -490,7 +490,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Nguyễn Đức Hoà",
     "vtcv": "SR",
     "target": 1725000.0,
-    "actual": 0.0,
+    "actual": 1363800,
     "orders": {}
   },
   {
@@ -500,7 +500,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Nguyễn Đức Hoà",
     "vtcv": "SR",
     "target": 6432600.0,
-    "actual": 0.0,
+    "actual": 2112750,
     "orders": {
       "07TP11": 145200.0,
       "07KD12": 142800.0,
@@ -517,7 +517,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Nguyễn Đức Hoà",
     "vtcv": "SR",
     "target": 13433350.0,
-    "actual": 0.0,
+    "actual": 2163150,
     "orders": {
       "07UI31": 95400.0,
       "07UR31": 95400.0,
@@ -531,7 +531,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Nguyễn Đức Hoà",
     "vtcv": "SR",
     "target": 8826000.0,
-    "actual": 0.0,
+    "actual": 2432100,
     "orders": {
       "04GP22": 268200.0,
       "07TP11": 145200.0,
@@ -549,7 +549,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Nguyễn Đức Hoà",
     "vtcv": "SR",
     "target": 29534600.0,
-    "actual": 0.0,
+    "actual": 8824300,
     "orders": {
       "07TP11": 580800.0,
       "07KD12": 285600.0,
@@ -576,7 +576,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Nguyễn Đức Hoà",
     "vtcv": "SR",
     "target": 5475750.0,
-    "actual": 0.0,
+    "actual": 1297050,
     "orders": {
       "07KD12": 142800.0,
       "07ID11": 142800.0,
@@ -596,7 +596,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Nguyễn Đức Hoà",
     "vtcv": "SR",
     "target": 5920200.0,
-    "actual": 0.0,
+    "actual": 2552100,
     "orders": {
       "07OI20": 261600.0,
       "07TP11": 145200.0,
@@ -615,7 +615,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Nguyễn Đức Hoà",
     "vtcv": "SR",
     "target": 2947500.0,
-    "actual": 0.0,
+    "actual": 919950,
     "orders": {}
   },
   {
@@ -625,7 +625,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Nguyễn Đức Hoà",
     "vtcv": "SR",
     "target": 3131550.0,
-    "actual": 0.0,
+    "actual": 981450,
     "orders": {
       "07OI20": 261600.0,
       "07TP11": 145200.0,
@@ -640,7 +640,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Nguyễn Đức Hoà",
     "vtcv": "SR",
     "target": 9255800.0,
-    "actual": 0.0,
+    "actual": 5727750,
     "orders": {
       "04GP22": 536400.0,
       "07KD12": 142800.0,
@@ -662,7 +662,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Nguyễn Đức Hoà",
     "vtcv": "SR",
     "target": 15527400.0,
-    "actual": 0.0,
+    "actual": 3770850,
     "orders": {
       "07ND21": 171600.0,
       "07UR31": 95400.0,
@@ -677,7 +677,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Nguyễn Đức Hoà",
     "vtcv": "SR",
     "target": 7526550.0,
-    "actual": 0.0,
+    "actual": 1691700,
     "orders": {
       "04GP22": 268200.0,
       "07TP11": 145200.0,
@@ -693,7 +693,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Nguyễn Đức Hoà",
     "vtcv": "SR",
     "target": 11488300.0,
-    "actual": 0.0,
+    "actual": 2768850,
     "orders": {
       "07TP11": 290400.0,
       "07UI31": 95400.0,
@@ -709,7 +709,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Não Thị Anh Đào",
     "vtcv": "SR",
     "target": 4002600.0,
-    "actual": 0.0,
+    "actual": 1705800,
     "orders": {
       "07OI20": 523200.0,
       "04GP22": 268200.0,
@@ -729,7 +729,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Não Thị Anh Đào",
     "vtcv": "SR",
     "target": 7843700.0,
-    "actual": 0.0,
+    "actual": 2663700,
     "orders": {
       "07UI31": 95400.0
     }
@@ -741,7 +741,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "Não Thị Anh Đào",
     "vtcv": "SR",
     "target": 6062450.0,
-    "actual": 0.0,
+    "actual": 2597550,
     "orders": {
       "07OI20": 523200.0,
       "09LD01": 158400.0,
@@ -759,7 +759,7 @@ const DEFAULT_FM_STORES = [
     "ten_pg": "",
     "vtcv": "SR",
     "target": 16302700.0,
-    "actual": 0.0,
+    "actual": 0,
     "orders": {}
   }
 ];
@@ -875,7 +875,7 @@ const MASTER_DATA = {
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.75.2551",
       "store_address": "201, Nguyễn Khuyến, , P.Trảng Dài, Đồng Nai",
-      "actual": 690000
+      "actual": 1816100
     },
     {
       "employee_name": "Kim Hoàng Khang",
@@ -973,21 +973,21 @@ const MASTER_DATA = {
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.75.2552",
       "store_address": "198-198A, Phan Đình Phùng, , P.Trấn Biên, Đồng Nai",
-      "actual": 1425000
+      "actual": 1705800
     },
     {
       "employee_name": "Não Thị Anh Đào",
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.79.2507",
       "store_address": "2, Nguyễn An Ninh, , P.Dĩ An, Hồ Chí Minh",
-      "actual": 95400
+      "actual": 2663700
     },
     {
       "employee_name": "Não Thị Anh Đào",
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.75.2591",
       "store_address": "A2, Trần Quốc Toản, , P.Tam Hiệp, Đồng Nai",
-      "actual": 1716150
+      "actual": 2597550
     },
     {
       "employee_name": "Não Thị Anh Đào",
@@ -1183,126 +1183,126 @@ const MASTER_DATA = {
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.79.2567",
       "store_address": "102 Tầng 1+2 Tòa nhà Phú Hòa,, Số 117, Đ.D1, Khu 7, , P.Phú Lợi, Hồ Chí Minh",
-      "actual": 666150
+      "actual": 2679150
     },
     {
       "employee_name": "Nguyễn Đức Hoà",
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.79.2564",
       "store_address": "111, Hoàng Văn Thụ, , P.Thủ Dầu Một, Hồ Chí Minh",
-      "actual": 288000
+      "actual": 855750
     },
     {
       "employee_name": "Nguyễn Đức Hoà",
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.79.2562",
       "store_address": "126, Hoàng Hoa Thám, , P.Phú Lợi, Hồ Chí Minh",
-      "actual": 2878650
+      "actual": 4786500
     },
     {
       "employee_name": "Nguyễn Đức Hoà",
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.79.2569",
       "store_address": "166, Trần Văn Ơn, , P.Phú Lợi, Hồ Chí Minh",
-      "actual": 746400
+      "actual": 2925450
     },
     {
       "employee_name": "Nguyễn Đức Hoà",
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.79.2675",
       "store_address": "19, Đường TC3-XC2, , P.Bến Cát, Hồ Chí Minh",
-      "actual": 270000
+      "actual": 2459250
     },
     {
       "employee_name": "Nguyễn Đức Hoà",
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.79.2565",
       "store_address": "239, Hoàng Văn Thụ, , P.Thủ Dầu Một, Hồ Chí Minh",
-      "actual": 1866600
+      "actual": 3793500
     },
     {
       "employee_name": "Nguyễn Đức Hoà",
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.79.2504",
       "store_address": "26/13, 1, KP Hòa Long, , P.Bình Hòa, Hồ Chí Minh",
-      "actual": 285600
+      "actual": 1248600
     },
     {
       "employee_name": "Nguyễn Đức Hoà",
       "chain": "FamilyMart",
       "store_code": "LK300113X3",
       "store_address": "29-33, Trần Hưng Đạo, , P.Thủ Dầu Một, Hồ Chí Minh",
-      "actual": 685500
+      "actual": 1423050
     },
     {
       "employee_name": "Nguyễn Đức Hoà",
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.79.2505",
       "store_address": "30/3, Nguyễn Văn Tiết, , P.Lái Thiêu, Hồ Chí Minh",
-      "actual": 0
+      "actual": 825600
     },
     {
       "employee_name": "Nguyễn Đức Hoà",
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.79.2563",
       "store_address": "7, Phú Lợi, , P.Phú Lợi, Hồ Chí Minh",
-      "actual": 585750
+      "actual": 1681350
     },
     {
       "employee_name": "Nguyễn Đức Hoà",
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.79.2561",
       "store_address": "B2,, Đường Hùng Vương, , P.Bình Dương, Hồ Chí Minh",
-      "actual": 0
+      "actual": 1363800
     },
     {
       "employee_name": "Nguyễn Đức Hoà",
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.79.2506",
       "store_address": "G05, Tầng trệt, Block CT2, ĐL Bình Dương, KP Hưng Lộc, , P.Thuận An, Hồ Chí Minh",
-      "actual": 927300
+      "actual": 2112750
     },
     {
       "employee_name": "Nguyễn Đức Hoà",
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.79.2560",
       "store_address": "Khu đô thị vườn Tokyu BD, Lô H8,, Đường Tạo Lực 5, H. Phú, , P.Bình Dương, Hồ Chí Minh",
-      "actual": 382050
+      "actual": 2163150
     },
     {
       "employee_name": "Nguyễn Đức Hoà",
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.79.2558",
       "store_address": "L6 A11, A12, A16, Lý Thái Tổ, , P.Bình Dương, Hồ Chí Minh",
-      "actual": 1433700
+      "actual": 2432100
     },
     {
       "employee_name": "Nguyễn Đức Hoà",
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.79.2556",
       "store_address": "Lô C18, Đại lộ Hùng Vương, , P.Bình Dương, Hồ Chí Minh",
-      "actual": 4355100
+      "actual": 8824300
     },
     {
       "employee_name": "Nguyễn Đức Hoà",
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.79.2553",
       "store_address": "Ô 1 và ô 2, lô DC37, Khu dân cư Vietsing, , P.An Phú, Hồ Chí Minh",
-      "actual": 978900
+      "actual": 3770850
     },
     {
       "employee_name": "Nguyễn Đức Hoà",
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.79.2568",
       "store_address": "Ô 18 Khu Đô Thị Becamex, 30/04, , P.Phú Lợi, Hồ Chí Minh",
-      "actual": 855600
+      "actual": 1691700
     },
     {
       "employee_name": "Nguyễn Đức Hoà",
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.79.2570",
       "store_address": "Ô R4, JF1A Khu đô thị mới, , P.Bình Dương, Hồ Chí Minh",
-      "actual": 946500
+      "actual": 2768850
     },
     {
       "employee_name": "Nguyễn Đức Hoà",
@@ -1316,28 +1316,28 @@ const MASTER_DATA = {
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.79.2555",
       "store_address": "Số 356,, Đường 30/4,, , P.Thủ Dầu Một, Hồ Chí Minh",
-      "actual": 1339500
+      "actual": 2552100
     },
     {
       "employee_name": "Nguyễn Đức Hoà",
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.79.2559",
       "store_address": "Số 490, ĐL Bình Dương, , P.Phú Lợi, Hồ Chí Minh",
-      "actual": 0
+      "actual": 919950
     },
     {
       "employee_name": "Nguyễn Đức Hoà",
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.79.2554",
       "store_address": "Số 62/2, Đường 745, KP. Thạnh Lợi, , P.Thuận An, Hồ Chí Minh",
-      "actual": 693450
+      "actual": 981450
     },
     {
       "employee_name": "Nguyễn Đức Hoà",
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.79.2557",
       "store_address": "Tầng trệt, Block D, KDC Hiệp Thành III, Tổ 105, KP.7, , P.Phú Lợi, Hồ Chí Minh",
-      "actual": 2590050
+      "actual": 5727750
     },
     {
       "employee_name": "Nguyễn Đức Hoà",
@@ -1610,49 +1610,49 @@ const MASTER_DATA = {
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.79.2639",
       "store_address": "06, Hoàng Hoa Thám, , P.Vũng Tàu, Hồ Chí Minh",
-      "actual": 0
+      "actual": 1930350
     },
     {
       "employee_name": "Nguyễn Thị Thanh Thủy",
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.79.2636",
       "store_address": "148, Hoàng Hoa Thám, , P.Vũng Tàu, Hồ Chí Minh",
-      "actual": 665550
+      "actual": 2628150
     },
     {
       "employee_name": "Nguyễn Thị Thanh Thủy",
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.79.2637",
       "store_address": "171, Nam Kỳ Khởi Nghĩa, P.6, TP.Vũng Tàu, Bà Rịa Vũng Tàu",
-      "actual": 0
+      "actual": 2735700
     },
     {
       "employee_name": "Nguyễn Thị Thanh Thủy",
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.79.2641",
       "store_address": "26D, Lê Hồng Phong, , P.Tam Thắng, Hồ Chí Minh",
-      "actual": 801900
+      "actual": 3307200
     },
     {
       "employee_name": "Nguyễn Thị Thanh Thủy",
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.79.2638",
       "store_address": "48, Đồ Chiểu, , P.Vũng Tàu, Hồ Chí Minh",
-      "actual": 0
+      "actual": 692400
     },
     {
       "employee_name": "Nguyễn Thị Thanh Thủy",
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.79.2640",
       "store_address": "58, Trương Công Định, , P.Vũng Tàu, Hồ Chí Minh",
-      "actual": 756300
+      "actual": 2907600
     },
     {
       "employee_name": "Nguyễn Thị Thanh Thủy",
       "chain": "FamilyMart",
       "store_code": "CVS_FAMILYMART.79.2635",
       "store_address": "Số 816, Trần Phú, , P.Vũng Tàu, Hồ Chí Minh",
-      "actual": 0
+      "actual": 1909500
     },
     {
       "employee_name": "Nguyễn Thị Thanh Thủy",
