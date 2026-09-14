@@ -1,6 +1,6 @@
 @echo off
 chcp 65001 >nul
-title ĐẨY TOÀN BỘ CODE MỚI LÊN GITHUB & VERCEL
+title DAY TOAN BO CODE MOI LEN GITHUB VA VERCEL
 color 0B
 echo ======================================================================
 echo   ĐANG TIẾN HÀNH ĐẨY CODE LÊN GITHUB: giang25815-collab/BC-CVS
