@@ -1786,34 +1786,6 @@ const MASTER_DATA = {
       "store_code": "CVS_7ELEVEN.79.2104",
       "store_address": "Tòa A Happy One Central, 113 đường 30/4, Phường Phú Hòa, Thủ Dầu Một, Bình Dương",
       "actual": 0
-    },
-    {
-      "employee_name": "Nguyễn Đức Hoà",
-      "chain": "WinMart+",
-      "store_code": "WMP_DNI_KP_TRUNG_TAM_XUAN_LAP",
-      "store_address": "Thửa đất số 58, TBĐ số 54, KP. Trung Tâm, P. Xuân Lập, Thành phố Đồng Nai",
-      "actual": 1020288
-    },
-    {
-      "employee_name": "Nguyễn Đức Hoà",
-      "chain": "WinMart+",
-      "store_code": "WMP_DNI_285_287_CACH_MANG_THAN",
-      "store_address": "285-287 Cách Mạng Tháng Tám, Phường Trấn Biên, Thành phố Đồng Nai",
-      "actual": 1433080
-    },
-    {
-      "employee_name": "Nguyễn Đức Hoà",
-      "chain": "WinMart+",
-      "store_code": "WMP_HCM_90A_92_PHAN_CHU_TRINH",
-      "store_address": "90A-92 Phan Chu Trinh, Phường Vũng Tàu, TP. Hồ Chí Minh",
-      "actual": 0
-    },
-    {
-      "employee_name": "Nguyễn Đức Hoà",
-      "chain": "WinMart+",
-      "store_code": "WMP_DNI_A_01_04_TOPAZ_TWINS",
-      "store_address": "A01-04, Chung cư Topaz Twins, đường số 7, KP. Vinh Thạnh, P. Trấn Biên, T. Đồng Nai",
-      "actual": 2347700
     }
   ],
   "bhx_hubs": [
@@ -1833,12 +1805,7 @@ const MASTER_DATA = {
   ],
   "fm_categories": FM_CATEGORIES,
   "fm_stores": DEFAULT_FM_STORES,
-  "wmp_stores": [
-    "WMP_DNI_KP_TRUNG_TAM_XUAN_LAP",
-    "WMP_DNI_285_287_CACH_MANG_THAN",
-    "WMP_HCM_90A_92_PHAN_CHU_TRINH",
-    "WMP_DNI_A_01_04_TOPAZ_TWINS"
-  ]
+  "wmp_stores": []
 };
 
 if (typeof module !== "undefined") module.exports = MASTER_DATA;

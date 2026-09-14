@@ -503,7 +503,7 @@
       <div class="kpi-card">
         <div class="kpi-label">Quy Mô & Cửa Hàng</div>
         <div class="kpi-value" style="color:#2563EB;" id="kpiStores">10 NV</div>
-        <div class="kpi-sub">142 Cửa hàng CVS • 35 CH FM</div>
+        <div class="kpi-sub">138 Cửa hàng CVS • 35 CH FM</div>
       </div>
     </div>
 
@@ -513,7 +513,7 @@
         <button class="tab-btn active" onclick="switchTab('tabTeam')">📊 1. Tiến Độ 10 Nhân Viên</button>
         <button class="tab-btn" onclick="switchTab('tabRank')">🏆 2. Xếp Hạng & Tỷ Trọng</button>
         <button class="tab-btn" onclick="switchTab('tabBhx')">🚚 3. Phân Bổ 5 Hubs BHX</button>
-        <button class="tab-btn" onclick="switchTab('tabCvsStores')">🏪 4. Chi Tiết 142 Cửa Hàng CVS</button>
+        <button class="tab-btn" onclick="switchTab('tabCvsStores')">🏪 4. Chi Tiết 138 Cửa Hàng CVS</button>
         <button class="tab-btn" onclick="switchTab('tabFmSku')">🛒 Chi Tiết SKU Cửa Hàng FamilyMart</button>
       </div>
 
@@ -1054,7 +1054,7 @@
               h.actual_sales = val;
             });
           }
-          // 2. Chuẩn hoá 142 Điểm bán CVS (hỗ trợ cả actual & actual_sales, store_address & address, store_name)
+          // 2. Chuẩn hoá 138 Điểm bán CVS (hỗ trợ cả actual & actual_sales, store_address & address, store_name)
           if (Array.isArray(data.stores)) {
             data.stores.forEach(s => {
               const val = (s.actual !== undefined && s.actual !== null) ? s.actual : ((s.actual_sales !== undefined && s.actual_sales !== null) ? s.actual_sales : 0);
@@ -1391,7 +1391,7 @@
             <div class="kpi-card">
               <div class="kpi-label">Tiến Độ Tháng</div>
               <div class="kpi-value" style="color:#2563EB;">${data.timegone}%</div>
-              <div class="kpi-sub">10 NV • 142 Cửa hàng CVS</div>
+              <div class="kpi-sub">10 NV • 138 Cửa hàng CVS</div>
             </div>
           `;
         }
