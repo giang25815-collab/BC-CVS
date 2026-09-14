@@ -2331,16 +2331,16 @@ const DEFAULT_FM_STORES = [
       year: 2026,
       total_stores_bhx: 178,
       employees: [
-        { name: 'Bùi Thị Sen', bhx_stores: 21, target: 820982667 },
-        { name: 'Chắng Lý Quỳnh', bhx_stores: 25, target: 938811549 },
-        { name: 'Kim Hoàng Khang', bhx_stores: 25, target: 972817335 },
-        { name: 'Lê Thị Thùy Châu', bhx_stores: 21, target: 900508409 },
-        { name: 'Lê Trần Bá Kiện', bhx_stores: 24, target: 895234721 },
-        { name: 'Não Thị Anh Đào', bhx_stores: 11, target: 530222702 },
+        { name: 'Bùi Thị Sen', bhx_stores: 21, target: 827023932 },
+        { name: 'Chắng Lý Quỳnh', bhx_stores: 25, target: 946003531 },
+        { name: 'Kim Hoàng Khang', bhx_stores: 25, target: 980009318 },
+        { name: 'Lê Thị Thùy Châu', bhx_stores: 21, target: 906549674 },
+        { name: 'Lê Trần Bá Kiện', bhx_stores: 24, target: 902139024 },
+        { name: 'Não Thị Anh Đào', bhx_stores: 11, target: 533387175 },
         { name: 'Nguyễn Đức Hoà', bhx_stores: 0, target: 311379421 },
-        { name: 'Nguyễn Thanh Nhàn', bhx_stores: 25, target: 932536168 },
-        { name: 'Nguyễn Thị Thanh Thủy', bhx_stores: 6, target: 471771655 },
-        { name: 'Phạm Thị Kim Nhung', bhx_stores: 20, target: 831606968 }
+        { name: 'Nguyễn Thanh Nhàn', bhx_stores: 25, target: 939728150 },
+        { name: 'Nguyễn Thị Thanh Thủy', bhx_stores: 6, target: 473497731 },
+        { name: 'Phạm Thị Kim Nhung', bhx_stores: 20, target: 837360554 }
       ],
       bhx_hubs: [
         'Ấp 4, Xã Châu Pha, Thành phố Hồ Chí Minh, Việt Nam',
@@ -2561,23 +2561,24 @@ const DEFAULT_FM_STORES = [
             let foundTargets = {};
             let foundBhxStores = {};
 
-            // 2. Tìm sheet Tổng Hợp Team (ưu tiên tuyệt đối vì chứa bảng tổng kết chuẩn của 10 nhân viên)
+            // 2. Tìm sheet Dashboard Hệ Thống hoặc Tổng Hợp Team
             let summarySheetName = wb.SheetNames.find(s => {
               const norm = normalizeText(s);
-              return norm.includes('tonghop') || norm.includes('chitieuteam') || norm.includes('summary');
+              return norm.includes('dashboard') || norm.includes('tonghop') || norm.includes('chitieuteam') || norm.includes('summary');
             });
 
             // QUY TẮC BẮT BUỘC: CHỈ ĐỌC DUY NHẤT 1 SHEET ĐÍCH!
-            // Tuyệt đối không duyệt qua nhiều sheet để cộng dồn khiến Target bị nhân dồn (nhân ba lên 32.5 tỷ)!
             let sheetToParse = summarySheetName;
             if (!sheetToParse) {
               for (let sname of wb.SheetNames) {
                 const ws = wb.Sheets[sname];
+                if (!ws) continue;
                 const rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
-                for (let r = 0; r < Math.min(10, rows.length); r++) {
-                  const rowStr = (rows[r] || []).map(c => normalizeText(c).toUpperCase());
-                  if (rowStr.some(c => c.includes('PG') || c.includes('NHANVIEN') || c.includes('HOTEN')) &&
-                      rowStr.some(c => c.includes('CHITIEU') || c.includes('TARGET') || c.includes('DOANHSO'))) {
+                for (let r = 0; r < Math.min(30, rows.length); r++) {
+                  const row = Array.from(rows[r] || []);
+                  const rowStr = row.map(c => normalizeText(c));
+                  if (rowStr.some(c => c && (c.includes('pg') || c.includes('nhanvien') || c.includes('hoten'))) &&
+                      rowStr.some(c => c && (c.includes('chitieu') || c.includes('target') || c.includes('tongtarget') || c.includes('doanhso')))) {
                     sheetToParse = sname;
                     break;
                   }
@@ -2594,10 +2595,11 @@ const DEFAULT_FM_STORES = [
             if (rows.length >= 2) {
               let headerRowIdx = -1;
               let headers = [];
-              for (let r = 0; r < Math.min(10, rows.length); r++) {
-                const rowStr = (rows[r] || []).map(c => normalizeText(c).toUpperCase());
-                if (rowStr.some(c => c.includes('PG') || c.includes('NHANVIEN') || c.includes('HOTEN')) &&
-                    rowStr.some(c => c.includes('CHITIEU') || c.includes('TARGET') || c.includes('DOANHSO'))) {
+              for (let r = 0; r < Math.min(40, rows.length); r++) {
+                const row = Array.from(rows[r] || []);
+                const rowStr = row.map(c => normalizeText(c));
+                if (rowStr.some(c => c && (c.includes('pg') || c.includes('nhanvien') || c.includes('hoten'))) &&
+                    rowStr.some(c => c && (c.includes('chitieu') || c.includes('target') || c.includes('tongtarget') || c.includes('doanhso')))) {
                   headerRowIdx = r;
                   headers = rowStr;
                   break;
@@ -2606,49 +2608,54 @@ const DEFAULT_FM_STORES = [
 
               if (headerRowIdx >= 0) {
                 // Ưu tiên cột họ tên PG (tránh cột Mã PG, Mã PG Leader)
-                let pgCol = headers.findIndex(h => (h.includes('HOTEN') || h.includes('HOVATEN') || h.includes('TENPG') || h.includes('TENNHANVIEN')) && !h.includes('LEADER'));
+                let pgCol = headers.findIndex(h => h && (h.includes('hoten') || h.includes('hovaten') || h.includes('tenpg') || h.includes('nhanvien')) && !h.includes('leader') && !h.includes('mapg'));
                 if (pgCol < 0) {
-                  pgCol = headers.findIndex(h => (h.includes('NHANVIEN') || h.includes('PG')) && !h.includes('MA') && !h.includes('LEADER'));
+                  pgCol = headers.findIndex(h => h && (h.includes('nhanvien') || h.includes('pg')) && !h.includes('ma') && !h.includes('leader'));
                 }
 
-                // QUY TẮC BẮT BUỘC: LẤY TARGET THÁNG HIỆN TẠI (vd T9 / Tháng 9 / Chính thức)
-                // TUYỆT ĐỐI LOẠI TRỪ THÁNG CŨ (T8/Tháng 8), CỘT CHÊNH LỆCH VÀ % THAY ĐỔI
-                let tgtCol = headers.findIndex(h => (h.includes('T' + detectedMonth) || h.includes('THANG' + detectedMonth) || h.includes('CHINHTHUC') || h.includes('HIENTAI')) && (h.includes('TARGET') || h.includes('CHITIEU')));
+                // Cột Target: Ưu tiên "TỔNG TARGET T9", hoặc "Target Tháng 9 (Chính thức)", hoặc Target tháng hiện tại
+                let tgtCol = headers.findIndex(h => h && (h.includes('tongtarget') || (h.includes('target') && (h.includes('t' + detectedMonth) || h.includes('thang' + detectedMonth) || h.includes('chinhthuc')))) && !h.includes('t8') && !h.includes('thang8') && !h.includes('chenhlech') && !h.includes('thaydoi'));
                 if (tgtCol < 0) {
-                  tgtCol = headers.findIndex(h => (h.includes('TARGET') || h.includes('CHITIEU')) &&
-                    !h.includes('T' + (detectedMonth - 1)) &&
-                    !h.includes('THANG' + (detectedMonth - 1)) &&
-                    !h.includes('T8') &&
-                    !h.includes('THANG8') &&
-                    !h.includes('CHENHLECH') &&
-                    !h.includes('THAYDOI')
+                  tgtCol = headers.findIndex(h => h && (h.includes('target') || h.includes('chitieu')) &&
+                    !h.includes('t' + (detectedMonth - 1)) &&
+                    !h.includes('thang' + (detectedMonth - 1)) &&
+                    !h.includes('t8') &&
+                    !h.includes('thang8') &&
+                    !h.includes('chenhlech') &&
+                    !h.includes('thaydoi')
                   );
                 }
                 if (tgtCol < 0) {
                   for (let c = headers.length - 1; c >= 0; c--) {
-                    if ((headers[c].includes('CHITIEU') || headers[c].includes('TARGET')) && !headers[c].includes('CHENHLECH') && !headers[c].includes('THAYDOI')) {
+                    if (headers[c] && (headers[c].includes('chitieu') || headers[c].includes('target')) && !headers[c].includes('chenhlech') && !headers[c].includes('thaydoi')) {
                       tgtCol = c;
                       break;
                     }
                   }
                 }
 
-                let bhxCol = headers.findIndex(h => h.includes('BHX') && (h.includes('SOCH') || h.includes('CH') || h.includes('CUAHANG')));
-                let storeCol = headers.findIndex(h => h.includes('TENST') || h.includes('STORE') || h.includes('CUAHANG'));
-                let leadCol = headers.findIndex(h => h.includes('LEADER') || h.includes('QUANLY'));
+                let bhxCol = headers.findIndex(h => h && h.includes('bhx') && (h.includes('soch') || h.includes('ch') || h.includes('cuahang')));
+                let noteCol = headers.findIndex(h => h && (h.includes('ghichu') || h.includes('phanbo') || h.includes('note')));
+                let storeCol = headers.findIndex(h => h && (h.includes('tenst') || h.includes('store') || h.includes('cuahang')));
+                let leadCol = headers.findIndex(h => h && (h.includes('leader') || h.includes('quanly')));
 
                 for (let r = headerRowIdx + 1; r < rows.length; r++) {
                   const row = rows[r];
                   if (!row) continue;
                   const pgVal = String(row[pgCol] || '').trim();
                   const normPg = normalizeText(pgVal);
-                  if (!pgVal || normPg.startsWith('tong') || normPg.startsWith('total') || normPg.includes('congteam')) continue;
+                  if (!pgVal || normPg.startsWith('tong') || normPg.startsWith('total') || normPg.includes('congteam') || normPg.includes('toanteam') || normPg.includes('phan3')) continue;
 
-                  const tgtVal = parseFloat(row[tgtCol]) || 0;
+                  let rawTgt = row[tgtCol];
+                  if (typeof rawTgt === 'string') rawTgt = rawTgt.replace(/[,.\sđ₫]/g, '');
+                  const tgtVal = parseFloat(rawTgt) || 0;
+                  if (tgtVal <= 0) continue;
+
                   const storeVal = storeCol >= 0 ? normalizeText(row[storeCol]) : '';
                   const leadVal = leadCol >= 0 ? normalizeText(row[leadCol]) : '';
+                  const noteVal = noteCol >= 0 ? String(row[noteCol] || '') : '';
 
-                  if (leadCol >= 0 && !leadVal.includes('camgiang') && !currentMaster.employees.some(e => normalizeText(e.name) === normPg)) {
+                  if (leadCol >= 0 && leadVal && !leadVal.includes('camgiang') && !currentMaster.employees.some(e => normalizeText(e.name) === normPg)) {
                     continue;
                   }
 
@@ -2658,16 +2665,18 @@ const DEFAULT_FM_STORES = [
                   }
 
                   if (matchedEmp) {
-                    if (isSummary) {
-                      foundTargets[matchedEmp.name] = Math.round(tgtVal);
-                      if (bhxCol >= 0 && row[bhxCol] !== undefined && row[bhxCol] !== null && row[bhxCol] !== '') {
-                        foundBhxStores[matchedEmp.name] = parseInt(row[bhxCol]) || 0;
+                    foundTargets[matchedEmp.name] = Math.round(tgtVal);
+
+                    // Lấy số lượng CH BHX
+                    if (bhxCol >= 0 && row[bhxCol] !== undefined && row[bhxCol] !== null && row[bhxCol] !== '') {
+                      foundBhxStores[matchedEmp.name] = parseInt(row[bhxCol]) || 0;
+                    } else if (noteVal) {
+                      const bhxMatch = noteVal.match(/(\d+)\s*(?:ch\s*)?bhx/i);
+                      if (bhxMatch) {
+                        foundBhxStores[matchedEmp.name] = parseInt(bhxMatch[1]) || 0;
                       }
-                    } else {
-                      foundTargets[matchedEmp.name] = (foundTargets[matchedEmp.name] || 0) + tgtVal;
-                      if (storeVal.includes('BHX') || storeVal.includes('BACHHOAXANH')) {
-                        foundBhxStores[matchedEmp.name] = (foundBhxStores[matchedEmp.name] || 0) + 1;
-                      }
+                    } else if (!isSummary && (storeVal.includes('bhx') || storeVal.includes('bachhoaxanh'))) {
+                      foundBhxStores[matchedEmp.name] = (foundBhxStores[matchedEmp.name] || 0) + 1;
                     }
                   }
                 }
