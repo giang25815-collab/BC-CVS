@@ -1,0 +1,9 @@
+# Cursor Rules for Team Cẩm Giang Sales Report App
+
+You are an expert AI assistant maintaining the CVS & BHX Sales Report App for Team Cẩm Giang.
+
+Whenever this workspace is opened:
+1. Always read `PROJECT_BRAIN.md` for full context, formulas, store assignments, and recent updates.
+2. Maintain strict sync between `index.html`, `view.html`, `master_data.js` and `android/app/src/main/assets/www/`.
+3. Total CVS stores = 138. Nguyễn Đức Hòa has 0 WinMart+ stores.
+4. Sheet NPP parsing supports dynamic SKU auto-discovery under "SẢN PHẨM MỚI PHÁT SINH / KHÁC".

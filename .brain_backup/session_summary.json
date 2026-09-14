@@ -1,0 +1,90 @@
+{
+  "project_name": "Sales Report App - Team Cẩm Giang",
+  "last_updated": "2026-09-14T16:53:00+07:00",
+  "workspace_root": "gas_app",
+  "git_repository": "https://github.com/linshin6/sales-report-app.git",
+  "store_count": {
+    "total_cvs": 138,
+    "gs25": 70,
+    "familymart": 34,
+    "circle_k": 27,
+    "seven_eleven": 5,
+    "hoang_duc": 2,
+    "winmart_plus": 0
+  },
+  "employees": [
+    {
+      "name": "Trần Thị Cẩm Giang",
+      "stores_count": 28,
+      "breakdown": { "circle_k": 14, "familymart": 14 },
+      "cvs_revenue": 56128420
+    },
+    {
+      "name": "Phan Vũ Đình Duy",
+      "stores_count": 20,
+      "breakdown": { "gs25": 20 },
+      "cvs_revenue": 45408440
+    },
+    {
+      "name": "Trương Thanh Thảo",
+      "stores_count": 15,
+      "breakdown": { "gs25": 15 },
+      "cvs_revenue": 34056330
+    },
+    {
+      "name": "Nguyễn Đức Hòa",
+      "stores_count": 48,
+      "breakdown": { "gs25": 35, "circle_k": 13, "winmart_plus": 0 },
+      "cvs_revenue": 114438802,
+      "target": 353000000,
+      "notes": "Đã loại bỏ 4 cửa hàng WinMart+ khỏi danh sách phụ trách"
+    },
+    {
+      "name": "Kim Hoàng Khang",
+      "stores_count": 20,
+      "breakdown": { "familymart": 20 },
+      "cvs_revenue": 71940350
+    },
+    {
+      "name": "Nguyễn Thị Hướng Dương",
+      "stores_count": 7,
+      "breakdown": { "seven_eleven": 5, "hoang_duc": 2 },
+      "cvs_revenue": 37274686
+    }
+  ],
+  "team_totals": {
+    "target": 10826339729,
+    "bhx_actual": 3551927443,
+    "cvs_actual": 359247028,
+    "total_actual": 3911174471,
+    "percent_achieved": 36.1,
+    "remaining_gap": 6915165258
+  },
+  "discrepancies_resolved": [
+    {
+      "issue": "Lệch số FamilyMart giữa Ảnh 1 (29.9tr) và Ảnh 2 (84.1tr)",
+      "cause": "Ảnh 1 là số snapshot dự phòng (fallback) trong master_data.js trước khi tải tệp. Ảnh 2 là bóc tách thực tế từ sheet NPP theo từng dòng đơn hàng cho 34-35 cửa hàng.",
+      "resolution": "Số 84,178,050 đ trong sheet NPP là số thực tế chính xác 100%."
+    },
+    {
+      "issue": "Lệch khoảng 100tr CVS so với các phiên bản cũ",
+      "cause": "Đơn giá trung bình GS25: Bản cũ áp dụng 873,680 đ/CH (61,157,600 đ/70 CH). Bản mới áp dụng 2,270,422 đ/CH (158,929,540 đ/70 CH). Chênh lệch 97,771,940 đ (~98tr).",
+      "resolution": "Đã làm rõ nguyên nhân bắt nguồn từ việc cập nhật đơn giá GS25."
+    },
+    {
+      "issue": "Nguyễn Đức Hòa phụ trách WinMart+",
+      "cause": "Hòa không còn quản lý WinMart+.",
+      "resolution": "Đã xóa toàn bộ 4 cửa hàng WinMart+ khỏi danh sách của Hòa trên toàn bộ các file: master_data.js, index.html, view.html, android assets, Team_CamGiang_Report.xlsx."
+    },
+    {
+      "issue": "SKU mới trong sheet NPP FamilyMart có được ghi nhận không",
+      "cause": "Trước đây mã SKU ngoài danh mục 46 SKU bị thiếu cột hiển thị trên ma trận dù tổng tiền vẫn tính.",
+      "resolution": "Đã cài đặt bộ phát hiện SKU động (Dynamic SKU Auto-Discovery), tự động gom vào nhóm 'SẢN PHẨM MỚI PHÁT SINH / KHÁC', thêm cột ma trận, đưa vào link online và xuất Excel."
+    }
+  ],
+  "backup_images": [
+    ".brain_backup/images/media_1789375542558.png",
+    ".brain_backup/images/media_1789375870375.png",
+    ".brain_backup/images/media_1789376003859.png"
+  ]
+}
