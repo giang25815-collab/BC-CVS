@@ -1,4 +1,5 @@
 @echo off
-cd /d "%~dp0android"
-call build_apk.bat
+cd /d "%~dp0"
+python scripts\repack_apk.py
 pause
+

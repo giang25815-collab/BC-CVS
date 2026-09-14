@@ -7,3 +7,5 @@ Whenever this workspace is opened:
 2. Maintain strict sync between `index.html`, `view.html`, `master_data.js` and `android/app/src/main/assets/www/`.
 3. Total CVS stores = 138. Nguyễn Đức Hòa has 0 WinMart+ stores.
 4. Sheet NPP parsing supports dynamic SKU auto-discovery under "SẢN PHẨM MỚI PHÁT SINH / KHÁC".
+5. STRICT CONTEXT RULE: Only analyze files that the USER actively mentions (@) or highlights. Do NOT scan heavy folders, binaries, or entire directory trees.
+

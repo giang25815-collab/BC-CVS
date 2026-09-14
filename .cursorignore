@@ -1,0 +1,46 @@
+# =========================================================================
+# CURSOR & AI CONTEXT IGNORE CONFIGURATION
+# Loại trừ hoàn toàn các thư mục nặng, file nhị phân & file backup
+# =========================================================================
+
+# 1. Thư mục backup não bộ & dữ liệu sao lưu
+.brain_backup/
+brain_backup/
+
+# 2. Thư mục Android và các file build nhị phân APK/AAB
+android/
+*.apk
+*.aab
+.gradle/
+local.properties
+
+# 3. Các file dữ liệu bảng tính nhị phân Excel/XLSB/XLSX nặng
+*.xlsx
+*.xlsb
+*.xls
+*.zip
+*.tar.gz
+*.rar
+~$*
+
+# 4. Các file giao diện cũ / bản nháp HTML nặng trùng lặp không dùng đến
+CRypto.html
+Command Center Dark.html
+Command Center Hybrid.html
+Deep Teal Amber.html
+Index_softpink_backup.html
+Teal Coral Energy.html
+original_index.html
+
+# 5. Các file thư viện JS/GS nén dung lượng lớn (đã đóng gói cố định)
+xlsx.full.min.js
+exceljs.min.js
+xlsx.bundle.js
+XlsxBundle.gs
+
+# 6. Dependency & logs
+tools/
+node_modules/
+*.log
+.DS_Store
+
