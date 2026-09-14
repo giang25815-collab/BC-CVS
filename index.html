@@ -3305,9 +3305,49 @@ const DEFAULT_FM_STORES = [
         return p >= timePct;
       }).length;
 
+      // Tự động phát hiện các SKU mới từ file NPP của tất cả điểm bán FamilyMart
+      const definedSkuCodes = new Set();
+      const dynamicCats = JSON.parse(JSON.stringify(FM_CATEGORIES));
+      dynamicCats.forEach(cat => {
+        cat.skus.forEach(s => definedSkuCodes.add(s.code));
+      });
+
+      const newDiscoveredSkus = [];
+      const discoveredCodeMap = {};
+
+      matchedFmMatrix.forEach(st => {
+        if (st.orders) {
+          Object.keys(st.orders).forEach(icode => {
+            if (!definedSkuCodes.has(icode) && !discoveredCodeMap[icode]) {
+              discoveredCodeMap[icode] = true;
+              let iname = icode;
+              for (let ocode in nppData) {
+                if (nppData[ocode].items && nppData[ocode].items[icode]) {
+                  iname = nppData[ocode].items[icode].name || icode;
+                  break;
+                }
+              }
+              newDiscoveredSkus.push({
+                code: icode,
+                name: iname
+              });
+            }
+          });
+        }
+      });
+
+      if (newDiscoveredSkus.length > 0) {
+        dynamicCats.push({
+          name: "SẢN PHẨM MỚI PHÁT SINH / KHÁC",
+          headerBg: "FCE4D6",
+          cellBg: "FFF2CC",
+          skus: newDiscoveredSkus
+        });
+      }
+
       const fmSkuMatrixData = {
         stores: matchedFmMatrix,
-        categories: FM_CATEGORIES,
+        categories: dynamicCats,
         total_target: totFmTgt,
         total_actual: totFmAct,
         pct: pctFmTotal,
@@ -6637,9 +6677,10 @@ const DEFAULT_FM_STORES = [
       const p = processedReportData;
 
       let allSkus = [];
-      if (typeof DEFAULT_MASTER !== 'undefined' && DEFAULT_MASTER.fm_categories) {
-        DEFAULT_MASTER.fm_categories.forEach(cat => allSkus.push(...cat.skus));
-      }
+      const catsForSkus = (p.fm_sku_matrix && p.fm_sku_matrix.categories && p.fm_sku_matrix.categories.length > 0)
+        ? p.fm_sku_matrix.categories
+        : (typeof DEFAULT_MASTER !== 'undefined' && DEFAULT_MASTER.fm_categories ? DEFAULT_MASTER.fm_categories : FM_CATEGORIES);
+      catsForSkus.forEach(cat => allSkus.push(...cat.skus));
 
       // 1. Hubs (5 số)
       const h = (p.bhx_hubs || []).map(hub => hub.amount !== undefined ? hub.amount : (hub.actual_sales || 0));
@@ -6688,7 +6729,8 @@ const DEFAULT_FM_STORES = [
         tg: p.timegone || 0,
         tot_tgt: isTarget ? (p.total_target || 0) : 0,
         pct_ach: isTarget ? (p.percent_achieved || 0) : 0,
-        h, s, f, t
+        h, s, f, t,
+        cats: catsForSkus
       };
 
       const payloadObj = {

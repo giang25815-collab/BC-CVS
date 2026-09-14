@@ -1001,7 +1001,7 @@
           total_target: 0,
           total_actual: fmStores.reduce((a, b) => a + (b.actual || 0), 0),
           stores: fmStores,
-          categories: m.fm_categories || []
+          categories: (compact.cats && compact.cats.length > 0) ? compact.cats : (m.fm_categories || [])
         }
       };
     }
