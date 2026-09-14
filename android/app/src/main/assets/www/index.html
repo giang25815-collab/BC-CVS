@@ -1021,9 +1021,6 @@
           <span>Mục Cập Nhật KPI / Target Tháng Mới</span>
         </div>
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <button class="btn btn-outline" onclick="resetToDefaultMonth9Target()" style="border-color:#10b981; color:#047857;" title="Khôi phục về bảng chỉ tiêu chuẩn Tháng 9 (7.6 Tỷ)">
-            🔄 Target Chuẩn T9 (7.6 Tỷ)
-          </button>
           <button class="btn btn-telegram-nav" onclick="openTelegramConfigModal()" title="Cài đặt Bot Token & Chat ID nhận báo cáo">
             🤖 Cấu Hình Bot Telegram
           </button>
@@ -2386,7 +2383,10 @@ const DEFAULT_FM_STORES = [
       if (!str) return '';
       return String(str).normalize('NFD')
                 .replace(/[\u0300-\u036f]/g, '')
-                .replace(/đ/g, 'd').replace(/Đ/g, 'D');
+                .replace(/\u0111/g, 'd')
+                .replace(/\u0110/g, 'D')
+                .replace(/đ/g, 'd')
+                .replace(/Đ/g, 'D');
     }
 
     function normalizeText(text) {
@@ -2641,14 +2641,14 @@ const DEFAULT_FM_STORES = [
                   const row = rows[r];
                   if (!row) continue;
                   const pgVal = String(row[pgCol] || '').trim();
-                  const normPg = normalizeText(pgVal).toUpperCase();
-                  if (!pgVal || normPg.startsWith('TONG') || normPg.startsWith('TOTAL') || normPg.includes('CONGTEAM')) continue;
+                  const normPg = normalizeText(pgVal);
+                  if (!pgVal || normPg.startsWith('tong') || normPg.startsWith('total') || normPg.includes('congteam')) continue;
 
                   const tgtVal = parseFloat(row[tgtCol]) || 0;
-                  const storeVal = storeCol >= 0 ? normalizeText(row[storeCol]).toUpperCase() : '';
-                  const leadVal = leadCol >= 0 ? normalizeText(row[leadCol]).toUpperCase() : '';
+                  const storeVal = storeCol >= 0 ? normalizeText(row[storeCol]) : '';
+                  const leadVal = leadCol >= 0 ? normalizeText(row[leadCol]) : '';
 
-                  if (leadCol >= 0 && !leadVal.includes('CAMGIANG') && !currentMaster.employees.some(e => normalizeText(e.name) === normPg)) {
+                  if (leadCol >= 0 && !leadVal.includes('camgiang') && !currentMaster.employees.some(e => normalizeText(e.name) === normPg)) {
                     continue;
                   }
 
