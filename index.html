@@ -2595,45 +2595,44 @@ const DEFAULT_FM_STORES = [
             if (rows.length >= 2) {
               let headerRowIdx = -1;
               let headers = [];
-              for (let r = 0; r < Math.min(40, rows.length); r++) {
+              let pgCol = -1;
+              let tgtCol = -1;
+
+              for (let r = 0; r < Math.min(50, rows.length); r++) {
                 const row = Array.from(rows[r] || []);
                 const rowStr = row.map(c => normalizeText(c));
-                if (rowStr.some(c => c && (c.includes('pg') || c.includes('nhanvien') || c.includes('hoten'))) &&
-                    rowStr.some(c => c && (c.includes('chitieu') || c.includes('target') || c.includes('tongtarget') || c.includes('doanhso')))) {
-                  headerRowIdx = r;
-                  headers = rowStr;
-                  break;
-                }
-              }
 
-              if (headerRowIdx >= 0) {
-                // Ưu tiên cột họ tên PG (tránh cột Mã PG, Mã PG Leader)
-                let pgCol = headers.findIndex(h => h && (h.includes('hoten') || h.includes('hovaten') || h.includes('tenpg') || h.includes('nhanvien')) && !h.includes('leader') && !h.includes('mapg'));
-                if (pgCol < 0) {
-                  pgCol = headers.findIndex(h => h && (h.includes('nhanvien') || h.includes('pg')) && !h.includes('ma') && !h.includes('leader'));
+                // 1. Tìm cột họ tên nhân viên (loại trừ các từ khóa cắt giảm, leader, mã pg)
+                let pCol = rowStr.findIndex(h => h && (h.includes('hoten') || h.includes('hovaten') || h.includes('tenpg') || h.includes('tennhanvien')) && !h.includes('leader') && !h.includes('mapg') && !h.includes('catgiam'));
+                if (pCol < 0) {
+                  pCol = rowStr.findIndex(h => h && (h.includes('nhanvien') || h.includes('pg')) && !h.includes('ma') && !h.includes('leader') && !h.includes('catgiam') && !h.includes('dieuchinh') && !h.includes('tong'));
                 }
 
-                // Cột Target: Ưu tiên "TỔNG TARGET T9", hoặc "Target Tháng 9 (Chính thức)", hoặc Target tháng hiện tại
-                let tgtCol = headers.findIndex(h => h && (h.includes('tongtarget') || (h.includes('target') && (h.includes('t' + detectedMonth) || h.includes('thang' + detectedMonth) || h.includes('chinhthuc')))) && !h.includes('t8') && !h.includes('thang8') && !h.includes('chenhlech') && !h.includes('thaydoi'));
-                if (tgtCol < 0) {
-                  tgtCol = headers.findIndex(h => h && (h.includes('target') || h.includes('chitieu')) &&
+                // 2. Tìm cột target (ưu tiên TỔNG TARGET T9 hoặc Target Tháng 9)
+                let tCol = rowStr.findIndex(h => h && (h.includes('tongtarget') || (h.includes('target') && (h.includes('t' + detectedMonth) || h.includes('thang' + detectedMonth) || h.includes('chinhthuc')))) && !h.includes('t8') && !h.includes('thang8') && !h.includes('chenhlech') && !h.includes('thaydoi') && !h.includes('tongtargetteam'));
+                if (tCol < 0) {
+                  tCol = rowStr.findIndex(h => h && (h.includes('target') || h.includes('chitieu')) &&
                     !h.includes('t' + (detectedMonth - 1)) &&
                     !h.includes('thang' + (detectedMonth - 1)) &&
                     !h.includes('t8') &&
                     !h.includes('thang8') &&
                     !h.includes('chenhlech') &&
-                    !h.includes('thaydoi')
+                    !h.includes('thaydoi') &&
+                    !h.includes('tongtargetteam')
                   );
                 }
-                if (tgtCol < 0) {
-                  for (let c = headers.length - 1; c >= 0; c--) {
-                    if (headers[c] && (headers[c].includes('chitieu') || headers[c].includes('target')) && !headers[c].includes('chenhlech') && !headers[c].includes('thaydoi')) {
-                      tgtCol = c;
-                      break;
-                    }
-                  }
-                }
 
+                // BẮT BUỘC một dòng chỉ là dòng tiêu đề khi có CẢ cột Tên PG VÀ cột Target
+                if (pCol >= 0 && tCol >= 0) {
+                  headerRowIdx = r;
+                  headers = rowStr;
+                  pgCol = pCol;
+                  tgtCol = tCol;
+                  break;
+                }
+              }
+
+              if (headerRowIdx >= 0) {
                 let bhxCol = headers.findIndex(h => h && h.includes('bhx') && (h.includes('soch') || h.includes('ch') || h.includes('cuahang')));
                 let noteCol = headers.findIndex(h => h && (h.includes('ghichu') || h.includes('phanbo') || h.includes('note')));
                 let storeCol = headers.findIndex(h => h && (h.includes('tenst') || h.includes('store') || h.includes('cuahang')));
@@ -2681,48 +2680,6 @@ const DEFAULT_FM_STORES = [
                   }
                 }
               }
-            }
-
-            // 2B. Cập nhật danh sách điểm bán & Target FamilyMart nếu có trong file
-            let newFmStores = [];
-            for (let sname of wb.SheetNames) {
-              const ws = wb.Sheets[sname];
-              const rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
-              if (rows.length < 2) continue;
-              for (let r = 1; r < rows.length; r++) {
-                const row = rows[r];
-                if (!row) continue;
-                const chainName = String(row[5] || '').trim();
-                if (chainName === 'Family Mart' || chainName.toLowerCase().includes('family')) {
-                  const code = String(row[4] || row[6] || '').trim();
-                  const storeCode = String(row[7] || row[8] || '').trim();
-                  const addr = String(row[10] || '').trim();
-                  const loc = String(row[11] || 'ST00_CVS_FM').trim();
-                  const maPg = String(row[12] || '').trim();
-                  const tenPg = String(row[13] || '').trim();
-                  const vtcv = String(row[14] || 'SR').trim();
-                  // Cột target T9 (Chính thức) thường là index 20, fallback sang index 19
-                  const tgt = parseFloat(row[20]) || parseFloat(row[19]) || 0;
-
-                  newFmStores.push({
-                    code: code,
-                    store_code: storeCode,
-                    addr: addr,
-                    location: loc,
-                    ma_pg: maPg,
-                    ten_pg: tenPg,
-                    vtcv: vtcv,
-                    target: Math.round(tgt),
-                    actual: 0,
-                    orders: {}
-                  });
-                }
-              }
-              if (newFmStores.length >= 25) break;
-            }
-
-            if (newFmStores.length > 0) {
-              currentMaster.fm_stores = newFmStores;
             }
 
             if (Object.keys(foundTargets).length === 0) {
