@@ -1,0 +1,30 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:translateX="18"
+        android:translateY="18">
+        <!-- Chart base line -->
+        <path
+            android:fillColor="#ffffff"
+            android:pathData="M8,64 L64,64 A3,3 0 0,0 67,61 L67,61 A3,3 0 0,0 64,58 L11,58 L11,10 A3,3 0 0,0 8,7 L8,7 A3,3 0 0,0 5,10 L5,61 A3,3 0 0,0 8,64 Z" />
+        <!-- Bar 1 -->
+        <path
+            android:fillColor="#99f6e4"
+            android:pathData="M16,38 L24,38 A2,2 0 0,1 26,40 L26,58 L14,58 L14,40 A2,2 0 0,1 16,38 Z" />
+        <!-- Bar 2 -->
+        <path
+            android:fillColor="#5eead4"
+            android:pathData="M30,28 L38,28 A2,2 0 0,1 40,30 L40,58 L28,58 L28,30 A2,2 0 0,1 30,28 Z" />
+        <!-- Bar 3 -->
+        <path
+            android:fillColor="#ffffff"
+            android:pathData="M44,18 L52,18 A2,2 0 0,1 54,20 L54,58 L42,58 L42,20 A2,2 0 0,1 44,18 Z" />
+        <!-- Growth Arrow -->
+        <path
+            android:fillColor="#fef08a"
+            android:pathData="M18,30 L32,18 L44,24 L58,10 L58,18 L64,18 L64,4 L50,4 L50,10 L56,10 L44,20 L32,14 L15,26 Z" />
+    </group>
+</vector>

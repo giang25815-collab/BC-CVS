@@ -1,9 +1,16 @@
-__pycache__/
-*.py[cod]
-*$py.class
+node_modules/
+.DS_Store
 *.log
-Team_CamGiang_Report*.xlsx
-*HNTRINH*.xlsb
-*HNTRINH*.xlsx
-bot_cvs_deploy/
+
+# Android build outputs, caches & local configurations
+android/.gradle/
+android/**/build/
+android/app/build/
+*.apk
+.gradle/
+build/
+local.properties
+android/local.properties
+*.zip
+*.xlsb*
 ~$*

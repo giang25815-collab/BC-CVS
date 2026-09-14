@@ -1,0 +1,8 @@
+<resources>
+    <style name="Theme.SalesReport" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="android:statusBarColor">@color/primary_dark</item>
+        <item name="android:navigationBarColor">#0f172a</item>
+    </style>
+</resources>

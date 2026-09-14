@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chọn phương án màu — Báo Cáo Doanh Số Team</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;}
+  body{background:#f1f5f9;color:#0f172a;min-height:100vh;padding:48px 24px;line-height:1.55;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1240px;margin:0 auto;}
+  header{margin-bottom:36px;}
+  header .eyebrow{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#0d9488;margin-bottom:10px;}
+  header h1{font-size:34px;font-weight:800;letter-spacing:-.02em;margin-bottom:8px;color:#0f172a;}
+  header p{font-size:15px;color:#475569;max-width:720px;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:22px;}
+  .card{background:#fff;border-radius:18px;padding:26px;border:1.5px solid #e2e8f0;box-shadow:0 2px 8px rgba(15,23,42,.04);display:flex;flex-direction:column;transition:all .2s ease;text-decoration:none;color:inherit;}
+  .card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(15,23,42,.1);border-color:#94a3b8;}
+  .swatches{display:flex;gap:8px;margin-bottom:20px;}
+  .sw{width:44px;height:44px;border-radius:10px;box-shadow:inset 0 0 0 1px rgba(15,23,42,.06);}
+  .tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:5px 10px;border-radius:6px;margin-bottom:12px;align-self:flex-start;}
+  h2{font-size:20px;font-weight:800;margin-bottom:6px;letter-spacing:-.01em;}
+  .card p{font-size:13.5px;color:#475569;margin-bottom:18px;flex:1;}
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;font-size:13.5px;font-weight:700;border-radius:10px;color:#fff;align-self:flex-start;transition:filter .15s;}
+  .btn:hover{filter:brightness(1.08);}
+  /* Variant 1 - Modern Teal */
+  .v1 .tag{background:#ccfbf1;color:#0f766e;}
+  .v1 .btn{background:#0d9488;}
+  /* Variant 2 - Teal + Coral */
+  .v2 .tag{background:#fff1ec;color:#e0533a;}
+  .v2 .btn{background:#ff6b47;}
+  /* Variant 3 - Deep Teal + Amber */
+  .v3 .tag{background:#fef3c7;color:#78350f;}
+  .v3 .btn{background:#134e4a;}
+  /* Variant 4 - Command Center Dark */
+  .v4{background:#0a0e1a;border-color:#1e2938;color:#e6edf3;box-shadow:0 4px 16px rgba(0,0,0,.25);}
+  .v4:hover{border-color:#c6f24e;box-shadow:0 12px 32px rgba(0,0,0,.4),0 0 0 1px rgba(198,242,78,.3);}
+  .v4 h2{color:#f0f6fc;}
+  .v4 p{color:#8b98a9;}
+  .v4 p strong{color:#c6f24e;}
+  .v4 .tag{background:rgba(198,242,78,.12);color:#c6f24e;border:1px solid rgba(198,242,78,.3);font-family:'JetBrains Mono','SF Mono',Menlo,monospace;letter-spacing:.14em;}
+  .v4 .btn{background:#c6f24e;color:#0a0e1a;box-shadow:0 0 20px rgba(198,242,78,.3);font-weight:800;}
+  .v4 .btn:hover{background:#d4f56e;filter:none;box-shadow:0 0 30px rgba(198,242,78,.5);}
+  .v4 .sw{box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);}
+  /* Variant 5 - Command Center Hybrid */
+  .v5{background:linear-gradient(180deg,#0a0e1a 0%,#0a0e1a 46%,#f6f7f9 46%,#f6f7f9 100%);border-color:#1e2938;color:#0f172a;box-shadow:0 4px 16px rgba(0,0,0,.2);}
+  .v5:hover{border-color:#84cc16;box-shadow:0 12px 32px rgba(0,0,0,.35),0 0 0 1px rgba(132,204,22,.4);}
+  .v5 h2{color:#0f172a;}
+  .v5 p{color:#475569;}
+  .v5 p strong{color:#0d9488;}
+  .v5 .tag{background:#fef3c7;color:#78350f;border:1px solid #fbbf24;font-family:'JetBrains Mono','SF Mono',Menlo,monospace;letter-spacing:.14em;font-weight:800;}
+  .v5 .btn{background:#0f172a;color:#c6f24e;box-shadow:0 0 20px rgba(198,242,78,.15);font-weight:800;}
+  .v5 .btn:hover{background:#1e293b;filter:none;box-shadow:0 0 30px rgba(198,242,78,.35);}
+  .v5 .swatches .sw:first-child{box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);}
+
+  .foot{margin-top:36px;padding-top:24px;border-top:1px solid #e2e8f0;font-size:13px;color:#64748b;}
+  .foot strong{color:#0f172a;}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="eyebrow">Redesign · Color System</div>
+      <h1>5 phương án màu cho Báo Cáo Doanh Số</h1>
+      <p>Toàn bộ chức năng, cấu trúc bảng biểu, upload file, xuất Excel & chụp ảnh <strong>giữ nguyên 100%</strong>. Ba phương án đầu đi theo hướng Modern Teal / Flat Corporate. Phương án 4 là <strong>bản bứt phá</strong> — dark mode kiểu command center, cho cảm giác "tiền đang chạy".</p>
+    </header>
+
+    <div class="grid">
+      <a class="card v1" href="Modern Teal.html">
+        <div class="swatches">
+          <div class="sw" style="background:#14b8a6"></div>
+          <div class="sw" style="background:#0d9488"></div>
+          <div class="sw" style="background:#0f766e"></div>
+          <div class="sw" style="background:#0f172a"></div>
+          <div class="sw" style="background:#f8fafc"></div>
+        </div>
+        <span class="tag">Phương án 1</span>
+        <h2>Modern Teal</h2>
+        <p>Teal + slate neutrals thuần khiết. Sạch sẽ, phẳng, đúng chuẩn báo cáo tài chính. Nền xám kem rất nhẹ, chữ slate-900 sắc nét. Phù hợp gửi lên cấp lãnh đạo.</p>
+        <span class="btn">Mở phương án 1 →</span>
+      </a>
+
+      <a class="card v2" href="Teal Coral Energy.html">
+        <div class="swatches">
+          <div class="sw" style="background:#0d9488"></div>
+          <div class="sw" style="background:#ff6b47"></div>
+          <div class="sw" style="background:#e0533a"></div>
+          <div class="sw" style="background:#134e4a"></div>
+          <div class="sw" style="background:#f8fafc"></div>
+        </div>
+        <span class="tag">Phương án 2</span>
+        <h2>Teal + Coral Energy</h2>
+        <p>Teal làm nền — coral cam ấm làm CTA và điểm nhấn KPI. Tràn đầy năng lượng đúng chất sales team, vẫn giữ độ chuyên nghiệp. Nút "Xuất báo cáo" nổi bật, dễ hành động.</p>
+        <span class="btn">Mở phương án 2 →</span>
+      </a>
+
+      <a class="card v3" href="Deep Teal Amber.html">
+        <div class="swatches">
+          <div class="sw" style="background:#134e4a"></div>
+          <div class="sw" style="background:#0f766e"></div>
+          <div class="sw" style="background:#f59e0b"></div>
+          <div class="sw" style="background:#1c1917"></div>
+          <div class="sw" style="background:#fafaf9"></div>
+        </div>
+        <span class="tag">Phương án 3</span>
+        <h2>Deep Teal + Amber</h2>
+        <p>Teal thâm trầm + amber vàng đồng ấm. Cao cấp, sang trọng, có gu — thích hợp báo cáo tổng kết quý, thuyết trình BOD. Nền stone kem, chữ stone-900 rất "premium".</p>
+        <span class="btn">Mở phương án 3 →</span>
+      </a>
+
+      <a class="card v4" href="Command Center Dark.html">
+        <div class="swatches">
+          <div class="sw" style="background:#0a0e1a"></div>
+          <div class="sw" style="background:#c6f24e"></div>
+          <div class="sw" style="background:#5eead4"></div>
+          <div class="sw" style="background:#fbbf24"></div>
+          <div class="sw" style="background:#f87171"></div>
+        </div>
+        <span class="tag hot">⚡ BỨT PHÁ</span>
+        <h2>Command Center Dark</h2>
+        <p>Dark mode 100%. Ngầu nhưng đọc nhiều dòng dữ liệu sẽ mỏi mắt. Phù hợp demo, screenshot, thuyết trình — không phù hợp công việc dò số hàng ngày.</p>
+        <span class="btn">Mở phương án 4 →</span>
+      </a>
+
+      <a class="card v5" href="Command Center Hybrid.html">
+        <div class="swatches">
+          <div class="sw" style="background:#0a0e1a"></div>
+          <div class="sw" style="background:#c6f24e"></div>
+          <div class="sw" style="background:#ffffff;box-shadow:inset 0 0 0 1px #d8dee6;"></div>
+          <div class="sw" style="background:#0f172a"></div>
+          <div class="sw" style="background:#84cc16"></div>
+        </div>
+        <span class="tag hot">⭐ KHUYẾN NGHỊ</span>
+        <h2>Command Center Hybrid</h2>
+        <p>Giữ nguyên chrome dark ngầu (navbar, KPI, dropzone, tabs, buttons) nhưng <strong>bảng dữ liệu chuyển sang nền sáng</strong> kiểu trading terminal thật (Bloomberg/Refinitiv). Cột số monospace, zebra rõ, row hover có lime accent, footer tổng kết vẫn dark để pop. Dò số hàng ngày không mỏi mắt.</p>
+        <span class="btn">Mở phương án 5 →</span>
+      </a>
+    </div>
+
+    <div class="foot">
+      Sau khi chọn được phương án ưng ý, bạn báo tôi biết — tôi sẽ tinh chỉnh chi tiết (thêm accent, đổi kiểu nút, sáng/tối bảng…) hoặc mix từ nhiều phương án lại thành bản cuối cùng.
+    </div>
+  </div>
+</body>
+</html>

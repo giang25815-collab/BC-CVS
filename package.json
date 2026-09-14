@@ -1,0 +1,25 @@
+{
+  "name": "gas_app",
+  "version": "1.0.0",
+  "description": "Recolor / visual redesign of an existing internal sales-reporting web tool used by \"Team Cam Giang\". The tool ingests two Excel workbooks (BHX + WinMart hubs · CVS & NPP stores), auto-allocates targets across employees, computes % attainment per store and per rep, and lets the user snapshot the styled tables to image or export a formatted `.xlsx` matching `Team_CamGiang_Report.xlsx`.",
+  "main": "master_data.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/linshin6/sales-report-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/linshin6/sales-report-app/issues"
+  },
+  "homepage": "https://github.com/linshin6/sales-report-app#readme",
+  "dependencies": {
+    "exceljs": "^4.4.0",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.1/xlsx-0.20.1.tgz"
+  }
+}

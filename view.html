@@ -1,0 +1,2972 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>Báo Cáo Thực Đạt Team Cẩm Giang - Trực Tuyến</title>
+  <script>
+    if (window.location.protocol !== 'file:') {
+      var baseEl = document.createElement('base');
+      baseEl.href = '/';
+      document.head.prepend(baseEl);
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- ExcelJS for direct XLSX download -->
+  <script src="exceljs.min.js"></script>
+  <!-- html2canvas for instant table copy -->
+  <script src="html2canvas.min.js"></script>
+  <!-- Master Data -->
+  <script src="master_data.js"></script>
+
+  <style>
+    :root {
+      --primary: #0F766E;
+      --primary-dark: #115E59;
+      --primary-light: #CCFBF1;
+      --accent: #2563EB;
+      --navy: #1E293B;
+      --navy-dark: #0F172A;
+      --slate-50: #F8FAFC;
+      --slate-100: #F1F5F9;
+      --slate-200: #E2E8F0;
+      --slate-300: #CBD5E1;
+      --slate-600: #475569;
+      --slate-700: #334155;
+      --slate-800: #1E293B;
+      --success: #059669;
+      --warning: #D97706;
+      --danger: #DC2626;
+      --card-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -2px rgba(15, 23, 42, 0.04);
+      --card-shadow-lg: 0 12px 28px -4px rgba(15, 23, 42, 0.1), 0 4px 12px -2px rgba(15, 23, 42, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #F8FAFC;
+      color: #0F172A;
+      line-height: 1.5;
+      padding-bottom: 60px;
+    }
+
+    /* TOP EXECUTIVE HEADER */
+    .header-bar {
+      background: linear-gradient(135deg, #0F172A 0%, #1E293B 60%, #0F766E 100%);
+      color: white;
+      padding: 22px 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .header-title-group h1 {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-subtitle {
+      font-size: 13px;
+      color: #94A3B8;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-download {
+      background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+      color: white;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+    .btn-download:hover {
+      background: #047857;
+      transform: translateY(-1px);
+    }
+
+    .btn-copy-link {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .btn-copy-link:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 24px auto;
+      padding: 0 16px;
+    }
+
+    /* KPI CARDS GRID */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .kpi-card {
+      background: white;
+      border-radius: 14px;
+      padding: 18px 20px;
+      border: 1px solid var(--slate-200);
+      box-shadow: var(--card-shadow);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--card-shadow-lg);
+    }
+
+    .kpi-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--slate-600);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .kpi-value {
+      font-size: 22px;
+      font-weight: 800;
+      margin-top: 6px;
+      color: #0F172A;
+    }
+
+    .kpi-sub {
+      font-size: 11.5px;
+      color: var(--slate-600);
+      margin-top: 4px;
+    }
+
+    /* TAB NAVIGATION */
+    .tabs-wrapper {
+      background: white;
+      border-radius: 14px;
+      border: 1px solid var(--slate-200);
+      box-shadow: var(--card-shadow);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .tabs-bar {
+      display: flex;
+      gap: 4px;
+      padding: 8px 12px;
+      background: #F1F5F9;
+      border-bottom: 1px solid var(--slate-200);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tabs-bar::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--slate-600);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .tab-btn:hover {
+      color: #0F172A;
+      background: rgba(255, 255, 255, 0.7);
+    }
+
+    .tab-btn.active {
+      background: white;
+      color: var(--primary);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    /* CONTENT TABS */
+    .tab-panel {
+      display: none;
+      padding: 20px;
+    }
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* TOOLBAR INSIDE PANEL */
+    .panel-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .search-box {
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1.5px solid var(--slate-200);
+      font-size: 13px;
+      font-family: inherit;
+      min-width: 240px;
+      background: white;
+      transition: border-color 0.2s;
+    }
+    .search-box:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .filter-select {
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1.5px solid var(--slate-200);
+      font-size: 13px;
+      font-family: inherit;
+      background: white;
+      cursor: pointer;
+    }
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    /* TABLES */
+    .table-responsive {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-x pan-y;
+      border-radius: 10px;
+      border: 1px solid #CBD5E1;
+      max-height: 650px;
+      background: white;
+      position: relative;
+    }
+
+    .zoom-hint-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #0F766E;
+      background: #CCFBF1;
+      border: 1px solid #99F6E4;
+      border-radius: 6px;
+      padding: 3px 8px;
+    }
+
+    /* Bộ 3 Chip % Đạt */
+    .chip-pass {
+      background: #d1fae5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 11.5px;
+      display: inline-block;
+      font-variant-numeric: tabular-nums;
+    }
+    .chip-warn {
+      background: #fef3c7;
+      color: #92400e;
+      border: 1px solid #fde68a;
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 11.5px;
+      display: inline-block;
+      font-variant-numeric: tabular-nums;
+    }
+    .chip-fail {
+      background: #fee2e2;
+      color: #be123c;
+      border: 1px solid #fecaca;
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 11.5px;
+      display: inline-block;
+      font-variant-numeric: tabular-nums;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+      text-align: left;
+    }
+
+    thead th {
+      background: #1E293B;
+      color: white;
+      font-weight: 700;
+      padding: 10px 12px;
+      border: 1px solid #334155;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      white-space: nowrap;
+    }
+
+    tbody td {
+      padding: 9px 12px;
+      border: 1px solid #E2E8F0;
+      color: #1E293B;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #F8FAFC;
+    }
+
+    tbody tr:hover {
+      background: #F1F5F9;
+    }
+
+    tfoot td {
+      background: #1E293B !important;
+      color: white !important;
+      font-weight: 800;
+      padding: 12px;
+      border: 1px solid #334155;
+      position: sticky;
+      bottom: 0;
+      z-index: 10;
+    }
+
+    .text-center { text-align: center; }
+    .text-right { text-align: right; }
+    .font-bold { font-weight: 700; }
+
+    /* TOAST ALERT */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0F172A;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* LOADING OVERLAY */
+    #loadingOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(4px);
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+    }
+    .spinner {
+      width: 44px;
+      height: 44px;
+      border: 4px solid var(--slate-200);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <!-- LOADING OVERLAY -->
+  <div id="loadingOverlay">
+    <div class="spinner"></div>
+    <div style="font-weight:700; font-size:15px; color:#0F172A;">Đang tải và xử lý báo cáo doanh số...</div>
+    <div style="font-size:12.5px; color:#64748B;">Vui lòng đợi trong giây lát</div>
+  </div>
+
+  <!-- TOAST MESSAGE -->
+  <div id="toast"></div>
+
+  <!-- TOP HEADER -->
+  <header class="header-bar">
+    <div class="header-inner">
+      <div class="header-title-group">
+        <h1 id="headerMainTitle"><span>📊</span> BÁO CÁO THỰC ĐẠT TEAM CẨM GIANG</h1>
+        <div class="header-subtitle">
+          <span class="header-badge" id="headerReportMode" style="background:#047857; border-color:#059669;">⚡ Báo Cáo Thực Đạt</span>
+          <span>👤 Team Lead: <strong style="color:white;" id="headerTeamLead">Trần Thị Cẩm Giang</strong></span>
+          <span>•</span>
+          <span class="header-badge" id="headerTimegone">⏳ Tiến độ tháng: --%</span>
+          <span class="header-badge" style="background:#065F46; border-color:#059669;" id="headerTotalSales">💰 Tổng TH: 0 đ</span>
+          <span class="header-badge" id="headerTeamSize">👥 10 Nhân viên</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="btn-action btn-copy-link" onclick="copyShareLink()" title="Sao chép link này để gửi cấp trên hoặc đối tác">
+          🔗 Sao Chép Link
+        </button>
+        <button class="btn-action btn-download" onclick="downloadExcelReport()" title="Tải file Excel đầy đủ 6 Sheet chuẩn format">
+          📥 Tải File Excel (.xlsx)
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- KPI CARDS -->
+    <div class="kpi-grid" id="kpiGridContainer">
+      <div class="kpi-card">
+        <div class="kpi-label">Thực Hiện BHX</div>
+        <div class="kpi-value" style="color:#059669;" id="kpiBhx">0 ₫</div>
+        <div class="kpi-sub" id="kpiBhxSub">178 CH • TB: 0 đ/CH</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Thực Hiện CVS</div>
+        <div class="kpi-value" style="color:#D97706;" id="kpiCvs">0 ₫</div>
+        <div class="kpi-sub">7 Chuỗi Cửa hàng tiện lợi</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Tổng Thực Hiện</div>
+        <div class="kpi-value" style="color:#0F766E;" id="kpiTotal">0 ₫</div>
+        <div class="kpi-sub">Bách Hóa Xanh + CVS</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Quy Mô & Cửa Hàng</div>
+        <div class="kpi-value" style="color:#2563EB;" id="kpiStores">10 NV</div>
+        <div class="kpi-sub">138 Cửa hàng CVS • 35 CH FM</div>
+      </div>
+    </div>
+
+    <!-- TABS CONTAINER -->
+    <div class="tabs-wrapper">
+      <div class="tabs-bar">
+        <button class="tab-btn active" onclick="switchTab('tabTeam')">📊 1. Tiến Độ 10 Nhân Viên</button>
+        <button class="tab-btn" onclick="switchTab('tabRank')">🏆 2. Xếp Hạng & Tỷ Trọng</button>
+        <button class="tab-btn" onclick="switchTab('tabBhx')">🚚 3. Phân Bổ 5 Hubs BHX</button>
+        <button class="tab-btn" onclick="switchTab('tabCvsStores')">🏪 4. Chi Tiết 138 Cửa Hàng CVS</button>
+        <button class="tab-btn" onclick="switchTab('tabFmSku')">🛒 Chi Tiết SKU Cửa Hàng FamilyMart</button>
+      </div>
+
+      <!-- TAB 1: TIẾN ĐỘ 10 NHÂN VIÊN -->
+      <div class="tab-panel active" id="tabTeam">
+        <div class="panel-toolbar">
+          <div style="font-weight:700; color:#0F172A; font-size:14px;" id="titleTabTeam">Bảng Tiến Độ 10 Nhân Viên Toàn Team (BHX + CVS)</div>
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <span class="zoom-hint-badge">🔍 Vuốt 2 ngón tay thu phóng • Chạm đúp vừa màn hình</span>
+            <button class="btn-action" style="background:#E2E8F0; color:#1E293B;" onclick="captureTable('tableTeam', 'Tien_Do_10_NV')">📸 Copy Ảnh Gửi Zalo</button>
+          </div>
+        </div>
+        <div class="table-responsive" id="tableTeamWrapper">
+          <table id="tableTeam">
+            <thead id="theadTeam"></thead>
+            <tbody id="tbodyTeam"></tbody>
+            <tfoot id="tfootTeam"></tfoot>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 2: XẾP HẠNG DOANH SỐ -->
+      <div class="tab-panel" id="tabRank">
+        <div class="panel-toolbar">
+          <div style="font-weight:700; color:#0F172A; font-size:14px;" id="titleTabRank">Bảng Xếp Hạng Doanh Số & Tỷ Trọng Đóng Góp</div>
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <span class="zoom-hint-badge">🔍 Vuốt 2 ngón tay thu phóng • Chạm đúp vừa màn hình</span>
+            <button class="btn-action" style="background:#E2E8F0; color:#1E293B;" onclick="captureTable('tableRank', 'Bang_Xep_Hang_Team')">📸 Copy Ảnh Gửi Zalo</button>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table id="tableRank">
+            <thead id="theadRank"></thead>
+            <tbody id="tbodyRank"></tbody>
+            <tfoot id="tfootRank"></tfoot>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 3: PHÂN BỔ 5 HUBS BÁCH HÓA XANH (GỒM CẢ 2 BẢNG: 5 HUBS & 10 NHÂN VIÊN) -->
+      <div class="tab-panel" id="tabBhx">
+        <!-- BẢNG 1: DOANH SỐ THỰC TẾ 5 HUBS BHX (XH4001) -->
+        <div class="panel-toolbar" style="margin-bottom: 8px;">
+          <div style="font-weight:700; color:#0F172A; font-size:14px;">1. Doanh Số Thực Tế 5 Hubs Bách Hóa Xanh (XH4001)</div>
+          <button class="btn-action" style="background:#E2E8F0; color:#1E293B;" onclick="captureTable('tableBhxHubs', 'Doanh_So_5_Hubs_BHX')">📸 Copy Bảng 5 Hubs</button>
+        </div>
+        <div class="table-responsive" style="margin-bottom: 24px;">
+          <table id="tableBhxHubs">
+            <thead>
+              <tr>
+                <th class="text-center" style="width:50px;">STT</th>
+                <th>HUB BÁCH HÓA XANH (XH4001)</th>
+                <th class="text-right" style="color:#86EFAC; width:220px;">DOANH SỐ THỰC TẾ (VNĐ)</th>
+                <th style="width:200px;">GHI CHÚ</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyBhxHubs"></tbody>
+            <tfoot id="tfootBhxHubs"></tfoot>
+          </table>
+        </div>
+
+        <!-- BẢNG 2: PHÂN BỔ BHX THEO NHÂN VIÊN (10 NV) -->
+        <div class="panel-toolbar" style="margin-bottom: 8px;">
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <span style="font-weight:700; color:#0F172A; font-size:14px;">2. Phân Bổ BHX Theo Nhân Viên:</span>
+            <select id="filterBhxEmp" class="filter-select" onchange="filterBhxDistTable()">
+              <option value="">Tất cả 10 nhân viên</option>
+            </select>
+          </div>
+          <button class="btn-action" style="background:#E2E8F0; color:#1E293B;" onclick="captureTable('tableBhxDist', 'Phan_Bo_BHX_10_NV')">📸 Copy Bảng Phân Bổ</button>
+        </div>
+        <div class="table-responsive">
+          <table id="tableBhxDist">
+            <thead>
+              <tr>
+                <th class="text-center" style="width:45px;">STT</th>
+                <th>NHÂN VIÊN</th>
+                <th class="text-center">SỐ CỬA HÀNG QUẢN LÝ</th>
+                <th class="text-right">ĐƠN GIÁ/CH</th>
+                <th class="text-right" style="color:#86EFAC;">DOANH SỐ BHX PHÂN BỔ (VNĐ)</th>
+                <th class="text-center" style="color:#FDE047;">% TỶ TRỌNG BHX/TEAM</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyBhxDist"></tbody>
+            <tfoot id="tfootBhxDist"></tfoot>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 5: CHI TIẾT CỬA HÀNG CVS -->
+      <div class="tab-panel" id="tabCvsStores">
+        <div class="panel-toolbar">
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <input type="text" id="searchCvs" class="search-box" placeholder="🔍 Tìm tên CH, mã, địa chỉ..." oninput="filterCvsTable()">
+            <select id="filterCvsChain" class="filter-select" onchange="filterCvsTable()">
+              <option value="">Tất cả chuỗi</option>
+              <option value="GS25">GS25</option>
+              <option value="7-Eleven">7-Eleven</option>
+              <option value="FamilyMart">FamilyMart</option>
+              <option value="Circle K">Circle K</option>
+              <option value="Hoàng Đức">Hoàng Đức</option>
+              <option value="WinMart+">WinMart+</option>
+            </select>
+            <select id="filterCvsEmp" class="filter-select" onchange="filterCvsTable()">
+              <option value="">Tất cả nhân viên</option>
+            </select>
+            <span id="cvsCountBadge" style="font-size:12px; font-weight:700; color:#0F766E; background:#CCFBF1; padding:4px 10px; border-radius:12px;">142 Cửa hàng</span>
+          </div>
+          <button class="btn-action" style="background:#E2E8F0; color:#1E293B;" onclick="captureTable('tableCvs', 'Chi_Tiet_CVS')">📸 Copy Ảnh Gửi Zalo</button>
+        </div>
+        <div class="table-responsive">
+          <table id="tableCvs">
+            <thead>
+              <tr>
+                <th class="text-center" style="width:45px;">STT</th>
+                <th>CHUỖI</th>
+                <th>NHÂN VIÊN QUẢN LÝ</th>
+                <th>MÃ CỬA HÀNG</th>
+                <th>TÊN CỬA HÀNG</th>
+                <th style="max-width:350px;">ĐỊA CHỈ</th>
+                <th class="text-right" style="color:#93C5FD;">DOANH SỐ (VNĐ)</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyCvs"></tbody>
+            <tfoot id="tfootCvs"></tfoot>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 5: CHI TIẾT SKU CỬA HÀNG FAMILYMART -->
+      <div class="tab-panel" id="tabFmSku">
+        <div class="panel-toolbar">
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <span style="font-weight:700; color:#0F172A; font-size:14px; margin-right:8px;">🛒 Chi Tiết SKU Cửa Hàng FamilyMart</span>
+            <input type="text" id="searchFm" class="search-box" placeholder="🔍 Tìm địa chỉ, location, mã PG..." oninput="filterFmTable()">
+            <select id="filterFmPg" class="filter-select" onchange="filterFmTable()">
+              <option value="">Tất cả PG / Nhân viên</option>
+            </select>
+            <span id="fmCountBadge" style="font-size:12px; font-weight:700; color:#0F766E; background:#CCFBF1; padding:4px 10px; border-radius:12px;">35 Cửa hàng</span>
+          </div>
+          <button class="btn-action" style="background:#E2E8F0; color:#1E293B;" onclick="captureTable('tableFm', 'Chi_Tiet_SKU_FamilyMart')">📸 Copy Ảnh Gửi Zalo</button>
+        </div>
+        <div class="table-responsive" style="max-height:680px;">
+          <table id="tableFm">
+            <thead id="theadFm"></thead>
+            <tbody id="tbodyFm"></tbody>
+            <tfoot id="tfootFm"></tfoot>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    let reportData = null;
+
+    function formatMoney(n) {
+      return (n || 0).toLocaleString('vi-VN');
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.innerText = msg;
+      t.style.display = 'flex';
+      setTimeout(() => { t.style.display = 'none'; }, 3000);
+    }
+
+    function copyShareLink() {
+      const url = window.location.href;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(() => {
+          showToast('✅ Đã sao chép link báo cáo trực tuyến! Bạn có thể dán gửi cho cấp trên.');
+        }).catch(() => {
+          prompt('Copy đường link bên dưới:', url);
+        });
+      } else {
+        prompt('Copy đường link bên dưới:', url);
+      }
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      if (window.event && window.event.currentTarget) {
+        window.event.currentTarget.classList.add('active');
+      }
+      const p = document.getElementById(tabId);
+      if (p) p.classList.add('active');
+      setupTablePinchZoom();
+      autoFitTablesOnLandscape();
+    }
+
+    async function decompressData(b64url) {
+      try {
+        let b64 = b64url.replace(/-/g, '+').replace(/_/g, '/');
+        while (b64.length % 4) b64 += '=';
+        const binStr = atob(b64);
+        const bytes = new Uint8Array(binStr.length);
+        for (let i = 0; i < binStr.length; i++) bytes[i] = binStr.charCodeAt(i);
+
+        if (window.DecompressionStream) {
+          const ds = new DecompressionStream('deflate');
+          const writer = ds.writable.getWriter();
+          writer.write(bytes);
+          writer.close();
+          const response = new Response(ds.readable);
+          const text = await response.text();
+          return JSON.parse(text);
+        }
+      } catch (e) {
+        console.error('Lỗi giải nén:', e);
+      }
+      return null;
+    }
+
+    function reconstitutePayload(compact) {
+      const m = window.MASTER_DATA || {};
+
+      let allSkus = [];
+      if (m.fm_categories) {
+        m.fm_categories.forEach(cat => allSkus.push(...cat.skus));
+      }
+
+      // Format v2: Ultra-compact index-based format
+      if (compact.v === 2) {
+        let isTarget = false;
+        if (compact.mode === 'target') isTarget = true;
+        else if (compact.mode === 'actual') isTarget = false;
+        else isTarget = (compact.tot_tgt > 0) || (Array.isArray(compact.t) && compact.t.length > 0 && compact.t.some(x => x > 0));
+        const mode = isTarget ? 'target' : 'actual';
+        const month = compact.m || (new Date().getMonth() + 1);
+        const year = compact.y || new Date().getFullYear();
+        const timegone = compact.tg || 0;
+        const targets = compact.t || [];
+        const teamLead = m.team_lead || 'Trần Thị Cẩm Giang';
+
+        // 1. Hubs
+        const hubAmounts = compact.h || [0, 0, 0, 0, 0];
+        let totalBhxHubs = 0;
+        hubAmounts.forEach(val => totalBhxHubs += (val || 0));
+        const totalStoresBhx = m.total_stores_bhx || 232;
+        const bhxPerStore = Math.round(totalBhxHubs / totalStoresBhx);
+
+        const bhxHubs = (m.bhx_hubs || []).map((hName, idx) => {
+          const name = typeof hName === 'string' ? hName : (hName.name || hName.hub);
+          const amt = hubAmounts[idx] || 0;
+          return {
+            hub: 'Hub ' + (idx + 1),
+            name: name,
+            amount: amt,
+            actual_sales: amt
+          };
+        });
+
+        // 2. Stores
+        const storeSalesMap = {};
+        (compact.s || []).forEach(pair => {
+          storeSalesMap[pair[0]] = pair[1];
+        });
+
+        const fullStores = (m.stores || []).map((s, idx) => ({
+          chain: s.chain,
+          employee_name: s.employee_name,
+          store_code: s.store_code,
+          store_name: s.store_name || s.name || (s.chain + (s.store_code ? (' - ' + s.store_code.replace(/^CVS_[^.]+\.\d+\./, '')) : '')),
+          address: s.address || s.store_address || '',
+          store_address: s.store_address || s.address || '',
+          actual: storeSalesMap[idx] || 0,
+          actual_sales: storeSalesMap[idx] || 0
+        }));
+
+        // 3. Employees
+        let totalBhxTeam = 0;
+        let totalCvsTeam = 0;
+
+        const employees = (m.employees || []).map((e, idx) => {
+          const bhxStores = e.bhx_stores || 0;
+          const bhxActual = Math.round(bhxPerStore * bhxStores);
+          totalBhxTeam += bhxActual;
+
+          const empStores = fullStores.filter(st => st.employee_name === e.name);
+          let gs25 = 0, se = 0, fm = 0, ck = 0, hd = 0, wmp = 0;
+          empStores.forEach(st => {
+            const act = st.actual_sales || 0;
+            if (st.chain === 'GS25') gs25 += act;
+            else if (st.chain === '7-Eleven') se += act;
+            else if (st.chain === 'FamilyMart') fm += act;
+            else if (st.chain === 'Circle K') ck += act;
+            else if (st.chain === 'Hoàng Đức') hd += act;
+            else if (st.chain === 'WinMart+') wmp += act;
+          });
+
+          const cvsTotal = gs25 + se + fm + ck + hd + wmp;
+          totalCvsTeam += cvsTotal;
+          const empTot = bhxActual + cvsTotal;
+
+          let empTgt = 0;
+          if (isTarget) {
+            empTgt = (targets[idx] !== undefined && targets[idx] !== null && Number(targets[idx]) > 0)
+              ? Number(targets[idx])
+              : (Number(e.target) || 0);
+          }
+          const pct = empTgt > 0 ? parseFloat(((empTot / empTgt) * 100).toFixed(2)) : 0;
+          const status = pct >= timegone ? 'VƯỢT' : (pct >= timegone * 0.75 ? 'CẬN' : 'CHẬM');
+
+          return {
+            name: e.name,
+            target: empTgt,
+            percent: pct,
+            status: status,
+            bhx_actual: bhxActual,
+            gs25_actual: gs25,
+            se_actual: se,
+            fm_actual: fm,
+            ck_actual: ck,
+            hd_actual: hd,
+            wmp_actual: wmp,
+            total_actual: empTot,
+            bhx_stores: bhxStores,
+            cvs_total: cvsTotal
+          };
+        });
+
+        let totalTargetTeam = compact.tot_tgt || 0;
+        if (isTarget && (!totalTargetTeam || totalTargetTeam === 0)) {
+          totalTargetTeam = employees.reduce((a, b) => a + (b.target || 0), 0);
+        }
+        const totalActualTeam = totalBhxTeam + totalCvsTeam;
+        const teamPct = (totalTargetTeam > 0) ? parseFloat(((totalActualTeam / totalTargetTeam) * 100).toFixed(2)) : (compact.pct_ach || 0);
+
+        // 4. FM Matrix
+        const fmOrdersMap = {};
+        (compact.f || []).forEach(item => {
+          const stIdx = item[0];
+          const skuList = item[1] || [];
+          const ordersObj = {};
+          let stTotal = 0;
+          skuList.forEach(pair => {
+            const skuCode = allSkus[pair[0]] ? allSkus[pair[0]].code : '';
+            if (skuCode) {
+              ordersObj[skuCode] = pair[1];
+              stTotal += pair[1];
+            }
+          });
+          fmOrdersMap[stIdx] = { total: stTotal, orders: ordersObj };
+        });
+
+        const fmStores = (m.fm_stores || []).map((s, idx) => {
+          const dFm = fmOrdersMap[idx] || { total: 0, orders: {} };
+          return {
+            addr: s.addr,
+            location: s.location,
+            ma_pg: s.ma_pg,
+            ten_pg: s.ten_pg,
+            vtcv: s.vtcv,
+            target: 0,
+            actual: dFm.total,
+            orders: dFm.orders
+          };
+        });
+
+        return {
+          mode: mode,
+          team_lead: teamLead,
+          month: month,
+          year: year,
+          timegone: timegone,
+          total_target: totalTargetTeam,
+          percent_achieved: teamPct,
+          total_actual_bhx: totalBhxTeam,
+          total_actual_bhx_hubs: totalBhxHubs,
+          total_cvs: totalCvsTeam,
+          total_actual: totalActualTeam,
+          total_stores_bhx_team: m.employees.reduce((a, b) => a + (b.bhx_stores || 0), 0),
+          bhx_per_store: bhxPerStore,
+          employees: employees,
+          stores: fullStores,
+          bhx_hubs: bhxHubs,
+          fm_sku_matrix: {
+            total_target: 0,
+            total_actual: fmStores.reduce((a, b) => a + (b.actual || 0), 0),
+            stores: fmStores,
+            categories: m.fm_categories || []
+          }
+        };
+      }
+
+      // Format v1 fallback
+      let isTarget = false;
+      if (compact.mode === 'target') isTarget = true;
+      else if (compact.mode === 'actual') isTarget = false;
+      else isTarget = (compact.tot_tgt > 0);
+      const storeSalesMap = {};
+      (compact.stores || []).forEach(pair => {
+        storeSalesMap[pair[0]] = pair[1];
+      });
+
+      const fullStores = (m.stores || []).map(s => ({
+        chain: s.chain,
+        employee_name: s.employee_name,
+        store_code: s.store_code,
+        store_name: s.store_name || s.name || (s.chain + (s.store_code ? (' - ' + s.store_code.replace(/^CVS_[^.]+\.\d+\./, '')) : '')),
+        address: s.address || s.store_address || '',
+        store_address: s.store_address || s.address || '',
+        actual: storeSalesMap[s.store_code] || 0,
+        actual_sales: storeSalesMap[s.store_code] || 0
+      }));
+
+      const tg = compact.tg || 0;
+      const employees = (compact.emps || []).map((e, idx) => {
+        const empTot = e[8];
+        const empTgt = isTarget ? (e[10] || 0) : 0;
+        const pct = empTgt > 0 ? parseFloat(((empTot / empTgt) * 100).toFixed(2)) : 0;
+        const status = pct >= tg ? 'VƯỢT' : (pct >= tg * 0.75 ? 'CẬN' : 'CHẬM');
+        return {
+          name: e[0],
+          target: empTgt,
+          percent: pct,
+          status: status,
+          bhx_actual: e[1],
+          gs25_actual: e[2],
+          se_actual: e[3],
+          fm_actual: e[4],
+          ck_actual: e[5],
+          hd_actual: e[6],
+          wmp_actual: e[7],
+          total_actual: empTot,
+          bhx_stores: e[9] || 18,
+          cvs_total: (e[2] || 0) + (e[3] || 0) + (e[4] || 0) + (e[5] || 0) + (e[6] || 0) + (e[7] || 0)
+        };
+      });
+
+      const fmStores = (m.fm_stores || []).map((s, idx) => {
+        const dFm = (compact.fm && compact.fm[idx]) ? compact.fm[idx] : [0, {}];
+        return {
+          addr: s.addr,
+          location: s.location,
+          ma_pg: s.ma_pg,
+          ten_pg: s.ten_pg,
+          vtcv: s.vtcv,
+          target: 0,
+          actual: dFm[0] || 0,
+          orders: dFm[1] || {}
+        };
+      });
+
+      const hubSalesMap = {};
+      (compact.hubs || []).forEach((h, i) => {
+        hubSalesMap[h[0]] = h[1];
+        hubSalesMap[i] = h[1];
+      });
+      const bhxHubs = (m.bhx_hubs || []).map((h, i) => {
+        const hName = typeof h === 'string' ? h : (h.name || h.hub);
+        const amt = (hubSalesMap[hName] !== undefined) ? hubSalesMap[hName] : (hubSalesMap['Hub ' + (i + 1)] !== undefined ? hubSalesMap['Hub ' + (i + 1)] : (hubSalesMap[i] !== undefined ? hubSalesMap[i] : 0));
+        return {
+          hub: 'Hub ' + (i + 1),
+          name: hName,
+          amount: amt,
+          actual_sales: amt
+        };
+      });
+
+      const totTgt = employees.reduce((a, b) => a + (b.target || 0), 0);
+      const totAct = compact.tot || 0;
+      const teamPct = totTgt > 0 ? parseFloat(((totAct / totTgt) * 100).toFixed(2)) : 0;
+
+      return {
+        mode: isTarget ? 'target' : 'actual',
+        team_lead: compact.tl || 'Trần Thị Cẩm Giang',
+        month: compact.m,
+        year: compact.y,
+        timegone: compact.tg || 0,
+        total_target: totTgt,
+        percent_achieved: teamPct,
+        total_actual_bhx: compact.bhx || 0,
+        total_cvs: compact.cvs || 0,
+        total_actual: totAct,
+        total_stores_bhx_team: compact.sbhx || 178,
+        bhx_per_store: compact.pbhx || 0,
+        employees: employees,
+        stores: fullStores,
+        bhx_hubs: bhxHubs,
+        fm_sku_matrix: {
+          total_target: 0,
+          total_actual: fmStores.reduce((a, b) => a + (b.actual || 0), 0),
+          stores: fmStores,
+          categories: (compact.cats && compact.cats.length > 0) ? compact.cats : (m.fm_categories || [])
+        }
+      };
+    }
+
+    function copyShareLink() {
+      let url = window.location.href;
+      if (reportData && reportData.mode) {
+        try {
+          const u = new URL(url);
+          if (!u.searchParams.has('mode')) {
+            u.searchParams.set('mode', reportData.mode);
+            url = u.toString();
+          }
+        } catch (eUrl) {}
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(() => {
+          showToast('✅ Đã sao chép đường link báo cáo!');
+        }).catch(() => {
+          prompt('Đường link xem báo cáo trực tuyến (Nhấn Ctrl+C để copy):', url);
+        });
+      } else {
+        prompt('Đường link xem báo cáo trực tuyến (Nhấn Ctrl+C để copy):', url);
+      }
+    }
+
+    async function init() {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlMode = urlParams.get('mode');
+
+        // 1. Kiểm tra tham số ID báo cáo từ URL (Giải pháp 2C: /r/:id hoặc ?id=...)
+        let idParam = (urlParams.get('id') || '').trim();
+
+        if (!idParam) {
+          // Lấy từ path nếu định dạng /r/ID hoặc /view/ID
+          const pathMatch = window.location.pathname.match(/\/(?:r|view)\/([a-zA-Z0-9_-]+)/);
+          if (pathMatch && pathMatch[1] && pathMatch[1] !== 'view' && pathMatch[1] !== 'r' && !pathMatch[1].endsWith('.html')) {
+            idParam = pathMatch[1].trim();
+          }
+        }
+
+        const normalizeReportData = (data) => {
+          if (!data) return null;
+          // 1. Chuẩn hoá Hubs BHX (hỗ trợ cả amount và actual_sales)
+          if (Array.isArray(data.bhx_hubs)) {
+            data.bhx_hubs.forEach(h => {
+              const val = (h.amount !== undefined && h.amount !== null) ? h.amount : ((h.actual_sales !== undefined && h.actual_sales !== null) ? h.actual_sales : 0);
+              h.amount = val;
+              h.actual_sales = val;
+            });
+          }
+          // 2. Chuẩn hoá 138 Điểm bán CVS (hỗ trợ cả actual & actual_sales, store_address & address, store_name)
+          if (Array.isArray(data.stores)) {
+            data.stores.forEach(s => {
+              const val = (s.actual !== undefined && s.actual !== null) ? s.actual : ((s.actual_sales !== undefined && s.actual_sales !== null) ? s.actual_sales : 0);
+              s.actual = val;
+              s.actual_sales = val;
+              const addr = s.store_address || s.address || '';
+              s.store_address = addr;
+              s.address = addr;
+              if (!s.store_name || s.store_name === 'undefined') {
+                const chain = s.chain || '';
+                const codeSuffix = s.store_code ? s.store_code.replace(/^CVS_[^.]+\.\d+\./, '#') : '';
+                s.store_name = s.name || (chain ? (chain + (codeSuffix ? ' ' + codeSuffix : '')) : (s.store_code || 'Điểm bán CVS'));
+              }
+            });
+
+            // Gộp tất cả cửa hàng của cùng một nhân viên đứng liền nhau (không bị ngắt quãng)
+            const empOrderMap = {};
+            (data.employees || []).forEach((e, i) => { empOrderMap[e.name] = i; });
+            const chainOrder = { 'Circle K': 1, 'FamilyMart': 2, 'GS25': 3, '7-Eleven': 4, 'Hoàng Đức': 5, 'WinMart+': 6 };
+
+            data.stores.sort((a, b) => {
+              const idxA = empOrderMap[a.employee_name] !== undefined ? empOrderMap[a.employee_name] : 999;
+              const idxB = empOrderMap[b.employee_name] !== undefined ? empOrderMap[b.employee_name] : 999;
+              if (idxA !== idxB) return idxA - idxB;
+              const cA = chainOrder[a.chain] || 99;
+              const cB = chainOrder[b.chain] || 99;
+              if (cA !== cB) return cA - cB;
+              return (a.store_code || '').localeCompare(b.store_code || '');
+            });
+          }
+          return data;
+        };
+
+        const parseDataPayload = (d) => {
+          if (!d) return null;
+          let parsed = null;
+          if (d.payload && (d.payload.employees || d.payload.bhx_hubs)) {
+            parsed = d.payload;
+          } else if (d.employees || d.bhx_hubs) {
+            parsed = d;
+          } else if (d.h || d.emps || d.s) {
+            parsed = reconstitutePayload(d);
+          }
+          return normalizeReportData(parsed);
+        };
+
+        if (idParam) {
+          try {
+            let fetched = false;
+            // 1.1 Thử lấy từ Vercel Serverless API
+            try {
+              const res = await fetch(`/api/report?id=${encodeURIComponent(idParam)}`, {
+                signal: AbortSignal.timeout(5000)
+              });
+              if (res.ok) {
+                const json = await res.json();
+                if (json && json.ok && json.data) {
+                  const rep = parseDataPayload(json.data);
+                  if (rep) {
+                    reportData = rep;
+                    fetched = true;
+                  }
+                }
+              }
+            } catch (eApi) {}
+
+            // 1.2 Nếu API local/chưa có, thử trực tiếp từ Bytebin Cloud CDN
+            if (!fetched) {
+              const bbRes = await fetch(`https://bytebin.lucko.me/${encodeURIComponent(idParam)}`, {
+                signal: AbortSignal.timeout(5000)
+              });
+              if (bbRes.ok) {
+                const d = await bbRes.json();
+                const rep = parseDataPayload(d);
+                if (rep) {
+                  reportData = rep;
+                  fetched = true;
+                }
+              }
+            }
+          } catch (eId) {
+            console.warn('Lỗi tải báo cáo theo ID:', eId);
+          }
+        }
+
+        // 2. Fallback kiểm tra mã hash d= hoặc ?d= nếu không có ID
+        if (!reportData) {
+          let dParam = '';
+          const hash = window.location.hash;
+          if (hash && hash.includes('d=')) {
+            dParam = hash.split('d=')[1].split('&')[0];
+          } else {
+            dParam = urlParams.get('d') || '';
+          }
+
+          if (dParam) {
+            const compact = await decompressData(dParam);
+            if (compact) {
+              reportData = reconstitutePayload(compact);
+            }
+          }
+        }
+
+        // 3. Fallback nạp dữ liệu mẫu nếu không có tham số
+        if (!reportData) {
+          reportData = createSampleReport(urlMode);
+        }
+
+        // Áp dụng chế độ nếu URL chỉ định cụ thể
+        if (reportData) {
+          if (urlMode === 'target') {
+            reportData.mode = 'target';
+          } else if (urlMode === 'actual') {
+            reportData.mode = 'actual';
+            reportData.total_target = 0;
+            reportData.percent_achieved = 0;
+            (reportData.employees || []).forEach(e => {
+              e.target = 0;
+              e.percent = 0;
+              e.status = '';
+            });
+          } else if (reportData.mode === 'actual') {
+            reportData.total_target = 0;
+            reportData.percent_achieved = 0;
+            (reportData.employees || []).forEach(e => {
+              e.target = 0;
+              e.percent = 0;
+              e.status = '';
+            });
+          } else if (!reportData.mode) {
+            reportData.mode = (reportData.total_target > 0 || (reportData.employees || []).some(e => e.target > 0)) ? 'target' : 'actual';
+          }
+        }
+
+        renderDashboard(reportData);
+
+      } catch (err) {
+        console.error('Lỗi khởi tạo:', err);
+      } finally {
+        const loader = document.getElementById('loadingOverlay');
+        if (loader) loader.style.display = 'none';
+      }
+    }
+
+    function createSampleReport(forceMode) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const mode = forceMode || urlParams.get('mode') || 'actual';
+      const isTarget = (mode === 'target');
+      const m = window.MASTER_DATA || {};
+      const sampleTargets = [350000000, 360000000, 380000000, 340000000, 350000000, 390000000, 370000000, 350000000, 360000000, 350000000];
+      const timegone = 45.2;
+
+      const emps = (m.employees || []).map((e, idx) => {
+        const bhxActual = 51200000;
+        const cvsTotal = 24500000 + (idx * 1200000);
+        const tot = bhxActual + cvsTotal;
+        const tgt = isTarget ? (sampleTargets[idx] || 350000000) : 0;
+        const pct = tgt > 0 ? parseFloat(((tot / tgt) * 100).toFixed(2)) : 0;
+        const status = pct >= timegone ? 'VƯỢT' : (pct >= timegone * 0.75 ? 'CẬN' : 'CHẬM');
+
+        return {
+          name: e.name,
+          target: tgt,
+          percent: pct,
+          status: status,
+          bhx_actual: bhxActual,
+          cvs_total: cvsTotal,
+          total_actual: tot,
+          gs25_actual: 5200000,
+          se_actual: 3100000,
+          fm_actual: 4800000,
+          ck_actual: 5400000,
+          hd_actual: 3200000,
+          wmp_actual: 2800000,
+          bhx_stores: e.bhx_stores || 18
+        };
+      });
+
+      const totalTarget = isTarget ? emps.reduce((a, b) => a + (b.target || 0), 0) : 0;
+      const totalActual = emps.reduce((a, b) => a + (b.total_actual || 0), 0);
+      const teamPct = totalTarget > 0 ? parseFloat(((totalActual / totalTarget) * 100).toFixed(2)) : 0;
+
+      return {
+        mode: isTarget ? 'target' : 'actual',
+        team_lead: m.team_lead || 'Trần Thị Cẩm Giang',
+        month: '03',
+        year: '2026',
+        timegone: timegone,
+        total_target: totalTarget,
+        percent_achieved: teamPct,
+        total_actual_bhx: 512000000,
+        total_cvs: totalActual - 512000000,
+        total_actual: totalActual,
+        total_stores_bhx_team: 178,
+        bhx_per_store: 2876404,
+        employees: emps,
+        stores: (m.stores || []).map((s, i) => ({
+          chain: s.chain,
+          employee_name: s.employee_name,
+          store_code: s.store_code,
+          store_name: s.store_name,
+          address: s.address,
+          actual_sales: (i % 2 === 0 ? 1750000 : 0)
+        })),
+        bhx_hubs: (m.bhx_hubs || []).map(h => ({
+          hub: h.hub,
+          name: h.name,
+          actual_sales: 102400000
+        })),
+        fm_sku_matrix: {
+          total_target: 0,
+          total_actual: 48000000,
+          stores: (m.fm_stores || []).map(s => ({
+            addr: s.addr,
+            location: s.location,
+            ma_pg: s.ma_pg,
+            ten_pg: s.ten_pg,
+            vtcv: s.vtcv,
+            target: 0,
+            actual: 1371428,
+            orders: { "07OI20": 450000, "09VN01": 320000, "07TP11": 601428 }
+          })),
+          categories: m.fm_categories || []
+        }
+      };
+    }
+
+    function renderDashboard(data) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlMode = urlParams.get('mode');
+
+      let isTarget = false;
+      if (urlMode === 'target') {
+        isTarget = true;
+      } else if (urlMode === 'actual') {
+        isTarget = false;
+      } else if (data.mode === 'target') {
+        isTarget = true;
+      } else if (data.mode === 'actual') {
+        isTarget = false;
+      } else {
+        isTarget = (data.total_target > 0) || ((data.employees || []).some(e => e.target > 0));
+      }
+
+      data.mode = isTarget ? 'target' : 'actual';
+
+      if (!isTarget) {
+        data.total_target = 0;
+        data.percent_achieved = 0;
+        (data.employees || []).forEach(e => {
+          e.target = 0;
+          e.percent = 0;
+          e.status = '';
+        });
+      }
+
+      // Header Info
+      const modeBadge = document.getElementById('headerReportMode');
+      if (modeBadge) {
+        if (isTarget) {
+          modeBadge.innerHTML = '🎯 BÁO CÁO CÓ TARGET';
+          modeBadge.style.background = '#1E3A5F';
+          modeBadge.style.borderColor = '#3B82F6';
+        } else {
+          modeBadge.innerHTML = '⚡ BÁO CÁO THỰC ĐẠT';
+          modeBadge.style.background = '#047857';
+          modeBadge.style.borderColor = '#059669';
+        }
+      }
+
+      const mainTitle = document.getElementById('headerMainTitle');
+      if (mainTitle) {
+        if (isTarget) {
+          mainTitle.innerHTML = `<span>🎯</span> BÁO CÁO CÓ TARGET - TEAM ${data.team_lead.toUpperCase()} (Tháng ${data.month}/${data.year})`;
+        } else {
+          mainTitle.innerHTML = `<span>⚡</span> BÁO CÁO THỰC ĐẠT - TEAM ${data.team_lead.toUpperCase()} (Tháng ${data.month}/${data.year})`;
+        }
+      }
+
+      document.getElementById('headerTeamLead').innerText = data.team_lead;
+      document.getElementById('headerTimegone').innerText = `⏳ Tiến độ tháng: ${data.timegone}%`;
+      document.getElementById('headerTotalSales').innerText = `💰 Tổng TH: ${formatMoney(data.total_actual)} đ`;
+      document.getElementById('headerTeamSize').innerText = `👥 ${(data.employees || []).length} Nhân viên`;
+
+      // KPI Cards
+      const kpiContainer = document.getElementById('kpiGridContainer');
+      if (kpiContainer) {
+        if (isTarget) {
+          const passClass = (data.percent_achieved >= data.timegone) ? '#059669' : '#D97706';
+          kpiContainer.innerHTML = `
+            <div class="kpi-card">
+              <div class="kpi-label">Chỉ Tiêu Toàn Team</div>
+              <div class="kpi-value" style="color:#1E3A5F;">${formatMoney(data.total_target)} ₫</div>
+              <div class="kpi-sub">Target 10 Nhân viên</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Thực Hiện BHX</div>
+              <div class="kpi-value" style="color:#059669;">${formatMoney(data.total_actual_bhx)} ₫</div>
+              <div class="kpi-sub">${data.total_stores_bhx_team || 178} CH • TB: ${formatMoney(data.bhx_per_store)} đ/CH</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Thực Hiện CVS</div>
+              <div class="kpi-value" style="color:#D97706;">${formatMoney(data.total_cvs)} ₫</div>
+              <div class="kpi-sub">7 Chuỗi Cửa hàng tiện lợi</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Tổng Thực Hiện</div>
+              <div class="kpi-value" style="color:#0F766E;">${formatMoney(data.total_actual)} ₫</div>
+              <div class="kpi-sub">Bách Hóa Xanh + CVS</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Tiến Độ % Đạt</div>
+              <div class="kpi-value" style="color:${passClass};">${data.percent_achieved}%</div>
+              <div class="kpi-sub">Tiến độ tháng: ${data.timegone}%</div>
+            </div>
+          `;
+        } else {
+          kpiContainer.innerHTML = `
+            <div class="kpi-card">
+              <div class="kpi-label">Thực Hiện BHX</div>
+              <div class="kpi-value" style="color:#059669;">${formatMoney(data.total_actual_bhx)} ₫</div>
+              <div class="kpi-sub">${data.total_stores_bhx_team || 178} CH • TB: ${formatMoney(data.bhx_per_store)} đ/CH</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Thực Hiện CVS</div>
+              <div class="kpi-value" style="color:#D97706;">${formatMoney(data.total_cvs)} ₫</div>
+              <div class="kpi-sub">7 Chuỗi Cửa hàng tiện lợi</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Tổng Thực Hiện</div>
+              <div class="kpi-value" style="color:#0F766E;">${formatMoney(data.total_actual)} ₫</div>
+              <div class="kpi-sub">Bách Hóa Xanh + CVS</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Tiến Độ Tháng</div>
+              <div class="kpi-value" style="color:#2563EB;">${data.timegone}%</div>
+              <div class="kpi-sub">10 NV • 138 Cửa hàng CVS</div>
+            </div>
+          `;
+        }
+      }
+
+      // Tab titles
+      const titleTeam = document.getElementById('titleTabTeam');
+      if (titleTeam) {
+        titleTeam.innerText = isTarget 
+          ? 'Bảng Tiến Độ 10 Nhân Viên Toàn Team (Có Chỉ Tiêu Target & % Đạt)' 
+          : 'Bảng Tiến Độ 10 Nhân Viên Toàn Team (BHX + CVS)';
+      }
+      const titleRank = document.getElementById('titleTabRank');
+      if (titleRank) {
+        titleRank.innerText = isTarget 
+          ? 'Bảng Xếp Hạng Đua Top Theo % Đạt Target' 
+          : 'Bảng Xếp Hạng Doanh Số & Tỷ Trọng Đóng Góp';
+      }
+
+      // 1. Render Tab Team
+      renderTableTeam(data);
+
+      // 2. Render Tab Rank
+      renderTableRank(data);
+
+      // 3. Render Tab Bhx Dist
+      renderTableBhxDist(data);
+
+      // 4. Render Tab Bhx Hubs
+      renderTableBhxHubs(data);
+
+      // 5. Render Tab CVS Stores
+      renderTableCvs(data);
+
+      // 6. Render Tab FamilyMart SKU Matrix
+      renderTableFm(data);
+
+      // Setup Pinch Zoom on all tables
+      setupTablePinchZoom();
+      autoFitTablesOnLandscape();
+    }
+
+    function renderTableTeam(data) {
+      const isTarget = (data.mode === 'target');
+      const thead = document.getElementById('theadTeam');
+      const tbody = document.getElementById('tbodyTeam');
+      const tfoot = document.getElementById('tfootTeam');
+      if (!tbody) return;
+
+      if (thead) {
+        if (isTarget) {
+          thead.innerHTML = `
+            <tr>
+              <th class="text-center" style="width:45px;">STT</th>
+              <th>NHÂN VIÊN</th>
+              <th class="text-right" style="color:#FFF2CC; background:#1F4E78 !important; min-width:125px;">CHỈ TIÊU (TARGET)</th>
+              <th class="text-right" style="color:#86EFAC;">BHX (CỐ ĐỊNH)</th>
+              <th class="text-right">GS25</th>
+              <th class="text-right">7-ELEVEN</th>
+              <th class="text-right">FAMILYMART</th>
+              <th class="text-right">CIRCLE K</th>
+              <th class="text-right">HOÀNG ĐỨC</th>
+              <th class="text-right">WINMART+</th>
+              <th class="text-right" style="color:#93C5FD; font-size:13px;">TỔNG TH (BHX+CVS)</th>
+              <th class="text-center" style="min-width:85px; color:#FDE047;">% ĐẠT</th>
+              <th class="text-center" style="min-width:95px;">TRẠNG THÁI</th>
+            </tr>
+          `;
+        } else {
+          thead.innerHTML = `
+            <tr>
+              <th class="text-center" style="width:45px;">STT</th>
+              <th>NHÂN VIÊN</th>
+              <th class="text-right" style="color:#86EFAC;">BHX (CỐ ĐỊNH)</th>
+              <th class="text-right">GS25</th>
+              <th class="text-right">7-ELEVEN</th>
+              <th class="text-right">FAMILYMART</th>
+              <th class="text-right">CIRCLE K</th>
+              <th class="text-right">HOÀNG ĐỨC</th>
+              <th class="text-right">WINMART+</th>
+              <th class="text-right" style="color:#93C5FD; font-size:13px;">TỔNG TH (BHX+CVS)</th>
+            </tr>
+          `;
+        }
+      }
+
+      tbody.innerHTML = '';
+      let sTgt = 0, sBhx = 0, sGs = 0, sSe = 0, sFm = 0, sCk = 0, sHd = 0, sWmp = 0, sTot = 0;
+
+      (data.employees || []).forEach((e, idx) => {
+        sTgt += (e.target || 0);
+        sBhx += (e.bhx_actual || 0); sGs += (e.gs25_actual || 0); sSe += (e.se_actual || 0);
+        sFm += (e.fm_actual || 0); sCk += (e.ck_actual || 0); sHd += (e.hd_actual || 0);
+        sWmp += (e.wmp_actual || 0); sTot += (e.total_actual || 0);
+
+        if (isTarget) {
+          const chipClass = (e.percent >= data.timegone) ? 'chip-pass' : ((e.percent >= data.timegone * 0.75) ? 'chip-warn' : 'chip-fail');
+          const statusColor = (e.status === 'VƯỢT') ? '#059669' : ((e.status === 'CẬN') ? '#d97706' : '#dc2626');
+          tbody.innerHTML += `
+            <tr>
+              <td class="text-center font-bold">${idx + 1}</td>
+              <td class="font-bold">${e.name}</td>
+              <td class="text-right font-bold" style="color:#1E3A5F;">${formatMoney(e.target)}</td>
+              <td class="text-right font-semibold" style="color:#059669;">${formatMoney(e.bhx_actual)}</td>
+              <td class="text-right">${formatMoney(e.gs25_actual)}</td>
+              <td class="text-right">${formatMoney(e.se_actual)}</td>
+              <td class="text-right">${formatMoney(e.fm_actual)}</td>
+              <td class="text-right">${formatMoney(e.ck_actual)}</td>
+              <td class="text-right">${formatMoney(e.hd_actual)}</td>
+              <td class="text-right">${formatMoney(e.wmp_actual)}</td>
+              <td class="text-right font-bold" style="color:#0F766E;">${formatMoney(e.total_actual)}</td>
+              <td class="text-center"><span class="${chipClass}">${e.percent}%</span></td>
+              <td class="text-center font-bold" style="color:${statusColor};">${e.status}</td>
+            </tr>
+          `;
+        } else {
+          tbody.innerHTML += `
+            <tr>
+              <td class="text-center font-bold">${idx + 1}</td>
+              <td class="font-bold">${e.name}</td>
+              <td class="text-right font-semibold" style="color:#059669;">${formatMoney(e.bhx_actual)}</td>
+              <td class="text-right">${formatMoney(e.gs25_actual)}</td>
+              <td class="text-right">${formatMoney(e.se_actual)}</td>
+              <td class="text-right">${formatMoney(e.fm_actual)}</td>
+              <td class="text-right">${formatMoney(e.ck_actual)}</td>
+              <td class="text-right">${formatMoney(e.hd_actual)}</td>
+              <td class="text-right">${formatMoney(e.wmp_actual)}</td>
+              <td class="text-right font-bold" style="color:#0F766E;">${formatMoney(e.total_actual)}</td>
+            </tr>
+          `;
+        }
+      });
+
+      const teamPct = sTgt > 0 ? parseFloat(((sTot / sTgt) * 100).toFixed(2)) : (data.percent_achieved || 0);
+
+      if (tfoot) {
+        if (isTarget) {
+          tfoot.innerHTML = `
+            <tr>
+              <td colspan="2" class="text-center font-bold">TỔNG CỘNG TEAM</td>
+              <td class="text-right font-bold" style="color:#FDE047 !important;">${formatMoney(sTgt)}</td>
+              <td class="text-right font-bold" style="color:#86EFAC !important;">${formatMoney(sBhx)}</td>
+              <td class="text-right font-bold">${formatMoney(sGs)}</td>
+              <td class="text-right font-bold">${formatMoney(sSe)}</td>
+              <td class="text-right font-bold">${formatMoney(sFm)}</td>
+              <td class="text-right font-bold">${formatMoney(sCk)}</td>
+              <td class="text-right font-bold">${formatMoney(sHd)}</td>
+              <td class="text-right font-bold">${formatMoney(sWmp)}</td>
+              <td class="text-right font-bold" style="color:#93C5FD !important;">${formatMoney(sTot)}</td>
+              <td class="text-center font-bold" style="color:#FDE047 !important;">${teamPct}%</td>
+              <td class="text-center font-bold">--</td>
+            </tr>
+          `;
+        } else {
+          tfoot.innerHTML = `
+            <tr>
+              <td colspan="2" class="text-center font-bold">TỔNG CỘNG TEAM</td>
+              <td class="text-right font-bold" style="color:#86EFAC !important;">${formatMoney(sBhx)}</td>
+              <td class="text-right font-bold">${formatMoney(sGs)}</td>
+              <td class="text-right font-bold">${formatMoney(sSe)}</td>
+              <td class="text-right font-bold">${formatMoney(sFm)}</td>
+              <td class="text-right font-bold">${formatMoney(sCk)}</td>
+              <td class="text-right font-bold">${formatMoney(sHd)}</td>
+              <td class="text-right font-bold">${formatMoney(sWmp)}</td>
+              <td class="text-right font-bold" style="color:#93C5FD !important;">${formatMoney(sTot)}</td>
+            </tr>
+          `;
+        }
+      }
+    }
+
+    function renderTableRank(data) {
+      const isTarget = (data.mode === 'target');
+      const thead = document.getElementById('theadRank');
+      const tbody = document.getElementById('tbodyRank');
+      const tfoot = document.getElementById('tfootRank');
+      if (!tbody) return;
+
+      if (thead) {
+        if (isTarget) {
+          thead.innerHTML = `
+            <tr>
+              <th class="text-center" style="width:60px;">HẠNG</th>
+              <th>NHÂN VIÊN</th>
+              <th class="text-right" style="color:#FFF2CC; background:#1F4E78 !important; min-width:130px;">CHỈ TIÊU (TARGET)</th>
+              <th class="text-right">DOANH SỐ BHX</th>
+              <th class="text-right">DOANH SỐ CVS</th>
+              <th class="text-right" style="color:#93C5FD;">TỔNG THỰC HIỆN</th>
+              <th class="text-center" style="width:100px; color:#FDE047;">% ĐẠT</th>
+              <th class="text-center" style="width:110px;">TRẠNG THÁI</th>
+            </tr>
+          `;
+        } else {
+          thead.innerHTML = `
+            <tr>
+              <th class="text-center" style="width:60px;">HẠNG</th>
+              <th>NHÂN VIÊN</th>
+              <th class="text-right">DOANH SỐ BHX</th>
+              <th class="text-right">DOANH SỐ CVS</th>
+              <th class="text-right" style="color:#93C5FD;">TỔNG THỰC HIỆN</th>
+              <th class="text-center" style="width:140px; color:#FDE047;">TỶ TRỌNG TEAM</th>
+            </tr>
+          `;
+        }
+      }
+
+      tbody.innerHTML = '';
+      const sorted = (data.employees || []).slice().sort((a, b) => {
+        if (isTarget) {
+          return (b.percent || 0) - (a.percent || 0);
+        } else {
+          return (b.total_actual || 0) - (a.total_actual || 0);
+        }
+      });
+
+      const totalTeam = data.total_actual || sorted.reduce((a, b) => a + (b.total_actual || 0), 0);
+      let sumTgt = 0, sumBhx = 0, sumCvs = 0, sumTot = 0;
+
+      sorted.forEach((e, idx) => {
+        sumTgt += (e.target || 0);
+        sumBhx += (e.bhx_actual || 0);
+        sumCvs += (e.cvs_total || 0);
+        sumTot += (e.total_actual || 0);
+
+        if (isTarget) {
+          const chipClass = (e.percent >= data.timegone) ? 'chip-pass' : ((e.percent >= data.timegone * 0.75) ? 'chip-warn' : 'chip-fail');
+          const statusColor = (e.status === 'VƯỢT') ? '#059669' : ((e.status === 'CẬN') ? '#d97706' : '#dc2626');
+          tbody.innerHTML += `
+            <tr>
+              <td class="text-center font-bold" style="font-size:14px;">${idx + 1}</td>
+              <td class="font-bold">${e.name}</td>
+              <td class="text-right font-bold" style="color:#1E3A5F;">${formatMoney(e.target)}</td>
+              <td class="text-right font-semibold" style="color:#059669;">${formatMoney(e.bhx_actual)}</td>
+              <td class="text-right">${formatMoney(e.cvs_total)}</td>
+              <td class="text-right font-bold" style="color:#0F766E;">${formatMoney(e.total_actual)}</td>
+              <td class="text-center"><span class="${chipClass}">${e.percent}%</span></td>
+              <td class="text-center font-bold" style="color:${statusColor};">${e.status}</td>
+            </tr>
+          `;
+        } else {
+          const pctShare = totalTeam > 0 ? (((e.total_actual || 0) / totalTeam) * 100).toFixed(1) : '0.0';
+          tbody.innerHTML += `
+            <tr>
+              <td class="text-center font-bold" style="font-size:14px;">${idx + 1}</td>
+              <td class="font-bold">${e.name}</td>
+              <td class="text-right font-semibold" style="color:#059669;">${formatMoney(e.bhx_actual)}</td>
+              <td class="text-right">${formatMoney(e.cvs_total)}</td>
+              <td class="text-right font-bold" style="color:#0F766E;">${formatMoney(e.total_actual)}</td>
+              <td class="text-center font-bold" style="color:#2563EB;">${pctShare}%</td>
+            </tr>
+          `;
+        }
+      });
+
+      const teamPct = sumTgt > 0 ? parseFloat(((sumTot / sumTgt) * 100).toFixed(2)) : (data.percent_achieved || 0);
+
+      if (tfoot) {
+        if (isTarget) {
+          tfoot.innerHTML = `
+            <tr>
+              <td colspan="2" class="text-center font-bold">TỔNG CỘNG TEAM</td>
+              <td class="text-right font-bold" style="color:#FDE047 !important;">${formatMoney(sumTgt)}</td>
+              <td class="text-right font-bold" style="color:#86EFAC !important;">${formatMoney(sumBhx)}</td>
+              <td class="text-right font-bold">${formatMoney(sumCvs)}</td>
+              <td class="text-right font-bold" style="color:#93C5FD !important;">${formatMoney(sumTot)}</td>
+              <td class="text-center font-bold" style="color:#FDE047 !important;">${teamPct}%</td>
+              <td class="text-center font-bold">--</td>
+            </tr>
+          `;
+        } else {
+          tfoot.innerHTML = `
+            <tr>
+              <td colspan="2" class="text-center font-bold">TỔNG CỘNG TEAM</td>
+              <td class="text-right font-bold" style="color:#86EFAC !important;">${formatMoney(sumBhx)}</td>
+              <td class="text-right font-bold">${formatMoney(sumCvs)}</td>
+              <td class="text-right font-bold" style="color:#93C5FD !important;">${formatMoney(sumTot)}</td>
+              <td class="text-center font-bold" style="color:#FDE047 !important;">100.0%</td>
+            </tr>
+          `;
+        }
+      }
+    }
+
+    // =========================================================================
+    // CỬ CHỈ VUỐT 2 NGÓN PHÓNG TO / THU NHỎ (PINCH-TO-ZOOM) TRÊN BẢNG
+    // =========================================================================
+    function setupTablePinchZoom() {
+      const containers = document.querySelectorAll('.table-responsive');
+      containers.forEach(container => {
+        const table = container.querySelector('table');
+        if (!table) return;
+
+        if (container.dataset.pinchInit === 'true') return;
+        container.dataset.pinchInit = 'true';
+
+        let currentScale = parseFloat(container.dataset.scale || '1.0');
+        let startDist = 0;
+        let startScale = 1.0;
+        let isPinching = false;
+        let lastTap = 0;
+
+        container.addEventListener('touchstart', function(e) {
+          if (e.touches.length === 2) {
+            isPinching = true;
+            startDist = Math.hypot(
+              e.touches[0].clientX - e.touches[1].clientX,
+              e.touches[0].clientY - e.touches[1].clientY
+            );
+            startScale = parseFloat(container.dataset.scale || '1.0');
+          }
+        }, { passive: true });
+
+        container.addEventListener('touchmove', function(e) {
+          if (e.touches.length === 2 && isPinching && startDist > 0) {
+            if (e.cancelable) e.preventDefault();
+            const dist = Math.hypot(
+              e.touches[0].clientX - e.touches[1].clientX,
+              e.touches[0].clientY - e.touches[1].clientY
+            );
+            const ratio = dist / startDist;
+            let newScale = startScale * ratio;
+            // Cho phép thu nhỏ đến 0.35 để hiển thị trọn vẹn toàn bộ 13 cột, phóng to tối đa 2.5
+            newScale = Math.max(0.35, Math.min(2.5, newScale));
+            currentScale = newScale;
+            container.dataset.scale = currentScale;
+            const tbl = container.querySelector('table');
+            if (tbl) tbl.style.zoom = currentScale;
+          }
+        }, { passive: false });
+
+        container.addEventListener('touchend', function(e) {
+          if (e.touches.length === 0) {
+            const now = Date.now();
+            if (now - lastTap < 350) {
+              // Chạm đúp 2 lần (Double tap): Toggle giữa 100% và fit vừa khít màn hình
+              const tbl = container.querySelector('table');
+              if (tbl) {
+                if (currentScale < 0.95) {
+                  currentScale = 1.0;
+                } else {
+                  tbl.style.zoom = '1.0';
+                  const naturalWidth = tbl.scrollWidth;
+                  const availableWidth = container.clientWidth - 4;
+                  if (naturalWidth > availableWidth && naturalWidth > 0) {
+                    currentScale = Math.max(0.35, Math.min(1.0, availableWidth / naturalWidth));
+                  } else {
+                    currentScale = 1.0;
+                  }
+                }
+                container.dataset.scale = currentScale;
+                tbl.style.zoom = currentScale;
+              }
+            }
+            lastTap = now;
+            isPinching = false;
+            startDist = 0;
+          }
+        }, { passive: true });
+
+        container.addEventListener('touchcancel', function(e) {
+          isPinching = false;
+          startDist = 0;
+        }, { passive: true });
+      });
+    }
+
+    function autoFitTablesOnLandscape() {
+      const isLandscape = window.innerWidth > window.innerHeight;
+      const containers = document.querySelectorAll('.table-responsive');
+      containers.forEach(container => {
+        const tbl = container.querySelector('table');
+        if (!tbl) return;
+        if (isLandscape && window.innerWidth >= 600) {
+          tbl.style.zoom = '1.0';
+          const naturalWidth = tbl.scrollWidth;
+          const availableWidth = container.clientWidth - 4;
+          if (naturalWidth > availableWidth && naturalWidth > 0) {
+            const fitScale = Math.max(0.35, Math.min(1.0, availableWidth / naturalWidth));
+            tbl.style.zoom = fitScale;
+            container.dataset.scale = fitScale;
+          }
+        }
+      });
+    }
+
+    window.addEventListener('resize', () => {
+      autoFitTablesOnLandscape();
+      setupTablePinchZoom();
+    });
+
+    function renderTableBhxDist(data) {
+      // Cập nhật dropdown lọc nhân viên
+      const sel = document.getElementById('filterBhxEmp');
+      if (sel) {
+        sel.innerHTML = '<option value="">Tất cả 10 nhân viên</option>';
+        (data.employees || []).forEach(e => {
+          sel.innerHTML += `<option value="${e.name}">${e.name}</option>`;
+        });
+      }
+      filterBhxDistTable();
+    }
+
+    function filterBhxDistTable() {
+      if (!reportData) return;
+      const empName = document.getElementById('filterBhxEmp') ? document.getElementById('filterBhxEmp').value : '';
+      const tbody = document.getElementById('tbodyBhxDist');
+      const tfoot = document.getElementById('tfootBhxDist');
+      tbody.innerHTML = '';
+
+      let sumStores = 0, sumBhx = 0;
+      const totalBhxTeam = reportData.total_actual_bhx || 0;
+      const filtered = (reportData.employees || []).filter(e => !empName || e.name === empName);
+
+      filtered.forEach((e, idx) => {
+        sumStores += (e.bhx_stores || 0);
+        sumBhx += (e.bhx_actual || 0);
+        const pct = totalBhxTeam > 0 ? (((e.bhx_actual || 0) / totalBhxTeam) * 100).toFixed(1) : '0.0';
+
+        tbody.innerHTML += `
+          <tr>
+            <td class="text-center font-bold">${idx + 1}</td>
+            <td class="font-bold">${e.name}</td>
+            <td class="text-center font-semibold">${e.bhx_stores || 0} Cửa hàng</td>
+            <td class="text-right">${formatMoney(reportData.bhx_per_store)}</td>
+            <td class="text-right font-bold" style="color:#059669;">${formatMoney(e.bhx_actual)}</td>
+            <td class="text-center font-bold" style="color:#1D4ED8;">${pct}%</td>
+          </tr>
+        `;
+      });
+
+      tfoot.innerHTML = `
+        <tr>
+          <td colspan="2" class="text-center font-bold">TỔNG CỘNG TEAM</td>
+          <td class="text-center font-bold">${sumStores} Cửa hàng</td>
+          <td class="text-right font-bold">${formatMoney(reportData.bhx_per_store)}</td>
+          <td class="text-right font-bold" style="color:#86EFAC !important;">${formatMoney(sumBhx)}</td>
+          <td class="text-center font-bold" style="color:#FDE047 !important;">100.0%</td>
+        </tr>
+      `;
+    }
+
+    function renderTableBhxHubs(data) {
+      const tbody = document.getElementById('tbodyBhxHubs');
+      const tfoot = document.getElementById('tfootBhxHubs');
+      tbody.innerHTML = '';
+
+      let sumHubs = 0;
+
+      (data.bhx_hubs || []).forEach((h, idx) => {
+        const val = (h.actual_sales !== undefined && h.actual_sales !== null) ? h.actual_sales : ((h.amount !== undefined && h.amount !== null) ? h.amount : 0);
+        sumHubs += val;
+
+        tbody.innerHTML += `
+          <tr>
+            <td class="text-center font-bold">${idx + 1}</td>
+            <td class="font-bold">${h.name}</td>
+            <td class="text-right font-bold" style="color:#059669;">${formatMoney(val)}</td>
+            <td>Khách hàng XH4001</td>
+          </tr>
+        `;
+      });
+
+      tfoot.innerHTML = `
+        <tr>
+          <td colspan="2" class="text-center font-bold">TỔNG 5 HUBS BÁCH HÓA XANH (HỆ THỐNG)</td>
+          <td class="text-right font-bold" style="color:#86EFAC !important;">${formatMoney(data.total_actual_bhx_hubs || sumHubs)}</td>
+          <td class="font-bold" style="color:#FDE047 !important;">Đơn giá: ${formatMoney(data.bhx_per_store)} / CH (÷ ${data.total_stores_bhx || 232} CH)</td>
+        </tr>
+      `;
+    }
+
+    function renderTableCvs(data) {
+      // Populate employee dropdown
+      const selEmp = document.getElementById('filterCvsEmp');
+      selEmp.innerHTML = '<option value="">Tất cả nhân viên</option>';
+      const emps = [...new Set((data.stores || []).map(s => s.employee_name).filter(Boolean))].sort();
+      emps.forEach(e => {
+        selEmp.innerHTML += `<option value="${e}">${e}</option>`;
+      });
+
+      filterCvsTable();
+    }
+
+    function getCvsChainBadge(chain) {
+      const c = (chain || '').trim();
+      let bg = '#F1F5F9', color = '#334155', border = '#CBD5E1';
+      if (c.includes('Circle K')) {
+        bg = '#FEE2E2'; color = '#B91C1C'; border = '#FCA5A5'; // Đỏ Circle K
+      } else if (c.includes('FamilyMart')) {
+        bg = '#E0F2FE'; color = '#0369A1'; border = '#7DD3FC'; // Xanh dương FamilyMart
+      } else if (c.includes('GS25')) {
+        bg = '#CCFBF1'; color = '#0F766E'; border = '#5EEAD4'; // Ngọc GS25
+      } else if (c.includes('7-Eleven') || c.includes('7 Eleven')) {
+        bg = '#DCFCE7'; color = '#15803D'; border = '#86EFAC'; // Xanh lá 7-Eleven
+      } else if (c.includes('Hoàng Đức')) {
+        bg = '#F3E8FF'; color = '#7E22CE'; border = '#D8B4FE'; // Tím Hoàng Đức
+      } else if (c.includes('WinMart')) {
+        bg = '#FEF3C7'; color = '#B45309'; border = '#FDE68A'; // Cam/Vàng WinMart
+      }
+      return `<span style="background:${bg}; color:${color}; border:1px solid ${border}; padding:3px 9px; border-radius:6px; font-weight:700; font-size:11.5px; display:inline-block; white-space:nowrap; letter-spacing:0.02em;">${chain}</span>`;
+    }
+
+    function filterCvsTable() {
+      if (!reportData) return;
+      const search = (document.getElementById('searchCvs').value || '').toLowerCase().trim();
+      const chain = document.getElementById('filterCvsChain').value;
+      const emp = document.getElementById('filterCvsEmp').value;
+
+      const tbody = document.getElementById('tbodyCvs');
+      const tfoot = document.getElementById('tfootCvs');
+      tbody.innerHTML = '';
+
+      const filtered = (reportData.stores || []).filter(s => {
+        const sCode = (s.store_code || '').toLowerCase();
+        const sName = (s.store_name || s.name || '').toLowerCase();
+        const sAddr = (s.store_address || s.address || '').toLowerCase();
+        const matchSearch = !search || sCode.includes(search) || sName.includes(search) || sAddr.includes(search);
+        const matchChain = !chain || s.chain === chain;
+        const matchEmp = !emp || s.employee_name === emp;
+        return matchSearch && matchChain && matchEmp;
+      });
+
+      document.getElementById('cvsCountBadge').innerText = `${filtered.length} Cửa hàng`;
+
+      let sumCvs = 0;
+      let lastEmp = null;
+
+      filtered.forEach((s, idx) => {
+        const val = (s.actual_sales !== undefined && s.actual_sales !== null) ? s.actual_sales : ((s.actual !== undefined && s.actual !== null) ? s.actual : 0);
+        sumCvs += val;
+        const isNewEmp = lastEmp !== null && s.employee_name !== lastEmp;
+        const isFirstOfEmp = lastEmp !== s.employee_name;
+        lastEmp = s.employee_name;
+
+        if (isNewEmp) {
+          tbody.innerHTML += `
+            <tr class="emp-gap" style="background:#F8FAFC;">
+              <td colspan="7" style="height:14px; padding:0; background:#EEF2F6; border-top:1px solid #CBD5E1; border-bottom:2px solid #0F766E;"></td>
+            </tr>
+          `;
+        }
+
+        const empCell = isFirstOfEmp
+          ? `<span style="display:inline-flex; align-items:center; gap:6px; font-weight:800; color:#0F172A; background:#F1F5F9; padding:4px 8px; border-radius:6px; border:1px solid #CBD5E1;">👤 ${s.employee_name}</span>`
+          : `<span style="color:#64748B; font-weight:500; padding-left:14px;">${s.employee_name}</span>`;
+
+        const displayName = (s.store_name && s.store_name !== 'undefined')
+          ? s.store_name
+          : (s.chain + (s.store_code ? (' - ' + s.store_code.replace(/^CVS_[^.]+\.\d+\./, '')) : ''));
+        const displayAddr = s.store_address || s.address || '';
+
+        tbody.innerHTML += `
+          <tr ${isFirstOfEmp ? 'style="border-top:2px solid #0F766E; background:#FAFDFD;"' : ''}>
+            <td class="text-center font-bold" style="color:#64748B;">${idx + 1}</td>
+            <td>${getCvsChainBadge(s.chain)}</td>
+            <td>${empCell}</td>
+            <td class="font-bold" style="color:#1E293B;"><code>${s.store_code || '-'}</code></td>
+            <td style="font-weight:600;">${displayName}</td>
+            <td style="max-width:350px; font-size:11.5px; color:#475569;">${displayAddr}</td>
+            <td class="text-right font-bold" style="color:#0F766E; font-size:13px;">${formatMoney(val)}</td>
+          </tr>
+        `;
+      });
+
+      tfoot.innerHTML = `
+        <tr>
+          <td colspan="6" class="text-center font-bold">TỔNG (${filtered.length} CỬA HÀNG)</td>
+          <td class="text-right font-bold" style="color:#93C5FD !important;">${formatMoney(sumCvs)}</td>
+        </tr>
+      `;
+    }
+
+    function renderTableFm(data) {
+      if (!data.fm_sku_matrix) return;
+      const fm = data.fm_sku_matrix;
+      const stores = fm.stores || [];
+      const cats = fm.categories || [];
+
+      // Populate PG dropdown
+      const selPg = document.getElementById('filterFmPg');
+      selPg.innerHTML = '<option value="">Tất cả PG / Nhân viên</option>';
+      const pgs = [...new Set(stores.map(s => s.ten_pg).filter(Boolean))].sort();
+      pgs.forEach(p => {
+        selPg.innerHTML += `<option value="${p}">${p}</option>`;
+      });
+
+      renderFmHead(cats);
+      filterFmTable();
+    }
+
+    function renderFmHead(cats) {
+      const thead = document.getElementById('theadFm');
+      let h1 = '<tr>';
+      h1 += '<th colspan="5" style="background:#FFF2CC !important; color:#1F4E78 !important; text-align:center; font-size:12px; font-weight:800; border:1px solid #B4B4B4;">THÔNG TIN ĐIỂM BÁN (STORE MASTER)</th>';
+      h1 += '<th style="background:#FCE4D6 !important; color:#C00000 !important; text-align:center; font-size:12px; font-weight:800; border:1px solid #B4B4B4;">TỔNG THỰC HIỆN</th>';
+
+      cats.forEach(c => {
+        const bg = '#' + (c.headerBg ? c.headerBg.replace(/^FF/, '') : 'C6E0B4');
+        h1 += `<th colspan="${c.skus.length}" style="background:${bg} !important; color:#000000 !important; text-align:center; font-size:11px; font-weight:800; border:1px solid #B4B4B4; white-space:nowrap; padding:6px 10px;">${c.name}</th>`;
+      });
+      h1 += '</tr>';
+
+      let h2 = '<tr>';
+      const baseH = [
+        { name: 'Địa chỉ Store (ship to)', width: '260px', bg: '#FFE699' },
+        { name: 'Tên Store (Location)', width: '110px', bg: '#FFE699' },
+        { name: 'Mã PG', width: '90px', bg: '#FFE699' },
+        { name: 'Họ Tên PG', width: '150px', bg: '#FFE699' },
+        { name: 'VTCV', width: '60px', bg: '#FFE699' },
+        { name: 'Tổng Doanh Số Nhập Thực Hiện (VND)', width: '150px', bg: '#F4B084' }
+      ];
+
+      baseH.forEach(b => {
+        h2 += `<th style="background:${b.bg} !important; color:#000000 !important; font-size:11px; font-weight:700; text-align:center; border:1px solid #B4B4B4; min-width:${b.width}; padding:8px 6px;">${b.name}</th>`;
+      });
+
+      cats.forEach(c => {
+        const bg = '#' + (c.headerBg ? c.headerBg.replace(/^FF/, '') : 'C6E0B4');
+        c.skus.forEach(s => {
+          h2 += `<th style="background:${bg} !important; color:#1F4E78 !important; font-size:10px; font-weight:700; text-align:center; border:1px solid #B4B4B4; min-width:115px; padding:6px 4px; line-height:1.2;">${s.name}<br><span style="color:#000000; font-size:9.5px;">(${s.code})</span></th>`;
+        });
+      });
+      h2 += '</tr>';
+
+      thead.innerHTML = h1 + h2;
+    }
+
+    function filterFmTable() {
+      if (!reportData || !reportData.fm_sku_matrix) return;
+      const search = (document.getElementById('searchFm').value || '').toLowerCase();
+      const pg = document.getElementById('filterFmPg').value;
+
+      const tbody = document.getElementById('tbodyFm');
+      const tfoot = document.getElementById('tfootFm');
+      tbody.innerHTML = '';
+
+      const allStores = reportData.fm_sku_matrix.stores || [];
+      const cats = reportData.fm_sku_matrix.categories || [];
+
+      const filtered = allStores.filter(st => {
+        const matchSearch = !search || (st.addr && st.addr.toLowerCase().includes(search)) || (st.location && st.location.toLowerCase().includes(search)) || (st.ma_pg && st.ma_pg.toLowerCase().includes(search)) || (st.ten_pg && st.ten_pg.toLowerCase().includes(search));
+        const matchPg = !pg || st.ten_pg === pg;
+        return matchSearch && matchPg;
+      });
+
+      document.getElementById('fmCountBadge').innerText = `${filtered.length} Cửa hàng`;
+
+      const allSkus = [];
+      cats.forEach(c => {
+        const cBg = '#' + (c.cellBg ? c.cellBg.replace(/^FF/, '') : 'FFFFFF');
+        c.skus.forEach(s => {
+          allSkus.push({ code: s.code, cellBg: cBg });
+        });
+      });
+
+      let sumActual = 0;
+      const skuSums = {};
+      allSkus.forEach(s => skuSums[s.code] = 0);
+
+      filtered.forEach((st, idx) => {
+        sumActual += (st.actual || 0);
+        const rowBg = idx % 2 === 0 ? '#FFFFFF' : '#FAFAFA';
+
+        let rowHtml = `<tr style="background:${rowBg};">`;
+        rowHtml += `<td style="border:1px solid #B4B4B4; font-size:11px; padding:6px 8px; max-width:280px; overflow:hidden; text-overflow:ellipsis;">${st.addr}</td>`;
+        rowHtml += `<td style="border:1px solid #B4B4B4; text-align:center; font-size:11px; padding:6px;">${st.location || 'ST00_CVS_FM'}</td>`;
+        rowHtml += `<td style="border:1px solid #B4B4B4; text-align:center; font-size:11px; padding:6px;">${st.ma_pg || ''}</td>`;
+        rowHtml += `<td style="border:1px solid #B4B4B4; font-weight:600; font-size:11px; padding:6px 8px;">${st.ten_pg || ''}</td>`;
+        rowHtml += `<td style="border:1px solid #B4B4B4; text-align:center; font-size:11px; padding:6px;">${st.vtcv || 'SR'}</td>`;
+        rowHtml += `<td style="border:1px solid #B4B4B4; text-align:right; font-weight:700; background:#F2F9F2; color:#1D4ED8; font-size:11px; padding:6px 8px;">${formatMoney(st.actual)}</td>`;
+
+        allSkus.forEach(s => {
+          const val = (st.orders && st.orders[s.code]) ? st.orders[s.code] : 0;
+          skuSums[s.code] += val;
+          const bg = val > 0 ? s.cellBg : rowBg;
+          const color = val > 0 ? '#000000' : '#A0A0A0';
+          rowHtml += `<td style="border:1px solid #B4B4B4; text-align:right; background:${bg}; color:${color}; font-size:10.5px; padding:5px 6px;">${val > 0 ? formatMoney(val) : '-'}</td>`;
+        });
+
+        rowHtml += '</tr>';
+        tbody.innerHTML += rowHtml;
+      });
+
+      // Tfoot
+      let footHtml = '<tr style="background:#1F4E78;">';
+      footHtml += `<td colspan="5" style="border:1px solid #336699; text-align:center; font-weight:800; font-size:12px; padding:8px; color:#FFFFFF !important;">TỔNG CỘNG (${filtered.length} CỬA HÀNG FAMILYMART)</td>`;
+      footHtml += `<td style="border:1px solid #336699; text-align:right; font-weight:800; font-size:12.5px; color:#FDE047 !important; padding:8px;">${formatMoney(sumActual)}</td>`;
+
+      allSkus.forEach(s => {
+        const val = skuSums[s.code] || 0;
+        footHtml += `<td style="border:1px solid #336699; text-align:right; font-weight:700; font-size:10px; padding:6px; color:#FFFFFF !important;">${val > 0 ? formatMoney(val) : '-'}</td>`;
+      });
+      footHtml += '</tr>';
+      tfoot.innerHTML = footHtml;
+    }
+
+    async function captureTable(tableId, fileNamePrefix) {
+      showToast('📸 Đang tạo ảnh sắc nét chuẩn Retina để copy vào bộ nhớ tạm...');
+      const target = document.getElementById(tableId);
+      if (!target) return;
+
+      const prevZoom = target.style.zoom;
+      target.style.zoom = '1.0';
+
+      try {
+        const canvas = await html2canvas(target, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: '#FFFFFF',
+          logging: false
+        });
+
+        canvas.toBlob(async blob => {
+          if (blob && navigator.clipboard && navigator.clipboard.write) {
+            try {
+              await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+              showToast('✅ Đã copy ảnh vào bộ nhớ tạm! Bạn có thể dán ngay vào Zalo/Telegram.');
+              return;
+            } catch (e) {}
+          }
+          // Fallback download
+          const a = document.createElement('a');
+          a.href = canvas.toDataURL('image/png');
+          a.download = `${fileNamePrefix}_${new Date().toISOString().slice(0, 10)}.png`;
+          a.click();
+          showToast('✅ Đã tải ảnh bảng báo cáo về máy.');
+        }, 'image/png');
+
+      } catch (err) {
+        alert('Lỗi chụp ảnh: ' + err.message);
+      } finally {
+        target.style.zoom = prevZoom;
+      }
+    }
+
+    async function downloadExcelReport() {
+      if (!reportData) return;
+      showToast('⏳ Đang khởi tạo file Excel chuẩn format...');
+
+      try {
+        // Tải động builder từ index.html hoặc tạo file trực tiếp
+        if (typeof buildExcelWorkbookClient === 'function') {
+          const wb = await buildExcelWorkbookClient(reportData);
+          const buf = await wb.xlsx.writeBuffer();
+          const fileName = `Team_${reportData.team_lead.replace(/\s+/g, '_')}_Report_Thang_${reportData.month}_${reportData.year}.xlsx`;
+          const blob = new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = fileName;
+          a.click();
+          showToast('✅ Đã tải file Excel thành công!');
+        } else {
+          // Redirect to full index app or trigger download
+          window.location.href = 'index.html';
+        }
+      } catch (e) {
+        console.error(e);
+        showToast('❌ Lỗi tạo file Excel: ' + e.message);
+      }
+    }
+
+    function openpyxlColLetter(colIdx) {
+      let temp = colIdx;
+      let letter = '';
+      while (temp > 0) {
+        let mod = (temp - 1) % 26;
+        letter = String.fromCharCode(65 + mod) + letter;
+        temp = Math.floor((temp - mod) / 26);
+      }
+      return letter;
+    }
+
+    async function buildExcelWorkbookClient(p) {
+      const wb = new ExcelJS.Workbook();
+        wb.creator = 'Team Lead ' + p.team_lead;
+        wb.created = new Date();
+
+        const thinBorder = {
+          top: { style: 'thin', color: { argb: 'FFB4B4B4' } },
+          left: { style: 'thin', color: { argb: 'FFB4B4B4' } },
+          bottom: { style: 'thin', color: { argb: 'FFB4B4B4' } },
+          right: { style: 'thin', color: { argb: 'FFB4B4B4' } }
+        };
+
+        // -------------------------------------------------------------
+        // SHEET 1: DASHBOARD
+        // -------------------------------------------------------------
+        const ws1 = wb.addWorksheet('Dashboard', { properties: { tabColor: { argb: 'FF1F4E78' } } });
+        ws1.columns = [
+          { width: 4 }, { width: 10 }, { width: 25 }, { width: 18 },
+          { width: 18 }, { width: 18 }, { width: 18 }, { width: 14 }
+        ];
+
+        // Banner Title B2:H2
+        ws1.mergeCells('B2:H2');
+        const b2 = ws1.getCell('B2');
+        b2.value = '📊 THEO DÕI DOANH SỐ TEAM - ' + p.team_lead.toUpperCase();
+        b2.font = { name: 'Calibri', size: 16, bold: true, color: { argb: 'FFFFFFFF' } };
+        b2.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
+        b2.alignment = { horizontal: 'center', vertical: 'middle' };
+        ws1.getRow(2).height = 35;
+
+        // Metadata B3:H3
+        const setMeta = (c, val, isLbl, isRed) => {
+          const cell = ws1.getCell(c);
+          cell.value = val;
+          cell.font = { name: 'Calibri', bold: true, color: { argb: isRed ? 'FFC00000' : 'FF000000' } };
+          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: isLbl ? 'FFFFF2CC' : 'FFFFF9E6' } };
+          cell.alignment = { horizontal: 'center', vertical: 'middle' };
+          cell.border = thinBorder;
+        };
+        setMeta('B3', 'Tháng:', true, false);
+        setMeta('C3', p.month + '/' + p.year, false, true);
+        setMeta('D3', 'Team Lead:', true, false);
+        setMeta('E3', p.team_lead, false, false);
+        setMeta('F3', '% Timegone:', true, false);
+        setMeta('G3', p.timegone / 100, false, true);
+        ws1.getCell('G3').numFmt = '0.0%';
+        const nowD = new Date();
+        setMeta('H3', 'Cập nhật: ' + String(nowD.getDate()).padStart(2,'0') + '/' + String(nowD.getMonth()+1).padStart(2,'0') + '/' + nowD.getFullYear(), false, false);
+        ws1.getRow(3).height = 24;
+
+        // Section Title B5:G5
+        ws1.mergeCells('B5:G5');
+        const b5 = ws1.getCell('B5');
+        b5.value = '🎯 TỔNG QUAN DOANH SỐ TEAM';
+        b5.font = { name: 'Calibri', size: 13, bold: true, color: { argb: 'FF1F4E78' } };
+        b5.alignment = { horizontal: 'center', vertical: 'middle' };
+        ws1.getRow(5).height = 26;
+
+        // Row 6 & 7: Thẻ KPI Doanh Số Thực Tế (B to G)
+        const kpiDef = [
+          { col: 'B', lbl: 'Thực Hiện BHX', val: p.total_actual_bhx, fmt: '#,##0', bg: 'FF70AD47', fg: 'FFFFFFFF' },
+          { col: 'C', lbl: 'Thực Hiện CVS', val: p.total_cvs, fmt: '#,##0', bg: 'FFED7D31', fg: 'FFFFFFFF' },
+          { col: 'D', lbl: 'Tổng Thực Hiện', val: p.total_actual, fmt: '#,##0', bg: 'FF2E75B6', fg: 'FFFFFFFF' },
+          { col: 'E', lbl: 'Tổng CH BHX Team', val: (p.total_stores_bhx_team || 178) + ' CH', fmt: null, bg: 'FF4472C4', fg: 'FFFFFFFF' },
+          { col: 'F', lbl: 'TB Doanh Số/CH BHX', val: p.bhx_per_store, fmt: '#,##0', bg: 'FF70AD47', fg: 'FFFFFFFF' },
+          { col: 'G', lbl: 'Số Nhân Viên', val: (p.employees || []).length + ' NV', fmt: null, bg: 'FF595959', fg: 'FFFFFFFF' }
+        ];
+
+        kpiDef.forEach(k => {
+          const lCell = ws1.getCell(k.col + '6');
+          lCell.value = k.lbl;
+          lCell.font = { name: 'Calibri', size: 10, bold: true, color: { argb: k.fg } };
+          lCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: k.bg } };
+          lCell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+          lCell.border = thinBorder;
+
+          const vCell = ws1.getCell(k.col + '7');
+          vCell.value = k.val;
+          if (k.fmt) vCell.numFmt = k.fmt;
+          vCell.font = { name: 'Calibri', size: 12, bold: true };
+          vCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF2F2F2' } };
+          vCell.alignment = { horizontal: 'center', vertical: 'middle' };
+          vCell.border = thinBorder;
+        });
+        ws1.getRow(6).height = 30;
+        ws1.getRow(7).height = 28;
+
+        // Row 9: Status Bar B9:G9
+        ws1.mergeCells('B9:G9');
+        const b9 = ws1.getCell('B9');
+        b9.value = '📊 BẢNG THEO DÕI DOANH SỐ CHI TIẾT - TEAM ' + p.team_lead.toUpperCase() + ' - THÁNG ' + p.month + '/' + p.year;
+        b9.font = { name: 'Calibri', size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
+        b9.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
+        b9.alignment = { horizontal: 'center', vertical: 'middle' };
+        ws1.getRow(9).height = 25;
+
+        // Row 11: Header Bảng Xếp Hạng
+        ws1.mergeCells('B11:G11');
+        const b11 = ws1.getCell('B11');
+        b11.value = 'XẾP HẠNG DOANH SỐ NHÂN VIÊN';
+        b11.font = { name: 'Calibri', size: 13, bold: true, color: { argb: 'FF1F4E78' } };
+        b11.alignment = { horizontal: 'center', vertical: 'middle' };
+        ws1.getRow(11).height = 26;
+
+        // Row 12: Headers B12:G12 (Bỏ Target và % Đạt)
+        const rHeaders = ['Hạng', 'Nhân Viên', 'Doanh Số BHX', 'Doanh Số CVS', 'Tổng Thực Hiện', 'Tỷ Trọng DS'];
+        const rCols = ['B', 'C', 'D', 'E', 'F', 'G'];
+        rHeaders.forEach((h, i) => {
+          const c = ws1.getCell(rCols[i] + '12');
+          c.value = h;
+          c.font = { name: 'Calibri', size: 10, bold: true, color: { argb: 'FFFFFFFF' } };
+          c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4472C4' } };
+          c.alignment = { horizontal: 'center', vertical: 'middle' };
+          c.border = thinBorder;
+        });
+        ws1.getRow(12).height = 26;
+
+        const sortedEmps = (p.employees || []).slice().sort((a, b) => (b.total_actual || 0) - (a.total_actual || 0));
+        const rankTotRow = 13 + sortedEmps.length;
+        sortedEmps.forEach((e, idx) => {
+          const rowNum = 13 + idx;
+          const setCell = (col, val, fmt, isBold, align) => {
+            const c = ws1.getCell(col + rowNum);
+            c.value = val;
+            if (fmt) c.numFmt = fmt;
+            c.font = { name: 'Calibri', bold: !!isBold };
+            c.alignment = { horizontal: align || 'left', vertical: 'middle' };
+            c.border = thinBorder;
+            return c;
+          };
+          setCell('B', idx + 1, null, true, 'center');
+          setCell('C', e.name, null, true, 'left');
+          setCell('D', e.bhx_actual || 0, '#,##0', false, 'right');
+          setCell('E', e.cvs_total || 0, '#,##0', false, 'right');
+          setCell('F', { formula: `D${rowNum}+E${rowNum}`, result: e.total_actual || 0 }, '#,##0', true, 'right');
+          const pctShare = p.total_actual > 0 ? ((e.total_actual || 0) / p.total_actual) : 0;
+          setCell('G', { formula: `F${rowNum}/$F${rankTotRow}`, result: pctShare }, '0.0%', false, 'center');
+          ws1.getRow(rowNum).height = 22;
+        });
+
+        // Row Total for Rank table
+        ws1.mergeCells(`B${rankTotRow}:C${rankTotRow}`);
+        const rTotLbl = ws1.getCell(`B${rankTotRow}`);
+        rTotLbl.value = 'TỔNG CỘNG TEAM';
+        rTotLbl.font = { name: 'Calibri', bold: true, color: { argb: 'FFFFFFFF' } };
+        rTotLbl.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
+        rTotLbl.alignment = { horizontal: 'center', vertical: 'middle' };
+        rTotLbl.border = thinBorder;
+        ws1.getCell(`C${rankTotRow}`).border = thinBorder;
+
+        const setTotCell = (col, formula, result, fmt) => {
+          const c = ws1.getCell(`${col}${rankTotRow}`);
+          c.value = { formula, result };
+          c.numFmt = fmt;
+          c.font = { name: 'Calibri', bold: true, color: { argb: 'FFFFFFFF' } };
+          c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
+          c.alignment = { horizontal: 'right', vertical: 'middle' };
+          c.border = thinBorder;
+        };
+        setTotCell('D', `SUM(D13:D${rankTotRow-1})`, p.total_actual_bhx, '#,##0');
+        setTotCell('E', `SUM(E13:E${rankTotRow-1})`, p.total_cvs, '#,##0');
+        setTotCell('F', `SUM(F13:F${rankTotRow-1})`, p.total_actual, '#,##0');
+        const rTotG = ws1.getCell(`G${rankTotRow}`);
+        rTotG.value = { formula: `SUM(G13:G${rankTotRow-1})`, result: 1 };
+        rTotG.numFmt = '0.0%';
+        rTotG.font = { name: 'Calibri', bold: true, color: { argb: 'FFFFFF00' } };
+        rTotG.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
+        rTotG.alignment = { horizontal: 'center', vertical: 'middle' };
+        rTotG.border = thinBorder;
+        ws1.getRow(rankTotRow).height = 25;
+
+        // -------------------------------------------------------------
+        // SHEET 2: TIẾN ĐỘ TEAM
+        // -------------------------------------------------------------
+        const ws2 = wb.addWorksheet('Tiến độ Team', { properties: { tabColor: { argb: 'FF70AD47' } } });
+        ws2.columns = [
+          { width: 3 }, { width: 6 }, { width: 24 }, { width: 16 },
+          { width: 14 }, { width: 14 }, { width: 14 }, { width: 14 },
+          { width: 14 }, { width: 14 }, { width: 20 }
+        ];
+
+        // Banner B2:K2
+        ws2.mergeCells('B2:K2');
+        const wb2 = ws2.getCell('B2');
+        wb2.value = 'THEO DÕI DOANH SỐ - TEAM ' + p.team_lead.toUpperCase() + ' - THÁNG ' + p.month + '/' + p.year;
+        wb2.font = { name: 'Calibri', size: 14, bold: true, color: { argb: 'FFFFFFFF' } };
+        wb2.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
+        wb2.alignment = { horizontal: 'center', vertical: 'middle' };
+        ws2.getRow(2).height = 30;
+
+        // Info Row B3:K3
+        const setInfo = (col, val, isLbl, isRed) => {
+          const c = ws2.getCell(col + '3');
+          c.value = val;
+          c.font = { name: 'Calibri', bold: true, color: { argb: isRed ? 'FFC00000' : 'FF000000' } };
+          c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: isLbl ? 'FFFFF2CC' : 'FFFFF9E6' } };
+          c.alignment = { horizontal: 'center', vertical: 'middle' };
+          c.border = thinBorder;
+        };
+        setInfo('B', 'Tháng:', true, false);
+        setInfo('C', p.month + '/' + p.year, false, true);
+        setInfo('D', 'Tổng CH BHX:', true, false);
+        setInfo('E', p.total_stores_bhx_team || p.total_stores_bhx, false, true);
+        setInfo('F', 'TB BHX/CH:', true, false);
+        setInfo('G', p.bhx_per_store, false, true);
+        ws2.getCell('G3').numFmt = '#,##0';
+        setInfo('H', 'Cập nhật:', true, false);
+        setInfo('I', String(nowD.getDate()).padStart(2,'0') + '/' + String(nowD.getMonth()+1).padStart(2,'0') + '/' + nowD.getFullYear(), false, false);
+        setInfo('J', '% Timegone:', true, false);
+        setInfo('K', p.timegone / 100, false, true);
+        ws2.getCell('K3').numFmt = '0.0%';
+        ws2.getRow(3).height = 24;
+
+        // Group headers
+        ws2.mergeCells('D5:J5');
+        const g1 = ws2.getCell('D5');
+        g1.value = 'THỰC HIỆN (chi tiết theo từng kênh)';
+        g1.font = { name: 'Calibri', size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
+        g1.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF2E75B6' } };
+        g1.alignment = { horizontal: 'center', vertical: 'middle' };
+
+        const g2 = ws2.getCell('K5');
+        g2.value = 'TỔNG CỘNG';
+        g2.font = { name: 'Calibri', size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
+        g2.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
+        g2.alignment = { horizontal: 'center', vertical: 'middle' };
+        ws2.getRow(5).height = 22;
+
+        // Subheaders Row 6 (Bỏ Target và % Đạt)
+        const teamHeaders = [
+          'STT', 'Nhân Viên', 'BHX\n(cố định)', 'GS25', '7-Eleven',
+          'FamilyMart', 'Circle K', 'Hoàng Đức', 'WinMart+', 'Tổng TH\n(BHX+CVS)'
+        ];
+        const teamCols = ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
+        teamHeaders.forEach((th, idx) => {
+          const c = ws2.getCell(teamCols[idx] + '6');
+          c.value = th;
+          c.font = { name: 'Calibri', size: 10, bold: true, color: { argb: 'FFFFFFFF' } };
+          c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4472C4' } };
+          c.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+          c.border = thinBorder;
+        });
+        ws2.getRow(6).height = 40;
+
+        // 10 Employee rows
+        p.employees.forEach((emp, k) => {
+          const r = 7 + k;
+          const setC = (col, val, fmt, isBold, align) => {
+            const cell = ws2.getCell(col + r);
+            cell.value = val;
+            if (fmt) cell.numFmt = fmt;
+            cell.font = { name: 'Calibri', bold: !!isBold };
+            cell.alignment = { horizontal: align || 'left', vertical: 'middle' };
+            cell.border = thinBorder;
+            return cell;
+          };
+
+          setC('B', k + 1, null, false, 'center');
+          setC('C', emp.name, null, true, 'left');
+          setC('D', emp.bhx_actual, '#,##0', false, 'right');
+          setC('E', emp.gs25_actual, '#,##0', false, 'right');
+          setC('F', emp.se_actual, '#,##0', false, 'right');
+          setC('G', emp.fm_actual, '#,##0', false, 'right');
+          setC('H', emp.ck_actual, '#,##0', false, 'right');
+          setC('I', emp.hd_actual, '#,##0', false, 'right');
+          setC('J', emp.wmp_actual, '#,##0', false, 'right');
+
+          // Tổng TH formula =SUM(D..:J..)
+          setC('K', { formula: `SUM(D${r}:J${r})`, result: emp.total_actual }, '#,##0', true, 'right');
+          ws2.getRow(r).height = 22;
+        });
+
+        // Row Total TỔNG TEAM
+        const totalR = 7 + p.employees.length;
+        ws2.mergeCells(`B${totalR}:C${totalR}`);
+        const totLbl = ws2.getCell(`B${totalR}`);
+        totLbl.value = 'TỔNG TEAM';
+        totLbl.font = { name: 'Calibri', size: 12, bold: true, color: { argb: 'FFFFFFFF' } };
+        totLbl.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
+        totLbl.alignment = { horizontal: 'center', vertical: 'middle' };
+        totLbl.border = thinBorder;
+        ws2.getCell(`C${totalR}`).border = thinBorder;
+
+        const sumCols = ['D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
+        const sumResults = [
+          p.total_actual_bhx,
+          p.employees.reduce((a,x)=>a+x.gs25_actual,0),
+          p.employees.reduce((a,x)=>a+x.se_actual,0),
+          p.employees.reduce((a,x)=>a+x.fm_actual,0),
+          p.employees.reduce((a,x)=>a+x.ck_actual,0),
+          p.employees.reduce((a,x)=>a+x.hd_actual,0),
+          p.employees.reduce((a,x)=>a+x.wmp_actual,0),
+          p.total_actual
+        ];
+        sumCols.forEach((col, idx) => {
+          const sc = ws2.getCell(`${col}${totalR}`);
+          sc.value = { formula: `SUM(${col}7:${col}${totalR-1})`, result: sumResults[idx] };
+          sc.numFmt = '#,##0';
+          sc.font = { name: 'Calibri', bold: true, color: { argb: 'FFFFFFFF' } };
+          sc.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
+          sc.alignment = { horizontal: 'right', vertical: 'middle' };
+          sc.border = thinBorder;
+        });
+        ws2.getRow(totalR).height = 28;
+
+        // Freeze Panes at D7
+        ws2.views = [{ state: 'frozen', xSplit: 3, ySplit: 6 }];
+
+        // -------------------------------------------------------------
+        // SHEET 3: CHI TIẾT CVS
+        // -------------------------------------------------------------
+        const ws3 = wb.addWorksheet('Chi tiết CVS', { properties: { tabColor: { argb: 'FFED7D31' } } });
+        ws3.columns = [
+          { width: 6 }, { width: 22 }, { width: 14 }, { width: 16 }, { width: 45 }, { width: 18 }
+        ];
+
+        ws3.mergeCells('A1:F1');
+        const t3 = ws3.getCell('A1');
+        t3.value = 'CHI TIẾT DOANH SỐ CVS - TỪNG CỬA HÀNG';
+        t3.font = { name: 'Calibri', size: 14, bold: true, color: { argb: 'FFFFFFFF' } };
+        t3.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
+        t3.alignment = { horizontal: 'center', vertical: 'middle' };
+        ws3.getRow(1).height = 30;
+
+        const cvsHeaders = ['STT', 'Nhân Viên', 'Chuỗi', 'Mã CH', 'Địa Chỉ', 'Thực Hiện'];
+        cvsHeaders.forEach((ch, idx) => {
+          const colLetter = String.fromCharCode(65 + idx);
+          const c = ws3.getCell(colLetter + '3');
+          c.value = ch;
+          c.font = { name: 'Calibri', size: 10, bold: true, color: { argb: 'FFFFFFFF' } };
+          c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF2E75B6' } };
+          c.alignment = { horizontal: 'center', vertical: 'middle' };
+          c.border = thinBorder;
+        });
+        ws3.getRow(3).height = 25;
+
+        let curR3 = 4;
+        let sttCounter = 1;
+        const chainColors = {
+          'GS25': 'FF4472C4', '7-Eleven': 'FF00B050', '7E': 'FF00B050', 'FamilyMart': 'FFED7D31',
+          'Circle K': 'FFC00000', 'Hoàng Đức': 'FF70AD47', 'Hoàng Đức Long Khánh': 'FF70AD47',
+          'Hoàng Đức Gia Kiệm': 'FF008080', 'WinMart+': 'FFD9534F', 'WMP': 'FFD9534F'
+        };
+
+        p.employees.forEach(emp => {
+          const empStores = p.stores.filter(s => s.employee_name === emp.name);
+          if (empStores.length === 0) return;
+
+          // Subheader row
+          ws3.mergeCells(`A${curR3}:D${curR3}`);
+          const sHead = ws3.getCell(`A${curR3}`);
+          sHead.value = '👤 ' + emp.name + ' (' + empStores.length + ' cửa hàng CVS)';
+          sHead.font = { name: 'Calibri', size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
+          sHead.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4472C4' } };
+          sHead.alignment = { horizontal: 'left', vertical: 'middle', indent: 1 };
+          sHead.border = thinBorder;
+
+          const sLbl = ws3.getCell(`E${curR3}`);
+          sLbl.value = 'TỔNG CVS:';
+          sLbl.font = { name: 'Calibri', bold: true, color: { argb: 'FFFFFFFF' } };
+          sLbl.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4472C4' } };
+          sLbl.alignment = { horizontal: 'right', vertical: 'middle' };
+          sLbl.border = thinBorder;
+
+          const sTot = ws3.getCell(`F${curR3}`);
+          const empTotVal = empStores.reduce((a,x)=>a+((x.actual !== undefined && x.actual !== null) ? x.actual : (x.actual_sales || 0)), 0);
+          sTot.value = empTotVal;
+          sTot.numFmt = '#,##0';
+          sTot.font = { name: 'Calibri', size: 11, bold: true, color: { argb: 'FFFFFF00' } };
+          sTot.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4472C4' } };
+          sTot.alignment = { horizontal: 'right', vertical: 'middle' };
+          sTot.border = thinBorder;
+          ws3.getRow(curR3).height = 24;
+          curR3++;
+
+          empStores.forEach(st => {
+            const setS = (col, val, fmt, isBold, align) => {
+              const c = ws3.getCell(col + curR3);
+              c.value = val;
+              if (fmt) c.numFmt = fmt;
+              c.font = { name: 'Calibri', size: 10, bold: !!isBold };
+              c.alignment = { horizontal: align || 'left', vertical: 'middle' };
+              c.border = thinBorder;
+              return c;
+            };
+
+            setS('A', sttCounter, null, false, 'center');
+            setS('B', emp.name, null, false, 'left');
+
+            const chCell = setS('C', st.chain, null, true, 'center');
+            chCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: chainColors[st.chain] || 'FF70AD47' } };
+            chCell.font = { name: 'Calibri', size: 10, bold: true, color: { argb: 'FFFFFFFF' } };
+
+            setS('D', st.store_code || '', null, false, 'left');
+            setS('E', st.store_address || st.address || '', null, false, 'left');
+            const stActual = (st.actual !== undefined && st.actual !== null) ? st.actual : (st.actual_sales || 0);
+            setS('F', stActual, '#,##0', false, 'right');
+
+            ws3.getRow(curR3).height = 20;
+            curR3++;
+            sttCounter++;
+          });
+        });
+
+        // Grand Total Row
+        ws3.mergeCells(`A${curR3}:E${curR3}`);
+        const gtLbl = ws3.getCell(`A${curR3}`);
+        gtLbl.value = '🎯 TỔNG CVS TOÀN TEAM';
+        gtLbl.font = { name: 'Calibri', size: 12, bold: true, color: { argb: 'FFFFFFFF' } };
+        gtLbl.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
+        gtLbl.alignment = { horizontal: 'center', vertical: 'middle' };
+        gtLbl.border = thinBorder;
+
+        const gtVal = ws3.getCell(`F${curR3}`);
+        gtVal.value = p.total_cvs;
+        gtVal.numFmt = '#,##0';
+        gtVal.font = { name: 'Calibri', size: 12, bold: true, color: { argb: 'FFFFFF00' } };
+        gtVal.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
+        gtVal.alignment = { horizontal: 'right', vertical: 'middle' };
+        gtVal.border = thinBorder;
+        ws3.getRow(curR3).height = 28;
+
+        ws3.views = [{ state: 'frozen', ySplit: 3 }];
+
+        // -------------------------------------------------------------
+        // SHEET 4: DATA BHX
+        // -------------------------------------------------------------
+        const ws4 = wb.addWorksheet('Data BHX', { properties: { tabColor: { argb: 'FF4472C4' } } });
+        ws4.columns = [
+          { width: 6 }, { width: 24 }, { width: 14 }, { width: 16 }, { width: 18 }, { width: 14 }
+        ];
+
+        ws4.mergeCells('A1:F1');
+        const t4 = ws4.getCell('A1');
+        t4.value = 'PHÂN BỔ DOANH SỐ BHX (' + p.total_stores_bhx + ' CỬA HÀNG)';
+        t4.font = { name: 'Calibri', size: 13, bold: true, color: { argb: 'FFFFFFFF' } };
+        t4.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
+        t4.alignment = { horizontal: 'center', vertical: 'middle' };
+        ws4.getRow(1).height = 28;
+
+        const setBhxTop = (row, lbl, val, fmt, isRed) => {
+          const a = ws4.getCell('A' + row);
+          a.value = lbl;
+          a.font = { name: 'Calibri', bold: true };
+          a.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFF2CC' } };
+          a.border = thinBorder;
+
+          const b = ws4.getCell('B' + row);
+          b.value = val;
+          if (fmt) b.numFmt = fmt;
+          b.font = { name: 'Calibri', bold: true, color: { argb: isRed ? 'FFC00000' : 'FF000000' } };
+          b.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFF9E6' } };
+          b.border = thinBorder;
+        };
+        setBhxTop(3, 'Tổng DS 5 Hubs Hệ Thống:', p.total_actual_bhx_hubs || p.total_actual_bhx, '#,##0', true);
+        setBhxTop(4, 'Tổng số CH hệ thống:', p.total_stores_bhx, null, false);
+        setBhxTop(5, 'TB doanh số/CH:', { formula: 'B3/B4', result: p.bhx_per_store }, '#,##0', true);
+
+        const bhxHeaders = ['STT', 'Nhân Viên', 'Số CH BHX', 'TB/CH', 'Doanh Số BHX', '% BHX/Team'];
+        bhxHeaders.forEach((bh, idx) => {
+          const colLetter = String.fromCharCode(65 + idx);
+          const c = ws4.getCell(colLetter + '7');
+          c.value = bh;
+          c.font = { name: 'Calibri', size: 10, bold: true, color: { argb: 'FFFFFFFF' } };
+          c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF2E75B6' } };
+          c.alignment = { horizontal: 'center', vertical: 'middle' };
+          c.border = thinBorder;
+        });
+        ws4.getRow(7).height = 25;
+
+        const bhxTotRow = 8 + p.employees.length;
+
+        p.employees.forEach((emp, idx) => {
+          const r = 8 + idx;
+          const setB = (col, val, fmt, isBold, align) => {
+            const cell = ws4.getCell(col + r);
+            cell.value = val;
+            if (fmt) cell.numFmt = fmt;
+            cell.font = { name: 'Calibri', bold: !!isBold };
+            cell.alignment = { horizontal: align || 'left', vertical: 'middle' };
+            cell.border = thinBorder;
+            return cell;
+          };
+
+          setB('A', idx + 1, null, false, 'center');
+          setB('B', emp.name, null, true, 'left');
+          setB('C', emp.bhx_stores, null, false, 'center');
+          setB('D', { formula: '$B$5', result: p.bhx_per_store }, '#,##0', false, 'right');
+          setB('E', { formula: `C${r}*D${r}`, result: emp.bhx_actual }, '#,##0', true, 'right');
+          setB('F', { formula: `E${r}/$E${bhxTotRow}`, result: p.total_actual_bhx > 0 ? (emp.bhx_actual / p.total_actual_bhx) : 0 }, '0.0%', false, 'center');
+          ws4.getRow(r).height = 20;
+        });
+
+        ws4.mergeCells(`A${bhxTotRow}:B${bhxTotRow}`);
+        const bTotLbl = ws4.getCell(`A${bhxTotRow}`);
+        bTotLbl.value = 'TỔNG CỘNG TEAM';
+        bTotLbl.font = { name: 'Calibri', bold: true };
+        bTotLbl.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFD9E1F2' } };
+        bTotLbl.alignment = { horizontal: 'center', vertical: 'middle' };
+        bTotLbl.border = thinBorder;
+
+        const bTotC = ws4.getCell(`C${bhxTotRow}`);
+        bTotC.value = { formula: `SUM(C8:C${bhxTotRow-1})`, result: p.employees.reduce((a,x)=>a+x.bhx_stores,0) };
+        bTotC.font = { name: 'Calibri', bold: true };
+        bTotC.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFD9E1F2' } };
+        bTotC.alignment = { horizontal: 'center', vertical: 'middle' };
+        bTotC.border = thinBorder;
+
+        const bTotD = ws4.getCell(`D${bhxTotRow}`);
+        bTotD.value = { formula: '$B$5', result: p.bhx_per_store };
+        bTotD.numFmt = '#,##0';
+        bTotD.font = { name: 'Calibri', bold: true };
+        bTotD.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFD9E1F2' } };
+        bTotD.alignment = { horizontal: 'right', vertical: 'middle' };
+        bTotD.border = thinBorder;
+
+        const bTotE = ws4.getCell(`E${bhxTotRow}`);
+        bTotE.value = { formula: `SUM(E8:E${bhxTotRow-1})`, result: p.total_actual_bhx };
+        bTotE.numFmt = '#,##0';
+        bTotE.font = { name: 'Calibri', bold: true };
+        bTotE.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFD9E1F2' } };
+        bTotE.alignment = { horizontal: 'right', vertical: 'middle' };
+        bTotE.border = thinBorder;
+
+        const bTotF = ws4.getCell(`F${bhxTotRow}`);
+        bTotF.value = { formula: `SUM(F8:F${bhxTotRow-1})`, result: 1 };
+        bTotF.numFmt = '0.0%';
+        bTotF.font = { name: 'Calibri', bold: true };
+        bTotF.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFD9E1F2' } };
+        bTotF.alignment = { horizontal: 'center', vertical: 'middle' };
+        bTotF.border = thinBorder;
+        ws4.getRow(bhxTotRow).height = 24;
+
+
+        // -------------------------------------------------------------
+        // SHEET 5: CONFIG
+        // -------------------------------------------------------------
+        const ws5 = wb.addWorksheet('Config', { properties: { tabColor: { argb: 'FF595959' } } });
+        ws5.columns = [{ width: 35 }, { width: 35 }];
+
+        ws5.mergeCells('A1:B1');
+        const t5 = ws5.getCell('A1');
+        t5.value = 'THÔNG SỐ CẤU HÌNH HỆ THỐNG';
+        t5.font = { name: 'Calibri', size: 12, bold: true, color: { argb: 'FFFFFFFF' } };
+        t5.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
+        t5.alignment = { horizontal: 'center', vertical: 'middle' };
+        ws5.getRow(1).height = 28;
+
+        const nowStr = new Date().toLocaleDateString('vi-VN') + ' ' + new Date().toLocaleTimeString('vi-VN');
+        const cfgItems = [
+          ['Team Lead', p.team_lead],
+          ['Tháng Báo Cáo', p.month],
+          ['Năm Báo Cáo', p.year],
+          ['% Timegone Thực Tế', p.timegone + '%'],
+          ['Tổng Cửa Hàng BHX Hệ Thống', p.total_stores_bhx || 232],
+          ['Tổng Cửa Hàng GS25 Hệ Thống', 72],
+          ['Hệ Số Phân Bổ GS25 (2 DC)', '20.46%'],
+          ['Tổng Cửa Hàng 7-Eleven Phụ Trách', 5],
+          ['Hệ Số Phân Bổ 7-Eleven (2 DC)', '3.62%'],
+          ['Thời Gian Xuất Báo Cáo', nowStr]
+        ];
+
+        cfgItems.forEach((item, idx) => {
+          const r = 3 + idx;
+          const ca = ws5.getCell('A' + r);
+          ca.value = item[0];
+          ca.font = { name: 'Calibri', bold: true };
+          ca.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF2F2F2' } };
+          ca.border = thinBorder;
+
+          const cb = ws5.getCell('B' + r);
+          cb.value = item[1];
+          cb.alignment = { horizontal: 'center', vertical: 'middle' };
+          cb.border = thinBorder;
+          ws5.getRow(r).height = 22;
+        });
+
+        // -------------------------------------------------------------
+        // SHEET 6: CHI TIẾT SKU FAMILYMART
+        // -------------------------------------------------------------
+        const ws6 = wb.addWorksheet('Chi tiết SKU FamilyMart', { properties: { tabColor: { argb: 'FFED7D31' } } });
+
+        const fmData = p.fm_sku_matrix;
+        const fmStores = (fmData && fmData.stores && fmData.stores.length > 0) ? fmData.stores : DEFAULT_FM_STORES;
+        const fmCats = (fmData && fmData.categories && fmData.categories.length > 0) ? fmData.categories : FM_CATEGORIES;
+
+        // Flatten all SKUs
+        const allFmSkus = [];
+        fmCats.forEach(cat => {
+          cat.skus.forEach(s => {
+            allFmSkus.push({
+              code: s.code,
+              name: s.name,
+              catName: cat.name,
+              headerBg: cat.headerBg || 'FFC6E0B4',
+              cellBg: cat.cellBg || 'FFE2EFDA'
+            });
+          });
+        });
+
+        // Set column widths
+        const colWidths = [
+          { width: 42 }, // A: Dia chi
+          { width: 16 }, // B: Location
+          { width: 13 }, // C: Ma PG
+          { width: 22 }, // D: Ho ten PG
+          { width: 8 },  // E: VTCV
+          { width: 22 }, // F: Actual
+        ];
+        allFmSkus.forEach(() => colWidths.push({ width: 16 }));
+        ws6.columns = colWidths;
+
+        // Row 1: Title Banner A1:L1
+        ws6.mergeCells('A1:L1');
+        const t6 = ws6.getCell('A1');
+        t6.value = '🛒 BÁO CÁO CHI TIẾT NHẬP HÀNG THEO CỬA HÀNG & SKU - CHUỖI FAMILYMART';
+        t6.font = { name: 'Calibri', size: 13, bold: true, color: { argb: 'FFFFFFFF' } };
+        t6.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
+        t6.alignment = { horizontal: 'center', vertical: 'middle' };
+        ws6.getRow(1).height = 32;
+
+        // Rows 2 & 3: 5 KPI Cards
+        const totFmAct = fmData ? (fmData.total_actual || 0) : fmStores.reduce((a, b) => a + (b.actual || 0), 0);
+        const storesWithOrder = fmStores.filter(s => (s.actual || 0) > 0).length;
+        const pctStoresWithOrder = fmStores.length > 0 ? Math.round(storesWithOrder / fmStores.length * 100) : 0;
+        const avgPerFmStore = fmStores.length > 0 ? Math.round(totFmAct / fmStores.length) : 0;
+
+        const fmKpiCols = [
+          { col: 'A', lbl: 'Số Cửa Hàng', val: fmStores.length + ' CH', bg: 'FF1F4E78', fg: 'FFFFFFFF' },
+          { col: 'B', lbl: 'Tổng Thực Hiện Nhập', val: totFmAct, fmt: '#,##0 "đ"', bg: 'FF70AD47', fg: 'FFFFFFFF' },
+          { col: 'C', lbl: 'TB Doanh Số/CH', val: avgPerFmStore, fmt: '#,##0 "đ"', bg: 'FF2E75B6', fg: 'FFFFFFFF' },
+          { col: 'D', lbl: 'CH Có Phát Sinh Đơn', val: storesWithOrder + '/' + fmStores.length + ' CH', bg: 'FFED7D31', fg: 'FFFFFFFF' },
+          { col: 'E', lbl: 'Tỷ Lệ CH Có Đơn', val: pctStoresWithOrder / 100, fmt: '0.0%', bg: 'FF4472C4', fg: 'FFFFFFFF' }
+        ];
+
+        fmKpiCols.forEach(k => {
+          const lCell = ws6.getCell(k.col + '2');
+          lCell.value = k.lbl;
+          lCell.font = { name: 'Calibri', size: 9, bold: true, color: { argb: 'FF555555' } };
+          lCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF2F2F2' } };
+          lCell.alignment = { horizontal: 'center', vertical: 'middle' };
+          lCell.border = thinBorder;
+
+          const vCell = ws6.getCell(k.col + '3');
+          vCell.value = k.val;
+          if (k.fmt) vCell.numFmt = k.fmt;
+          vCell.font = { name: 'Calibri', size: 11, bold: true, color: { argb: k.fg } };
+          vCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: k.bg } };
+          vCell.alignment = { horizontal: 'center', vertical: 'middle' };
+          vCell.border = thinBorder;
+        });
+        ws6.getRow(2).height = 18;
+        ws6.getRow(3).height = 24;
+
+        // Row 4: Group Headers
+        ws6.mergeCells('A4:E4');
+        const g4_1 = ws6.getCell('A4');
+        g4_1.value = 'THÔNG TIN ĐIỂM BÁN (STORE MASTER)';
+        g4_1.font = { name: 'Calibri', size: 11, bold: true, color: { argb: 'FF1F4E78' } };
+        g4_1.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFF2CC' } };
+        g4_1.alignment = { horizontal: 'center', vertical: 'middle' };
+
+        const g4_2 = ws6.getCell('F4');
+        g4_2.value = 'TỔNG THỰC HIỆN';
+        g4_2.font = { name: 'Calibri', size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
+        g4_2.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF2E75B6' } };
+        g4_2.alignment = { horizontal: 'center', vertical: 'middle' };
+
+        let curColIdx = 7;
+        fmCats.forEach(cat => {
+          const startCol = curColIdx;
+          const endCol = curColIdx + cat.skus.length - 1;
+          const sLet = openpyxlColLetter(startCol);
+          const eLet = openpyxlColLetter(endCol);
+
+          if (cat.skus.length > 1) {
+            ws6.mergeCells(sLet + '4:' + eLet + '4');
+          }
+          const catCell = ws6.getCell(sLet + '4');
+          catCell.value = cat.name;
+          catCell.font = { name: 'Calibri', size: 10, bold: true, color: { argb: 'FF000000' } };
+          catCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: cat.headerBg } };
+          catCell.alignment = { horizontal: 'center', vertical: 'middle' };
+
+          curColIdx = endCol + 1;
+        });
+        ws6.getRow(4).height = 24;
+
+        // Row 5: Subheaders
+        const baseSubheaders = [
+          { name: 'Địa chỉ Store (ship to)', bg: 'FFFFE699', fg: 'FF000000' },
+          { name: 'Tên Store (Location)', bg: 'FFFFE699', fg: 'FF000000' },
+          { name: 'Mã PG', bg: 'FFFFE699', fg: 'FF000000' },
+          { name: 'Họ Tên PG', bg: 'FFFFE699', fg: 'FF000000' },
+          { name: 'VTCV', bg: 'FFFFE699', fg: 'FF000000' },
+          { name: 'Tổng Doanh Số Nhập Thực Hiện (VND)', bg: 'FFF4B084', fg: 'FF000000' }
+        ];
+
+        baseSubheaders.forEach((sh, idx) => {
+          const colLet = openpyxlColLetter(idx + 1);
+          const c = ws6.getCell(colLet + '5');
+          c.value = sh.name;
+          c.font = { name: 'Calibri', size: 9, bold: true, color: { argb: sh.fg } };
+          c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: sh.bg } };
+          c.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+          c.border = thinBorder;
+        });
+
+        allFmSkus.forEach((sku, idx) => {
+          const colLet = openpyxlColLetter(7 + idx);
+          const c = ws6.getCell(colLet + '5');
+          c.value = sku.name + '\n(' + sku.code + ')';
+          c.font = { name: 'Calibri', size: 8, bold: true, color: { argb: 'FF1F4E78' } };
+          c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: sku.headerBg } };
+          c.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+          c.border = thinBorder;
+        });
+        ws6.getRow(5).height = 45;
+
+        // Data Rows (Row 6 to 6 + fmStores.length - 1)
+        const startR6 = 6;
+        const endR6 = startR6 + fmStores.length - 1;
+        const lastColLetter = openpyxlColLetter(6 + allFmSkus.length);
+
+        fmStores.forEach((st, idx) => {
+          const r = startR6 + idx;
+          const rowBg = (idx % 2 === 0) ? 'FFFFFFFF' : 'FFFAFAFA';
+
+          const setFm = (col, val, fmt, isBold, align, fillBg, fontColor) => {
+            const cell = ws6.getCell(col + r);
+            cell.value = val;
+            if (fmt) cell.numFmt = fmt;
+            cell.font = { name: 'Calibri', size: 9, bold: !!isBold, color: { argb: fontColor || 'FF000000' } };
+            cell.alignment = { horizontal: align || 'left', vertical: 'middle' };
+            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: fillBg || rowBg } };
+            cell.border = thinBorder;
+            return cell;
+          };
+
+          setFm('A', st.addr, null, false, 'left');
+          setFm('B', st.location || 'ST00_CVS_FM', null, false, 'center');
+          setFm('C', st.ma_pg || '', null, false, 'center');
+          setFm('D', st.ten_pg || '', null, false, 'left');
+          setFm('E', st.vtcv || 'SR', null, false, 'center');
+
+          // Actual Col F = SUM(G{r}:lastCol{r})
+          setFm('F', { formula: 'SUM(G' + r + ':' + lastColLetter + r + ')', result: st.actual || 0 }, '#,##0', true, 'right', 'FFF2F9F2');
+
+          // 46 SKU columns
+          allFmSkus.forEach((sku, sIdx) => {
+            const cLet = openpyxlColLetter(7 + sIdx);
+            const amt = (st.orders && st.orders[sku.code]) ? st.orders[sku.code] : 0;
+            const cBg = amt > 0 ? sku.cellBg : rowBg;
+            const cFg = amt > 0 ? 'FF000000' : 'FFA0A0A0';
+            setFm(cLet, amt, '#,##0', false, 'right', cBg, cFg);
+          });
+
+          ws6.getRow(r).height = 20;
+        });
+
+        // Row Total (TỔNG CỘNG)
+        const totalR6 = endR6 + 1;
+        ws6.mergeCells('A' + totalR6 + ':E' + totalR6);
+        const totFmLbl = ws6.getCell('A' + totalR6);
+        totFmLbl.value = 'TỔNG CỘNG (' + fmStores.length + ' CỬA HÀNG FAMILYMART)';
+        totFmLbl.font = { name: 'Calibri', size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
+        totFmLbl.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
+        totFmLbl.alignment = { horizontal: 'center', vertical: 'middle' };
+        for (let colIdx = 1; colIdx <= 5; colIdx++) {
+          ws6.getCell(openpyxlColLetter(colIdx) + totalR6).border = thinBorder;
+        }
+
+        // Col F Actual SUBTOTAL
+        const totFmActCell = ws6.getCell('F' + totalR6);
+        totFmActCell.value = { formula: 'SUBTOTAL(9, F' + startR6 + ':F' + endR6 + ')', result: totFmAct };
+        totFmActCell.numFmt = '#,##0';
+        totFmActCell.font = { name: 'Calibri', size: 11, bold: true, color: { argb: 'FFFFFF00' } };
+        totFmActCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
+        totFmActCell.alignment = { horizontal: 'right', vertical: 'middle' };
+        totFmActCell.border = thinBorder;
+
+        // SKU SUBTOTALs
+        allFmSkus.forEach((sku, sIdx) => {
+          const cLet = openpyxlColLetter(7 + sIdx);
+          const sc = ws6.getCell(cLet + totalR6);
+          const skuSum = fmStores.reduce((acc, st) => acc + ((st.orders && st.orders[sku.code]) ? st.orders[sku.code] : 0), 0);
+          sc.value = { formula: 'SUBTOTAL(9, ' + cLet + startR6 + ':' + cLet + endR6 + ')', result: skuSum };
+          sc.numFmt = '#,##0';
+          sc.font = { name: 'Calibri', size: 9, bold: true, color: { argb: 'FFFFFFFF' } };
+          sc.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
+          sc.alignment = { horizontal: 'right', vertical: 'middle' };
+          sc.border = thinBorder;
+        });
+        ws6.getRow(totalR6).height = 26;
+
+        // Freeze Panes at column G (freeze 6 columns, 5 rows)
+        ws6.views = [{ state: 'frozen', xSplit: 6, ySplit: 5 }];
+
+        return wb;
+    }
+
+    
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

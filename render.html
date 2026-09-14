@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Báo Cáo Doanh Số Team Cẩm Giang - Render Card</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', Calibri, -apple-system, sans-serif;
+      background: #FFFFFF;
+      color: #0F172A;
+      margin: 0;
+      padding: 0;
+      display: inline-block;
+      min-width: 100%;
+    }
+
+    #renderCard {
+      background: #FFFFFF;
+      padding: 20px 24px;
+      width: max-content;
+      max-width: none;
+      display: block;
+    }
+
+    /* Header styling */
+    .card-header {
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 2.5px solid #1F4E78;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .main-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #1F4E78;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sub-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #2563EB;
+      margin-top: 4px;
+    }
+
+    .badges-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    .badge-time {
+      background: #FEF3C7;
+      color: #B45309;
+      border: 1.5px solid #FCD34D;
+      font-size: 12.5px;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .badge-pct-pass {
+      background: #DCFCE7;
+      color: #15803D;
+      border: 1.5px solid #86EFAC;
+      font-size: 12.5px;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .badge-pct-fail {
+      background: #FEE2E2;
+      color: #DC2626;
+      border: 1.5px solid #FECACA;
+      font-size: 12.5px;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .meta-col {
+      text-align: right;
+      font-size: 12px;
+      color: #64748B;
+    }
+
+    /* Table styling */
+    table {
+      width: max-content;
+      border-collapse: collapse;
+      font-size: 13px;
+      text-align: left;
+    }
+
+    th {
+      background: #CCFBF1 !important;
+      color: #0F172A !important;
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      padding: 11px 13px;
+      border: 1px solid #99F6E4 !important;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 9px 13px;
+      border: 1px solid #E2E8F0;
+      color: #0F172A;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    tbody tr:nth-child(even) td {
+      background: #F8FAFC;
+    }
+
+    tfoot, tfoot tr {
+      background: #0F172A !important;
+    }
+
+    tfoot td {
+      background: #0F172A !important;
+      color: #FFFFFF !important;
+      font-weight: 800 !important;
+      border: 1px solid #334155 !important;
+      padding: 11px 13px;
+    }
+
+    .text-center { text-align: center; }
+    .text-right { text-align: right; }
+    .font-bold { font-weight: 700; }
+
+    /* Chips */
+    .chip-pass {
+      background: #D1FAE5;
+      color: #065F46;
+      border: 1px solid #A7F3D0;
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 11.5px;
+      display: inline-block;
+    }
+    .chip-warn {
+      background: #FEF3C7;
+      color: #92400E;
+      border: 1px solid #FDE68A;
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 11.5px;
+      display: inline-block;
+    }
+    .chip-fail {
+      background: #FEE2E2;
+      color: #BE123C;
+      border: 1px solid #FECACA;
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 11.5px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="renderCard">
+    <div class="card-header">
+      <div>
+        <div class="main-title" id="mainTitle">
+          <span>📊</span> BÁO CÁO DOANH SỐ TEAM CẨM GIANG
+        </div>
+        <div class="sub-title" id="subTitle"></div>
+        <div class="badges-row">
+          <div class="badge-time" id="badgeTime">⏳ % Timegone: --%</div>
+          <div class="badge-pct-fail" id="badgeTeamPct">🔴 % Đạt Toàn Team: --%</div>
+        </div>
+      </div>
+      <div class="meta-col">
+        <div>Team Lead: <strong style="color:#0F172A; font-size:13px;" id="metaTeamLead">Trần Thị Cẩm Giang</strong></div>
+        <div style="margin-top:2px;">⏳ Timegone: <strong style="color:#B45309; font-size:13px;" id="metaTimegone">--%</strong></div>
+        <div style="margin-top:2px; font-size:11.5px;" id="metaDate">--</div>
+      </div>
+    </div>
+
+    <div id="tableWrapper"></div>
+  </div>
+
+  <script>
+    function formatMoney(num) {
+      return (Number(num) || 0).toLocaleString('vi-VN');
+    }
+
+    // Decompress base64url zlib payload
+    async function decompressData(b64url) {
+      try {
+        let b64 = b64url.replace(/-/g, '+').replace(/_/g, '/');
+        while (b64.length % 4) b64 += '=';
+        const binStr = atob(b64);
+        const bytes = new Uint8Array(binStr.length);
+        for (let i = 0; i < binStr.length; i++) bytes[i] = binStr.charCodeAt(i);
+
+        if (window.DecompressionStream) {
+          const ds = new DecompressionStream('deflate');
+          const writer = ds.writable.getWriter();
+          writer.write(bytes);
+          writer.close();
+          const response = new Response(ds.readable);
+          const text = await response.text();
+          return JSON.parse(text);
+        }
+      } catch (e) {
+        console.error('Decompression failed:', e);
+      }
+      return null;
+    }
+
+    async function init() {
+      const params = new URLSearchParams(window.location.search);
+      const tableType = params.get('t') || '1';
+      const encodedData = params.get('d') || '';
+
+      if (!encodedData) {
+        document.getElementById('tableWrapper').innerHTML = '<div style="padding:20px; color:#EF4444; font-weight:700;">Không có dữ liệu báo cáo (Thiếu tham số ?d=)</div>';
+        return;
+      }
+
+      const data = await decompressData(encodedData);
+      if (!data) {
+        document.getElementById('tableWrapper').innerHTML = '<div style="padding:20px; color:#EF4444; font-weight:700;">Lỗi giải mã dữ liệu nén</div>';
+        return;
+      }
+
+      // Fill Header
+      const month = data.m || 9;
+      const year = data.y || 2026;
+      const timegone = data.tg || 0;
+
+      document.getElementById('mainTitle').innerHTML = `<span>📊</span> BÁO CÁO DOANH SỐ TEAM CẨM GIANG (Tháng ${month}/${year})`;
+      document.getElementById('metaTeamLead').innerText = data.tl || 'Trần Thị Cẩm Giang';
+      document.getElementById('metaTimegone').innerText = timegone + '%';
+      document.getElementById('badgeTime').innerHTML = `<span>⏳</span> % Timegone (Tiến độ tháng): ${timegone}%`;
+      
+      const badgeTeam = document.getElementById('badgeTeamPct');
+      badgeTeam.className = 'badge-pct-pass';
+      badgeTeam.innerHTML = `<span>👥</span> Đội ngũ: 10 Nhân viên kinh doanh`;
+
+      const now = new Date();
+      document.getElementById('metaDate').innerText = `Ngày xuất: ${data.dt || (now.toLocaleDateString('vi-VN') + ' | ' + now.toLocaleTimeString('vi-VN'))}`;
+
+      const wrapper = document.getElementById('tableWrapper');
+
+      // Render respective table
+      if (tableType === '1') {
+        renderTable1(data, wrapper);
+      } else if (tableType === '2') {
+        renderTable2(data, wrapper);
+      } else if (tableType === '3') {
+        renderTable3(data, wrapper);
+      } else if (tableType === '4') {
+        renderTable4(data, wrapper);
+      }
+
+      window.__RENDER_DONE = true;
+    }
+
+    // 1. Bảng Tiến Độ 10 Nhân Viên Toàn Team (BHX + CVS) - Không Target, % Đạt
+    function renderTable1(d, container) {
+      document.getElementById('subTitle').innerText = 'Bảng Tiến Độ 10 Nhân Viên Toàn Team (BHX + CVS)';
+
+      let html = `
+        <table>
+          <thead>
+            <tr>
+              <th class="text-center" style="width:45px;">STT</th>
+              <th style="min-width:160px;">NHÂN VIÊN</th>
+              <th class="text-right" style="color:#059669 !important;">BHX (CỐ ĐỊNH)</th>
+              <th class="text-right">GS25</th>
+              <th class="text-right">7-ELEVEN</th>
+              <th class="text-right">FAMILYMART</th>
+              <th class="text-right">CIRCLE K</th>
+              <th class="text-right">HOÀNG ĐỨC</th>
+              <th class="text-right">WINMART+</th>
+              <th class="text-right" style="color:#0F766E !important; font-weight:800;">TỔNG TH (BHX+CVS)</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      let sumBhx = 0, sumGs25 = 0, sumSe = 0, sumFm = 0, sumCk = 0, sumHd = 0, sumWmp = 0, sumTotal = 0;
+
+      (d.emps || []).forEach((e, idx) => {
+        // Hỗ trợ cả định dạng cũ 11 phần tử và mới
+        let name, bhx, gs25, se, fm, ck, hd, wmp, total;
+        if (e.length >= 11) {
+          name = e[0]; bhx = e[2]; gs25 = e[3]; se = e[4]; fm = e[5]; ck = e[6]; hd = e[7]; wmp = e[8]; total = e[9];
+        } else {
+          name = e[0]; bhx = e[1]; gs25 = e[2]; se = e[3]; fm = e[4]; ck = e[5]; hd = e[6]; wmp = e[7]; total = e[8];
+        }
+
+        sumBhx += (bhx || 0); sumGs25 += (gs25 || 0); sumSe += (se || 0); sumFm += (fm || 0);
+        sumCk += (ck || 0); sumHd += (hd || 0); sumWmp += (wmp || 0); sumTotal += (total || 0);
+
+        html += `
+          <tr>
+            <td class="text-center font-bold">${idx + 1}</td>
+            <td class="font-bold">${name}</td>
+            <td class="text-right font-bold" style="color:#059669;">${formatMoney(bhx)}</td>
+            <td class="text-right">${formatMoney(gs25)}</td>
+            <td class="text-right">${formatMoney(se)}</td>
+            <td class="text-right">${formatMoney(fm)}</td>
+            <td class="text-right">${formatMoney(ck)}</td>
+            <td class="text-right">${formatMoney(hd)}</td>
+            <td class="text-right">${formatMoney(wmp)}</td>
+            <td class="text-right font-bold" style="color:#0F766E; font-size:13.5px;">${formatMoney(total)}</td>
+          </tr>
+        `;
+      });
+
+      html += `
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2" class="text-center font-bold" style="font-size:13.5px; letter-spacing:0.04em;">TỔNG TEAM</td>
+              <td class="text-right font-bold" style="color:#86EFAC !important;">${formatMoney(sumBhx)}</td>
+              <td class="text-right font-bold">${formatMoney(sumGs25)}</td>
+              <td class="text-right font-bold">${formatMoney(sumSe)}</td>
+              <td class="text-right font-bold">${formatMoney(sumFm)}</td>
+              <td class="text-right font-bold">${formatMoney(sumCk)}</td>
+              <td class="text-right font-bold">${formatMoney(sumHd)}</td>
+              <td class="text-right font-bold">${formatMoney(sumWmp)}</td>
+              <td class="text-right font-bold" style="color:#93C5FD !important; font-size:14px;">${formatMoney(sumTotal)}</td>
+            </tr>
+          </tfoot>
+        </table>
+      `;
+
+      container.innerHTML = html;
+    }
+
+    // 2. Bảng Xếp Hạng Doanh Số Toàn Team (Xếp theo Tổng Thực Hiện)
+    function renderTable2(d, container) {
+      document.getElementById('subTitle').innerText = 'Bảng Xếp Hạng Doanh Số Toàn Team';
+
+      let html = `
+        <table>
+          <thead>
+            <tr>
+              <th class="text-center" style="width:55px;">HẠNG</th>
+              <th style="min-width:180px;">NHÂN VIÊN</th>
+              <th class="text-right">DOANH SỐ BHX</th>
+              <th class="text-right">DOANH SỐ CVS</th>
+              <th class="text-right font-bold">TỔNG THỰC HIỆN</th>
+              <th class="text-center" style="width:100px;">TỶ TRỌNG DS</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      // Chuẩn hóa dữ liệu ranks và sort theo total giảm dần
+      const rawRanks = (d.ranks || []).map(e => {
+        if (e.length >= 7) {
+          return { name: e[0], bhx: e[2] || 0, cvs: e[3] || 0, total: e[4] || 0 };
+        } else if (e.length >= 4) {
+          return { name: e[0], bhx: e[1] || 0, cvs: e[2] || 0, total: e[3] || 0 };
+        }
+        return { name: e[0], bhx: 0, cvs: 0, total: 0 };
+      }).sort((a, b) => b.total - a.total);
+
+      const sumAll = rawRanks.reduce((acc, x) => acc + x.total, 0);
+      let sumBhx = 0, sumCvs = 0;
+
+      rawRanks.forEach((e, idx) => {
+        sumBhx += e.bhx;
+        sumCvs += e.cvs;
+        const pctShare = sumAll > 0 ? ((e.total / sumAll) * 100).toFixed(1) : '0.0';
+
+        html += `
+          <tr>
+            <td class="text-center font-bold" style="font-size:14px;">${idx + 1}</td>
+            <td class="font-bold">${e.name}</td>
+            <td class="text-right font-semibold" style="color:#059669;">${formatMoney(e.bhx)}</td>
+            <td class="text-right">${formatMoney(e.cvs)}</td>
+            <td class="text-right font-bold" style="color:#0F766E; font-size:13.5px;">${formatMoney(e.total)}</td>
+            <td class="text-center font-bold" style="color:#2563EB;">${pctShare}%</td>
+          </tr>
+        `;
+      });
+
+      html += `
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2" class="text-center font-bold" style="font-size:13.5px; letter-spacing:0.04em;">TỔNG CỘNG TEAM</td>
+              <td class="text-right font-bold" style="color:#86EFAC !important;">${formatMoney(sumBhx)}</td>
+              <td class="text-right font-bold">${formatMoney(sumCvs)}</td>
+              <td class="text-right font-bold" style="color:#93C5FD !important; font-size:14px;">${formatMoney(sumAll)}</td>
+              <td class="text-center font-bold" style="color:#FDE047 !important; font-size:13.5px;">100.0%</td>
+            </tr>
+          </tfoot>
+        </table>
+      `;
+
+      container.innerHTML = html;
+    }
+
+    // 3. Bảng Phân Bổ Doanh Số 5 Hubs Bách Hóa Xanh (10 Nhân Viên)
+    function renderTable3(d, container) {
+      document.getElementById('subTitle').innerText = 'Bảng Phân Bổ Doanh Số 5 Hubs Bách Hóa Xanh (10 Nhân Viên)';
+
+      let html = `
+        <table>
+          <thead>
+            <tr>
+              <th class="text-center" style="width:45px;">STT</th>
+              <th style="min-width:180px;">NHÂN VIÊN</th>
+              <th class="text-center" style="min-width:160px;">SỐ CỬA HÀNG QUẢN LÝ</th>
+              <th class="text-right" style="min-width:130px;">ĐƠN GIÁ/CH</th>
+              <th class="text-right" style="min-width:180px;">DOANH SỐ BHX PHÂN BỔ (VNĐ)</th>
+              <th class="text-center" style="min-width:140px;">% TỶ TRỌNG BHX/TEAM</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      let sumStores = 0, sumBhx = 0;
+
+      (d.bhxDist || []).forEach((row, idx) => {
+        const name = row[0], stores = row[1], price = row[2], bhx = row[3], pct = row[4];
+        sumStores += stores;
+        sumBhx += bhx;
+
+        html += `
+          <tr>
+            <td class="text-center font-bold">${idx + 1}</td>
+            <td class="font-bold">${name}</td>
+            <td class="text-center font-semibold">${stores} Cửa hàng</td>
+            <td class="text-right">${formatMoney(price)}</td>
+            <td class="text-right font-bold" style="color:#059669;">${formatMoney(bhx)}</td>
+            <td class="text-center font-bold" style="color:#1D4ED8;">${pct}%</td>
+          </tr>
+        `;
+      });
+
+      html += `
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2" class="text-center font-bold" style="font-size:13.5px; letter-spacing:0.04em;">TỔNG CỘNG TEAM</td>
+              <td class="text-center font-bold">${sumStores} Cửa hàng</td>
+              <td class="text-right font-bold">${formatMoney(d.pricePerStore || 0)}</td>
+              <td class="text-right font-bold" style="color:#86EFAC !important;">${formatMoney(sumBhx)}</td>
+              <td class="text-center font-bold" style="color:#FDE047 !important;">100.0%</td>
+            </tr>
+          </tfoot>
+        </table>
+      `;
+
+      container.innerHTML = html;
+    }
+
+    // 4. Bảng Tổng Hợp Doanh Số Nhập FamilyMart (Bỏ cột Chỉ tiêu và % Đạt)
+    function renderTable4(d, container) {
+      document.getElementById('subTitle').innerText = 'Bảng Tổng Hợp Doanh Số Nhập FamilyMart' + (d.pgFilter ? (' - PG: ' + d.pgFilter) : '');
+
+      let html = `
+        <table>
+          <thead>
+            <tr>
+              <th colspan="5" style="background:#FFF2CC !important; color:#1F4E78 !important; font-size:12.5px; font-weight:800; text-align:center; border:1px solid #B4B4B4 !important; padding:8px;">THÔNG TIN ĐIỂM BÁN (STORE MASTER)</th>
+              <th style="background:#FCE4D6 !important; color:#1F4E78 !important; font-size:12.5px; font-weight:800; text-align:center; border:1px solid #B4B4B4 !important; padding:8px;">TỔNG THỰC HIỆN</th>
+            </tr>
+            <tr>
+              <th style="min-width:260px;">ĐỊA CHỈ STORE (SHIP TO)</th>
+              <th style="min-width:110px;">TÊN STORE (LOCATION)</th>
+              <th style="min-width:90px;" class="text-center">MÃ PG</th>
+              <th style="min-width:150px;">HỌ TÊN PG</th>
+              <th style="min-width:60px;" class="text-center">VTCV</th>
+              <th style="min-width:180px;" class="text-right">TỔNG DOANH SỐ NHẬP THỰC HIỆN (VND)</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      let sumActual = 0;
+
+      (d.stores || []).forEach(s => {
+        // s = [address, location, pgCode, pgName, vtcv, target, actual, pct] or [address, location, pgCode, pgName, vtcv, actual]
+        const addr = s[0], loc = s[1], pgCode = s[2], pgName = s[3], vtcv = s[4];
+        const actual = s.length >= 8 ? s[6] : (s.length === 6 ? s[5] : (s[6] || s[5] || 0));
+        sumActual += (actual || 0);
+
+        html += `
+          <tr>
+            <td>${addr}</td>
+            <td class="font-bold">${loc}</td>
+            <td class="text-center">${pgCode || ''}</td>
+            <td class="font-bold">${pgName || ''}</td>
+            <td class="text-center">${vtcv || ''}</td>
+            <td class="text-right font-bold" style="color:#0F766E;">${formatMoney(actual)}</td>
+          </tr>
+        `;
+      });
+
+      html += `
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="5" class="text-center font-bold" style="font-size:13.5px; letter-spacing:0.04em;">TỔNG CỘNG (${(d.stores || []).length} CỬA HÀNG FAMILYMART)</td>
+              <td class="text-right font-bold" style="color:#93C5FD !important; font-size:13.5px;">${formatMoney(sumActual)}</td>
+            </tr>
+          </tfoot>
+        </table>
+      `;
+
+      container.innerHTML = html;
+    }
+
+    // Auto initialize on load
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
