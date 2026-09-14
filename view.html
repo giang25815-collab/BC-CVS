@@ -615,7 +615,6 @@
               <option value="FamilyMart">FamilyMart</option>
               <option value="Circle K">Circle K</option>
               <option value="Hoàng Đức">Hoàng Đức</option>
-              <option value="WinMart+">WinMart+</option>
             </select>
             <select id="filterCvsEmp" class="filter-select" onchange="filterCvsTable()">
               <option value="">Tất cả nhân viên</option>
@@ -1454,7 +1453,6 @@
               <th class="text-right">FAMILYMART</th>
               <th class="text-right">CIRCLE K</th>
               <th class="text-right">HOÀNG ĐỨC</th>
-              <th class="text-right">WINMART+</th>
               <th class="text-right" style="color:#93C5FD; font-size:13px;">TỔNG TH (BHX+CVS)</th>
               <th class="text-center" style="min-width:85px; color:#FDE047;">% ĐẠT</th>
               <th class="text-center" style="min-width:95px;">TRẠNG THÁI</th>
@@ -1471,7 +1469,6 @@
               <th class="text-right">FAMILYMART</th>
               <th class="text-right">CIRCLE K</th>
               <th class="text-right">HOÀNG ĐỨC</th>
-              <th class="text-right">WINMART+</th>
               <th class="text-right" style="color:#93C5FD; font-size:13px;">TỔNG TH (BHX+CVS)</th>
             </tr>
           `;
@@ -1479,13 +1476,13 @@
       }
 
       tbody.innerHTML = '';
-      let sTgt = 0, sBhx = 0, sGs = 0, sSe = 0, sFm = 0, sCk = 0, sHd = 0, sWmp = 0, sTot = 0;
+      let sTgt = 0, sBhx = 0, sGs = 0, sSe = 0, sFm = 0, sCk = 0, sHd = 0, sTot = 0;
 
       (data.employees || []).forEach((e, idx) => {
         sTgt += (e.target || 0);
         sBhx += (e.bhx_actual || 0); sGs += (e.gs25_actual || 0); sSe += (e.se_actual || 0);
         sFm += (e.fm_actual || 0); sCk += (e.ck_actual || 0); sHd += (e.hd_actual || 0);
-        sWmp += (e.wmp_actual || 0); sTot += (e.total_actual || 0);
+        sTot += (e.total_actual || 0);
 
         if (isTarget) {
           const chipClass = (e.percent >= data.timegone) ? 'chip-pass' : ((e.percent >= data.timegone * 0.75) ? 'chip-warn' : 'chip-fail');
@@ -1501,7 +1498,6 @@
               <td class="text-right">${formatMoney(e.fm_actual)}</td>
               <td class="text-right">${formatMoney(e.ck_actual)}</td>
               <td class="text-right">${formatMoney(e.hd_actual)}</td>
-              <td class="text-right">${formatMoney(e.wmp_actual)}</td>
               <td class="text-right font-bold" style="color:#0F766E;">${formatMoney(e.total_actual)}</td>
               <td class="text-center"><span class="${chipClass}">${e.percent}%</span></td>
               <td class="text-center font-bold" style="color:${statusColor};">${e.status}</td>
@@ -1518,7 +1514,6 @@
               <td class="text-right">${formatMoney(e.fm_actual)}</td>
               <td class="text-right">${formatMoney(e.ck_actual)}</td>
               <td class="text-right">${formatMoney(e.hd_actual)}</td>
-              <td class="text-right">${formatMoney(e.wmp_actual)}</td>
               <td class="text-right font-bold" style="color:#0F766E;">${formatMoney(e.total_actual)}</td>
             </tr>
           `;
@@ -1539,7 +1534,6 @@
               <td class="text-right font-bold">${formatMoney(sFm)}</td>
               <td class="text-right font-bold">${formatMoney(sCk)}</td>
               <td class="text-right font-bold">${formatMoney(sHd)}</td>
-              <td class="text-right font-bold">${formatMoney(sWmp)}</td>
               <td class="text-right font-bold" style="color:#93C5FD !important;">${formatMoney(sTot)}</td>
               <td class="text-center font-bold" style="color:#FDE047 !important;">${teamPct}%</td>
               <td class="text-center font-bold">--</td>
@@ -1555,7 +1549,6 @@
               <td class="text-right font-bold">${formatMoney(sFm)}</td>
               <td class="text-right font-bold">${formatMoney(sCk)}</td>
               <td class="text-right font-bold">${formatMoney(sHd)}</td>
-              <td class="text-right font-bold">${formatMoney(sWmp)}</td>
               <td class="text-right font-bold" style="color:#93C5FD !important;">${formatMoney(sTot)}</td>
             </tr>
           `;
@@ -2378,14 +2371,14 @@
         ws2.getRow(3).height = 24;
 
         // Group headers
-        ws2.mergeCells('D5:J5');
+        ws2.mergeCells('D5:I5');
         const g1 = ws2.getCell('D5');
         g1.value = 'THỰC HIỆN (chi tiết theo từng kênh)';
         g1.font = { name: 'Calibri', size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
         g1.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF2E75B6' } };
         g1.alignment = { horizontal: 'center', vertical: 'middle' };
 
-        const g2 = ws2.getCell('K5');
+        const g2 = ws2.getCell('J5');
         g2.value = 'TỔNG CỘNG';
         g2.font = { name: 'Calibri', size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
         g2.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
@@ -2395,9 +2388,9 @@
         // Subheaders Row 6 (Bỏ Target và % Đạt)
         const teamHeaders = [
           'STT', 'Nhân Viên', 'BHX\n(cố định)', 'GS25', '7-Eleven',
-          'FamilyMart', 'Circle K', 'Hoàng Đức', 'WinMart+', 'Tổng TH\n(BHX+CVS)'
+          'FamilyMart', 'Circle K', 'Hoàng Đức', 'Tổng TH\n(BHX+CVS)'
         ];
-        const teamCols = ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
+        const teamCols = ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
         teamHeaders.forEach((th, idx) => {
           const c = ws2.getCell(teamCols[idx] + '6');
           c.value = th;
@@ -2429,10 +2422,9 @@
           setC('G', emp.fm_actual, '#,##0', false, 'right');
           setC('H', emp.ck_actual, '#,##0', false, 'right');
           setC('I', emp.hd_actual, '#,##0', false, 'right');
-          setC('J', emp.wmp_actual, '#,##0', false, 'right');
 
-          // Tổng TH formula =SUM(D..:J..)
-          setC('K', { formula: `SUM(D${r}:J${r})`, result: emp.total_actual }, '#,##0', true, 'right');
+          // Tổng TH formula =SUM(D..:I..)
+          setC('J', { formula: `SUM(D${r}:I${r})`, result: emp.total_actual }, '#,##0', true, 'right');
           ws2.getRow(r).height = 22;
         });
 
@@ -2447,7 +2439,7 @@
         totLbl.border = thinBorder;
         ws2.getCell(`C${totalR}`).border = thinBorder;
 
-        const sumCols = ['D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
+        const sumCols = ['D', 'E', 'F', 'G', 'H', 'I', 'J'];
         const sumResults = [
           p.total_actual_bhx,
           p.employees.reduce((a,x)=>a+x.gs25_actual,0),
@@ -2455,7 +2447,6 @@
           p.employees.reduce((a,x)=>a+x.fm_actual,0),
           p.employees.reduce((a,x)=>a+x.ck_actual,0),
           p.employees.reduce((a,x)=>a+x.hd_actual,0),
-          p.employees.reduce((a,x)=>a+x.wmp_actual,0),
           p.total_actual
         ];
         sumCols.forEach((col, idx) => {

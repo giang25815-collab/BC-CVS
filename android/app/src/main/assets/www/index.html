@@ -1088,7 +1088,7 @@
           <div style="display:flex; align-items:center; gap:12px;">
             <div class="file-icon-box" id="iconBoxST">🏢</div>
             <div style="flex:1; min-width:0;">
-              <div style="font-size:13.5px; font-weight:700; color:#0f172a;">1. File Siêu Thị (BHX 5 Hubs + WinMart+)</div>
+              <div style="font-size:13.5px; font-weight:700; color:#0f172a;">1. File Siêu Thị (BHX 5 Hubs)</div>
               <div id="statusST" style="font-size:12.5px; color:#475569; margin-top:2px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">
                 Chờ nạp file Siêu Thị (BHX)...
               </div>
@@ -1240,7 +1240,6 @@
               <option value="FamilyMart">FamilyMart</option>
               <option value="Circle K">Circle K</option>
               <option value="Hoàng Đức">Hoàng Đức</option>
-              <option value="WinMart+">WinMart+</option>
             </select>
             <select class="search-input" id="filterEmp" onchange="filterStoresTable()" style="padding:6px 12px; font-size:13px;">
               <option value="">Tất cả nhân viên</option>
@@ -2561,14 +2560,20 @@ const DEFAULT_FM_STORES = [
             let foundTargets = {};
             let foundBhxStores = {};
 
-            // Sắp xếp thứ tự ưu tiên các sheet: Dashboard, Tổng Hợp, Team, rồi đến các sheet khác
+            // Sắp xếp thứ tự ưu tiên các sheet:
+            // 1. Sheet Target T9 hoặc Target / Chỉ tiêu -> ƯU TIÊN SỐ 1
+            // 2. Dashboard, Tổng Hợp, Summary
+            // 3. Team, Tiến độ, NV
+            // 4. Các sheet khác
             const sortedSheetNames = [...wb.SheetNames].sort((a, b) => {
               const na = normalizeText(a);
               const nb = normalizeText(b);
               const score = s => {
-                if (s.includes('dashboard') || s.includes('tonghop') || s.includes('chitieuteam') || s.includes('summary')) return 0;
-                if (s.includes('team') || s.includes('tiendo') || s.includes('nv') || s.includes('nhanvien')) return 1;
-                return 2;
+                if (s.includes('targett') || s.includes('chitieut')) return 0;
+                if (s.includes('target') || s.includes('chitieu')) return 1;
+                if (s.includes('dashboard') || s.includes('tonghop') || s.includes('chitieuteam') || s.includes('summary')) return 2;
+                if (s.includes('team') || s.includes('tiendo') || s.includes('nv') || s.includes('nhanvien')) return 3;
+                return 4;
               };
               return score(na) - score(nb);
             });
@@ -3634,7 +3639,6 @@ const DEFAULT_FM_STORES = [
               <th class="text-right">FamilyMart</th>
               <th class="text-right">Circle K</th>
               <th class="text-right">Hoàng Đức</th>
-              <th class="text-right">WinMart+</th>
               <th class="text-right" style="background:#2E75B6; color:#fff;">Tổng TH (BHX+CVS)</th>
               <th class="text-center" style="background:#1F4E78; color:#fff; min-width:85px;">% Đạt</th>
             </tr>
@@ -3650,7 +3654,6 @@ const DEFAULT_FM_STORES = [
               <th class="text-right">FamilyMart</th>
               <th class="text-right">Circle K</th>
               <th class="text-right">Hoàng Đức</th>
-              <th class="text-right">WinMart+</th>
               <th class="text-right" style="background:#2E75B6;">Tổng TH (BHX+CVS)</th>
             </tr>
           `;
@@ -3671,7 +3674,6 @@ const DEFAULT_FM_STORES = [
             <td class="text-right">${formatNumber(e.fm_actual)}</td>
             <td class="text-right">${formatNumber(e.ck_actual)}</td>
             <td class="text-right">${formatNumber(e.hd_actual)}</td>
-            <td class="text-right">${formatNumber(e.wmp_actual)}</td>
             <td class="text-right font-bold" style="color:#0f766e; font-size:13.5px;">${formatNumber(e.total_actual)}</td>
             ${isTarget ? `<td class="text-center"><span class="${chipClass}">${e.percent}%</span></td>` : ''}
           </tr>
@@ -3688,7 +3690,6 @@ const DEFAULT_FM_STORES = [
           <td class="text-right font-bold" style="color:#FFFFFF !important;">${formatNumber((data.employees || []).reduce((acc, x) => acc + (x.fm_actual || 0), 0))}</td>
           <td class="text-right font-bold" style="color:#FFFFFF !important;">${formatNumber((data.employees || []).reduce((acc, x) => acc + (x.ck_actual || 0), 0))}</td>
           <td class="text-right font-bold" style="color:#FFFFFF !important;">${formatNumber((data.employees || []).reduce((acc, x) => acc + (x.hd_actual || 0), 0))}</td>
-          <td class="text-right font-bold" style="color:#FFFFFF !important;">${formatNumber((data.employees || []).reduce((acc, x) => acc + (x.wmp_actual || 0), 0))}</td>
           <td class="text-right font-bold" style="color:#93C5FD !important; font-size:14px;">${formatNumber(data.total_actual)}</td>
           ${isTarget ? `<td class="text-center font-bold" style="color:#FDE047 !important; font-size:14px;">${data.percent_achieved}%</td>` : ''}
         </tr>
@@ -4297,7 +4298,6 @@ const DEFAULT_FM_STORES = [
             <td class="text-right">${formatNumber(e.fm_actual)}</td>
             <td class="text-right">${formatNumber(e.ck_actual)}</td>
             <td class="text-right">${formatNumber(e.hd_actual)}</td>
-            <td class="text-right">${formatNumber(e.wmp_actual)}</td>
             <td class="text-right font-bold" style="color:#0f766e;">${formatNumber(e.total_actual)}</td>
             ${isTarget ? `<td class="text-center"><span class="${chipClass}">${e.percent}%</span></td>` : ''}
           </tr>
@@ -4311,7 +4311,6 @@ const DEFAULT_FM_STORES = [
       const totFm = filtered.reduce((a, b) => a + (b.fm_actual || 0), 0);
       const totCk = filtered.reduce((a, b) => a + (b.ck_actual || 0), 0);
       const totHd = filtered.reduce((a, b) => a + (b.hd_actual || 0), 0);
-      const totWmp = filtered.reduce((a, b) => a + (b.wmp_actual || 0), 0);
       const totAct = filtered.reduce((a, b) => a + (b.total_actual || 0), 0);
       const totPct = totTgt > 0 ? parseFloat(((totAct / totTgt) * 100).toFixed(2)) : 0;
 
@@ -4327,7 +4326,6 @@ const DEFAULT_FM_STORES = [
           <td class="text-right font-bold" style="color:#FFFFFF !important;">${formatNumber(totFm)}</td>
           <td class="text-right font-bold" style="color:#FFFFFF !important;">${formatNumber(totCk)}</td>
           <td class="text-right font-bold" style="color:#FFFFFF !important;">${formatNumber(totHd)}</td>
-          <td class="text-right font-bold" style="color:#FFFFFF !important;">${formatNumber(totWmp)}</td>
           <td class="text-right font-bold" style="color:#93C5FD !important; font-size:13.5px;">${formatNumber(totAct)}</td>
           ${isTarget ? `<td class="text-center font-bold" style="color:#FDE047 !important; font-size:14px;">${totPct}%</td>` : ''}
         </tr>
@@ -5739,15 +5737,15 @@ const DEFAULT_FM_STORES = [
           ws2.getRow(3).height = 24;
 
           // Group headers
-          ws2.mergeCells('E5:K5');
+          ws2.mergeCells('E5:J5');
           const g1 = ws2.getCell('E5');
           g1.value = 'THỰC HIỆN (chi tiết theo kênh)';
           g1.font = { name: 'Calibri', size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
           g1.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF2E75B6' } };
           g1.alignment = { horizontal: 'center', vertical: 'middle' };
 
-          ws2.mergeCells('L5:M5');
-          const g2 = ws2.getCell('L5');
+          ws2.mergeCells('K5:L5');
+          const g2 = ws2.getCell('K5');
           g2.value = 'ĐÁNH GIÁ';
           g2.font = { name: 'Calibri', size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
           g2.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFDD2323' } };
@@ -5757,9 +5755,9 @@ const DEFAULT_FM_STORES = [
           // Subheaders Row 6
           const teamHeaders = [
             'STT', 'Nhân Viên', 'Target', 'BHX\n(cố định)', 'GS25', '7-Eleven',
-            'FamilyMart', 'Circle K', 'Hoàng Đức', 'WinMart+', 'Tổng TH\n(BHX+CVS)', '% Đạt'
+            'FamilyMart', 'Circle K', 'Hoàng Đức', 'Tổng TH\n(BHX+CVS)', '% Đạt'
           ];
-          const teamCols = ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M'];
+          const teamCols = ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
           teamHeaders.forEach((th, idx) => {
             const c = ws2.getCell(teamCols[idx] + '6');
             c.value = th;
@@ -5792,13 +5790,12 @@ const DEFAULT_FM_STORES = [
             setC('H', emp.fm_actual, '#,##0', false, 'right');
             setC('I', emp.ck_actual, '#,##0', false, 'right');
             setC('J', emp.hd_actual, '#,##0', false, 'right');
-            setC('K', emp.wmp_actual, '#,##0', false, 'right');
 
-            // Tổng TH formula =SUM(E..:K..)
-            setC('L', { formula: `SUM(E${r}:K${r})`, result: emp.total_actual }, '#,##0', true, 'right');
+            // Tổng TH formula =SUM(E..:J..)
+            setC('K', { formula: `SUM(E${r}:J${r})`, result: emp.total_actual }, '#,##0', true, 'right');
 
-            // % Đạt formula =L../D..
-            const pctCell = setC('M', { formula: `L${r}/D${r}`, result: (emp.percent || 0) / 100 }, '0.0%', true, 'center');
+            // % Đạt formula =K../D..
+            const pctCell = setC('L', { formula: `K${r}/D${r}`, result: (emp.percent || 0) / 100 }, '0.0%', true, 'center');
             if ((emp.percent || 0) >= p.timegone) {
               pctCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF28E11F' } };
               pctCell.font = { name: 'Calibri', bold: true, color: { argb: 'FF000000' } };
@@ -5823,7 +5820,7 @@ const DEFAULT_FM_STORES = [
           totLbl.border = thinBorder;
           ws2.getCell(`C${totalR}`).border = thinBorder;
 
-          const sumCols = ['D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+          const sumCols = ['D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
           const sumResults = [
             p.total_target, p.total_actual_bhx,
             p.employees.reduce((a,x)=>a+x.gs25_actual,0),
@@ -5831,7 +5828,6 @@ const DEFAULT_FM_STORES = [
             p.employees.reduce((a,x)=>a+x.fm_actual,0),
             p.employees.reduce((a,x)=>a+x.ck_actual,0),
             p.employees.reduce((a,x)=>a+x.hd_actual,0),
-            p.employees.reduce((a,x)=>a+x.wmp_actual,0),
             p.total_actual
           ];
           sumCols.forEach((col, idx) => {
@@ -5844,8 +5840,8 @@ const DEFAULT_FM_STORES = [
             sc.border = thinBorder;
           });
 
-          const pctTot = ws2.getCell(`M${totalR}`);
-          pctTot.value = { formula: `L${totalR}/D${totalR}`, result: (p.percent_achieved || 0) / 100 };
+          const pctTot = ws2.getCell(`L${totalR}`);
+          pctTot.value = { formula: `K${totalR}/D${totalR}`, result: (p.percent_achieved || 0) / 100 };
           pctTot.numFmt = '0.0%';
           pctTot.font = { name: 'Calibri', size: 12, bold: true, color: { argb: 'FFFFFF00' } };
           pctTot.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
@@ -5895,14 +5891,14 @@ const DEFAULT_FM_STORES = [
           ws2.getRow(3).height = 24;
 
           // Group headers
-          ws2.mergeCells('D5:J5');
+          ws2.mergeCells('D5:I5');
           const g1 = ws2.getCell('D5');
           g1.value = 'THỰC HIỆN (chi tiết theo từng kênh)';
           g1.font = { name: 'Calibri', size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
           g1.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF2E75B6' } };
           g1.alignment = { horizontal: 'center', vertical: 'middle' };
 
-          const g2 = ws2.getCell('K5');
+          const g2 = ws2.getCell('J5');
           g2.value = 'TỔNG CỘNG';
           g2.font = { name: 'Calibri', size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
           g2.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
@@ -5912,9 +5908,9 @@ const DEFAULT_FM_STORES = [
           // Subheaders Row 6 (Bỏ Target và % Đạt)
           const teamHeaders = [
             'STT', 'Nhân Viên', 'BHX\n(cố định)', 'GS25', '7-Eleven',
-            'FamilyMart', 'Circle K', 'Hoàng Đức', 'WinMart+', 'Tổng TH\n(BHX+CVS)'
+            'FamilyMart', 'Circle K', 'Hoàng Đức', 'Tổng TH\n(BHX+CVS)'
           ];
-          const teamCols = ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
+          const teamCols = ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
           teamHeaders.forEach((th, idx) => {
             const c = ws2.getCell(teamCols[idx] + '6');
             c.value = th;
@@ -5946,10 +5942,9 @@ const DEFAULT_FM_STORES = [
             setC('G', emp.fm_actual, '#,##0', false, 'right');
             setC('H', emp.ck_actual, '#,##0', false, 'right');
             setC('I', emp.hd_actual, '#,##0', false, 'right');
-            setC('J', emp.wmp_actual, '#,##0', false, 'right');
 
-            // Tổng TH formula =SUM(D..:J..)
-            setC('K', { formula: `SUM(D${r}:J${r})`, result: emp.total_actual }, '#,##0', true, 'right');
+            // Tổng TH formula =SUM(D..:I..)
+            setC('J', { formula: `SUM(D${r}:I${r})`, result: emp.total_actual }, '#,##0', true, 'right');
             ws2.getRow(r).height = 22;
           });
 
@@ -5964,7 +5959,7 @@ const DEFAULT_FM_STORES = [
           totLbl.border = thinBorder;
           ws2.getCell(`C${totalR}`).border = thinBorder;
 
-          const sumCols = ['D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
+          const sumCols = ['D', 'E', 'F', 'G', 'H', 'I', 'J'];
           const sumResults = [
             p.total_actual_bhx,
             p.employees.reduce((a,x)=>a+x.gs25_actual,0),
@@ -5972,7 +5967,6 @@ const DEFAULT_FM_STORES = [
             p.employees.reduce((a,x)=>a+x.fm_actual,0),
             p.employees.reduce((a,x)=>a+x.ck_actual,0),
             p.employees.reduce((a,x)=>a+x.hd_actual,0),
-            p.employees.reduce((a,x)=>a+x.wmp_actual,0),
             p.total_actual
           ];
           sumCols.forEach((col, idx) => {
