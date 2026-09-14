@@ -2801,37 +2801,37 @@ const DEFAULT_FM_STORES = [
     async function classifyAndAssignFile(file, preferredType) {
       if (!file) return;
       const fn = file.name.toUpperCase();
-      let type = null;
+      let type = preferredType || null;
 
-      // Rule 1: Filename check
-      if (fn.includes('_ST_') || fn.includes('ST_KD6') || fn.includes('SIEU THI') || fn.includes('SIEUTHI') || fn.includes('BHX')) {
-        type = 'ST';
-      } else if (fn.includes('KD6') || fn.includes('KD06') || fn.includes('CVS') || fn.includes('NPP') || fn.includes('FAMILY')) {
-        type = 'CVS';
-      } else if (preferredType) {
-        type = preferredType;
-      } else {
-        // Rule 2: Inspect content if filename is generic
-        try {
-          const wb = await readWorkbookFromFile(file);
-          if (wb.SheetNames.includes('NPP')) {
-            type = 'CVS';
-          } else {
-            const sName = wb.SheetNames[0];
-            const rows = XLSX.utils.sheet_to_json(wb.Sheets[sName], { header: 1 });
-            let hasST = false, hasCVS = false;
-            for (let i = 0; i < Math.min(40, rows.length); i++) {
-              const rStr = JSON.stringify(rows[i] || '');
-              if (rStr.includes('XH4001') || rStr.includes('Châu Pha') || rStr.includes('WMP_')) hasST = true;
-              if (rStr.includes('GS0003') || rStr.includes('SS4001') || rStr.includes('VT4050')) hasCVS = true;
+      if (!type) {
+        // Rule 1: Filename check
+        if (fn.includes('_ST_') || fn.includes('ST_KD6') || fn.includes('SIEU THI') || fn.includes('SIEUTHI') || fn.includes('BHX')) {
+          type = 'ST';
+        } else if (fn.includes('KD6') || fn.includes('KD06') || fn.includes('CVS') || fn.includes('NPP') || fn.includes('FAMILY')) {
+          type = 'CVS';
+        } else {
+          // Rule 2: Inspect content if filename is generic
+          try {
+            const wb = await readWorkbookFromFile(file);
+            if (wb.SheetNames.includes('NPP')) {
+              type = 'CVS';
+            } else {
+              const sName = wb.SheetNames[0];
+              const rows = XLSX.utils.sheet_to_json(wb.Sheets[sName], { header: 1 });
+              let hasST = false, hasCVS = false;
+              for (let i = 0; i < Math.min(40, rows.length); i++) {
+                const rStr = JSON.stringify(rows[i] || '');
+                if (rStr.includes('XH4001') || rStr.includes('Châu Pha') || rStr.includes('WMP_')) hasST = true;
+                if (rStr.includes('GS0003') || rStr.includes('SS4001') || rStr.includes('VT4050')) hasCVS = true;
+              }
+              if (hasST && !hasCVS) type = 'ST';
+              else if (hasCVS && !hasST) type = 'CVS';
+              else if (!fileST) type = 'ST';
+              else type = 'CVS';
             }
-            if (hasST && !hasCVS) type = 'ST';
-            else if (hasCVS && !hasST) type = 'CVS';
-            else if (!fileST) type = 'ST';
-            else type = 'CVS';
+          } catch (err) {
+            type = !fileST ? 'ST' : 'CVS';
           }
-        } catch (err) {
-          type = preferredType || (!fileST ? 'ST' : 'CVS');
         }
       }
 
@@ -3056,27 +3056,38 @@ const DEFAULT_FM_STORES = [
       // Bóc tách đơn hàng SKU FamilyMart từ sheet NPP (nếu có trong file CVS)
       const nppData = {};
       let sheetNPP = null;
-      for (let sName of wbCVS.SheetNames) {
-        const upper = sName.toUpperCase();
-        if (upper === 'NPP' || upper.includes('NPP') || upper.includes('FAMILY')) {
-          sheetNPP = sName;
-          break;
-        }
+      // Ưu tiên 1: Tên sheet chính xác tuyệt đối là 'NPP' hoặc 'FAMILYMART' (tránh tuyệt đối sheet 'KD6-NPP')
+      if (wbCVS.SheetNames.includes('NPP')) {
+        sheetNPP = 'NPP';
+      } else {
+        sheetNPP = wbCVS.SheetNames.find(s => s.trim().toUpperCase() === 'NPP') ||
+                   wbCVS.SheetNames.find(s => s.trim().toUpperCase() === 'FAMILYMART') ||
+                   wbCVS.SheetNames.find(s => s.toUpperCase().includes('NPP') && !s.toUpperCase().includes('KD6'));
       }
 
-      if (sheetNPP) {
+      if (sheetNPP && wbCVS.Sheets[sheetNPP]) {
         const rowsNPP = XLSX.utils.sheet_to_json(wbCVS.Sheets[sheetNPP], { header: 1 });
         if (rowsNPP.length > 1) {
           let idxOtype = 0, idxOcode = 4, idxOname = 5, idxOaddr = 7, idxIcode = 8, idxIname = 9, idxQty = 11, idxAmt = 12;
           const hRow = rowsNPP[0].map(h => String(h || '').trim().toUpperCase());
-          if (hRow.includes('CUST_NO') || hRow.includes('MA_KH') || hRow.includes('OCODE')) {
-            idxOcode = hRow.findIndex(h => h.includes('CUST_NO') || h.includes('MA_KH') || h.includes('OCODE'));
-            idxOaddr = hRow.findIndex(h => h.includes('ADDR') || h.includes('DIA_CHI'));
-            idxIcode = hRow.findIndex(h => h.includes('ITEM') || h.includes('MA_SP') || h.includes('ICODE'));
-            idxIname = hRow.findIndex(h => h.includes('NAME') || h.includes('TEN_SP') || h.includes('INAME'));
-            idxAmt = hRow.findIndex(h => h.includes('AMOUNT') || h.includes('THANH_TIEN') || h.includes('AMT'));
-            idxOtype = hRow.findIndex(h => h.includes('TYPE') || h.includes('LOAI'));
-            idxOname = hRow.findIndex(h => h.includes('CUST_NAME') || h.includes('TEN_KH'));
+          if (hRow.includes('CUST_NO') || hRow.includes('MA_KH') || hRow.includes('OCODE') || hRow.includes('OUTLETCODE') || hRow.includes('OUTLETNAME')) {
+            const findIdx = (keywords) => hRow.findIndex(h => keywords.some(kw => h.includes(kw)));
+            const fOcode = findIdx(['OUTLETCODE', 'CUST_NO', 'MA_KH', 'OCODE']);
+            if (fOcode >= 0) idxOcode = fOcode;
+            const fOaddr = findIdx(['OUTLETADDRESS', 'ADDR', 'DIA_CHI']);
+            if (fOaddr >= 0) idxOaddr = fOaddr;
+            const fIcode = findIdx(['ITEMCODE', 'ITEM_NO', 'MA_SP', 'ICODE']);
+            if (fIcode >= 0) idxIcode = fIcode;
+            const fIname = findIdx(['ITEMNAME', 'ITEM_NAME', 'TEN_SP', 'INAME']);
+            if (fIname >= 0) idxIname = fIname;
+            const fAmt = findIdx(['AMOUNT', 'THANH_TIEN', 'AMT']);
+            if (fAmt >= 0) idxAmt = fAmt;
+            const fQty = findIdx(['QUANTITY', 'QTY', 'SO_LUONG']);
+            if (fQty >= 0) idxQty = fQty;
+            const fOtype = findIdx(['OUTLETTYPE', 'TYPE', 'LOAI']);
+            if (fOtype >= 0) idxOtype = fOtype;
+            const fOname = findIdx(['OUTLETNAME', 'CUST_NAME', 'TEN_KH']);
+            if (fOname >= 0) idxOname = fOname;
           }
 
           for (let i = 1; i < rowsNPP.length; i++) {
