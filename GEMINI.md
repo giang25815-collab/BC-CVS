@@ -33,3 +33,9 @@ Khi thư mục này được mở trên bất kỳ máy tính nào:
    - Bất kỳ thay đổi nào trong `gas_app/index.html`, `gas_app/view.html`, `gas_app/master_data.js` **PHẢI** được sao chép ghi đè vào `gas_app/android/app/src/main/assets/www/`.
    - File Excel `gas_app/Team_CamGiang_Report.xlsx` và Google Apps Script `MasterData.gs` phải luôn đồng bộ danh sách 138 cửa hàng.
    - Khi build ứng dụng Android, chạy `build_apk.bat` để tạo ra `BaoCaoDoanhSo_TeamCamGiang.apk` và `BaoCaoThucDat.apk`.
+
+5. **Công thức chuẩn tính Circle K (Sheet SO):**
+   - Doanh số Circle K lấy từ sheet `SO` trong file `HNTRINH_KD6...`.
+   - Kho Khô (`VT4050` Nam Tân Uyên = `430,620,084 đ`) chia đều cho số cửa hàng phát sinh đơn hàng mát toàn hệ thống (`230 cửa hàng`) = `1,872,261 đ/CH`.
+   - Mỗi cửa hàng có phát sinh đơn trong team nhận: `1,872,261 đ` + `Thành tiền hàng mát của cửa hàng đó`. Cửa hàng không có đơn nhận `0 đ`.
+   - Tổng Circle K của toàn team: **`69,457,638 đ`** (22 CH có đơn, 5 CH không có đơn).

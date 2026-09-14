@@ -924,14 +924,14 @@ const MASTER_DATA = {
       "chain": "Circle K",
       "store_code": "CVS_CIRCLEK.75.4325",
       "store_address": "373, Hồ Thị Hương, P.Xuân Thanh, TP.Long Khánh, T.Đồng Nai",
-      "actual": 2638944
+      "actual": 3771969
     },
     {
       "employee_name": "Lê Thị Thùy Châu",
       "chain": "Circle K",
       "store_code": "CVS_CIRCLEK.75.4326",
       "store_address": "Số 22, Cách Mạng Tháng Tám, P.Long Khánh, T.Đồng Nai",
-      "actual": 2073132
+      "actual": 3915157
     },
     {
       "employee_name": "Lê Thị Thùy Châu",
@@ -945,21 +945,21 @@ const MASTER_DATA = {
       "chain": "Circle K",
       "store_code": "CVS_CIRCLEK.79.4052",
       "store_address": "105, Lê Trọng Tấn, P.Dĩ An, TP.Hồ Chí Minh",
-      "actual": 1971804
+      "actual": 6229361
     },
     {
       "employee_name": "Não Thị Anh Đào",
       "chain": "Circle K",
       "store_code": "CVS_CIRCLEK.75.4159",
       "store_address": "1347, Nguyễn Ái Quốc, P.Tân Tiến, TP.Biên Hòa, T.Đồng Nai",
-      "actual": 0
+      "actual": 2547861
     },
     {
       "employee_name": "Não Thị Anh Đào",
       "chain": "Circle K",
       "store_code": "CVS_CIRCLEK.75.4160",
       "store_address": "144, Phan Trung, Khu phố 7, P.Tân Tiến, TP.Biên Hòa, T.Đồng Nai",
-      "actual": 0
+      "actual": 3873153
     },
     {
       "employee_name": "Não Thị Anh Đào",
@@ -1169,14 +1169,14 @@ const MASTER_DATA = {
       "chain": "Circle K",
       "store_code": "CVS_CIRCLEK.79.4098",
       "store_address": "Số 174, Trần Văn Ơn, P.Phú Lợi, TP.Hồ Chí Minh",
-      "actual": 0
+      "actual": 2990541
     },
     {
       "employee_name": "Nguyễn Đức Hoà",
       "chain": "Circle K",
       "store_code": "CVS_CIRCLEK.79.4099",
       "store_address": "Số 508, Cách Mạng Tháng Tám, P.Thủ Dầu Một, TP.Hồ Chí Minh",
-      "actual": 1535676
+      "actual": 3334341
     },
     {
       "employee_name": "Nguyễn Đức Hoà",
@@ -1484,49 +1484,49 @@ const MASTER_DATA = {
       "chain": "Circle K",
       "store_code": "CVS_CIRCLEK.79.4253",
       "store_address": "1, Thùy Vân, P.Vũng Tàu, TP.Hồ Chí Minh",
-      "actual": 2262144
+      "actual": 4276497
     },
     {
       "employee_name": "Nguyễn Thị Thanh Thủy",
       "chain": "Circle K",
       "store_code": "CVS_CIRCLEK.79.4263",
       "store_address": "1001, Bình Giã, P.Rạch Dừa, TP.Hồ Chí Minh",
-      "actual": 1183116
+      "actual": 2316141
     },
     {
       "employee_name": "Nguyễn Thị Thanh Thủy",
       "chain": "Circle K",
       "store_code": "CVS_CIRCLEK.79.4261",
       "store_address": "103, Thùy Vân, P.Vũng Tàu, TP.Hồ Chí Minh",
-      "actual": 933804
+      "actual": 2823069
     },
     {
       "employee_name": "Nguyễn Thị Thanh Thủy",
       "chain": "Circle K",
       "store_code": "CVS_CIRCLEK.79.4260",
       "store_address": "117/21, Thùy Vân, P.Vũng Tàu, TP.Hồ Chí Minh",
-      "actual": 933804
+      "actual": 2985957
     },
     {
       "employee_name": "Nguyễn Thị Thanh Thủy",
       "chain": "Circle K",
       "store_code": "CVS_CIRCLEK.79.4267",
       "store_address": "126A1, Hoàng Hoa Thám, P.Vũng Tàu, TP.Hồ Chí Minh",
-      "actual": 933804
+      "actual": 3497997
     },
     {
       "employee_name": "Nguyễn Thị Thanh Thủy",
       "chain": "Circle K",
       "store_code": "CVS_CIRCLEK.79.4252",
       "store_address": "15, La Văn Cầu, P.Vũng Tàu, TP.Hồ Chí Minh",
-      "actual": 933804
+      "actual": 2367117
     },
     {
       "employee_name": "Nguyễn Thị Thanh Thủy",
       "chain": "Circle K",
       "store_code": "CVS_CIRCLEK.79.4262",
       "store_address": "152, Hoàng Hoa Thám, P.Vũng Tàu, TP.Hồ Chí Minh",
-      "actual": 933804
+      "actual": 2726157
     },
     {
       "employee_name": "Nguyễn Thị Thanh Thủy",
@@ -1540,28 +1540,28 @@ const MASTER_DATA = {
       "chain": "Circle K",
       "store_code": "CVS_CIRCLEK.79.4268",
       "store_address": "186, Hoàng Hoa Thám, P.Vũng Tàu, TP.Hồ Chí Minh",
-      "actual": 933804
+      "actual": 2372109
     },
     {
       "employee_name": "Nguyễn Thị Thanh Thủy",
       "chain": "Circle K",
       "store_code": "CVS_CIRCLEK.79.4255",
       "store_address": "205, Nam Kỳ Khởi Nghĩa, P.Vũng Tàu, TP.Hồ Chí Minh",
-      "actual": 1186476
+      "actual": 2919501
     },
     {
       "employee_name": "Nguyễn Thị Thanh Thủy",
       "chain": "Circle K",
       "store_code": "CVS_CIRCLEK.79.4254",
       "store_address": "26, Phan Văn Trị, P.Vũng Tàu, TP.Hồ Chí Minh",
-      "actual": 933804
+      "actual": 2066829
     },
     {
       "employee_name": "Nguyễn Thị Thanh Thủy",
       "chain": "Circle K",
       "store_code": "CVS_CIRCLEK.79.4269",
       "store_address": "273, Lê Hồng Phong, P.Vũng Tàu, TP.Hồ Chí Minh",
-      "actual": 933804
+      "actual": 3169317
     },
     {
       "employee_name": "Nguyễn Thị Thanh Thủy",
@@ -1575,14 +1575,14 @@ const MASTER_DATA = {
       "chain": "Circle K",
       "store_code": "CVS_CIRCLEK.79.4259",
       "store_address": "43, Thuỳ Vân, P.Vũng Tàu, TP.Hồ Chí Minh",
-      "actual": 1234092
+      "actual": 2367117
     },
     {
       "employee_name": "Nguyễn Thị Thanh Thủy",
       "chain": "Circle K",
       "store_code": "CVS_CIRCLEK.79.4256",
       "store_address": "6, Quang Trung, P.Vũng Tàu, TP.Hồ Chí Minh",
-      "actual": 933804
+      "actual": 3006909
     },
     {
       "employee_name": "Nguyễn Thị Thanh Thủy",
@@ -1596,14 +1596,14 @@ const MASTER_DATA = {
       "chain": "Circle K",
       "store_code": "CVS_CIRCLEK.79.4257",
       "store_address": "Số 12 Khu Nhà DV 15 Tầng, Nguyễn Thái Học, P.Tam Thắng, TP.Hồ Chí Minh",
-      "actual": 933804
+      "actual": 2066829
     },
     {
       "employee_name": "Nguyễn Thị Thanh Thủy",
       "chain": "Circle K",
       "store_code": "CVS_CIRCLEK.79.4566",
       "store_address": "Tầng 1, Chung Cư Kim Ngân, 275 Lê Hồng Phong, Phường Vũng Tàu, Thành phố Hồ Chí Minh, Việt Nam.",
-      "actual": 2052684
+      "actual": 3833709
     },
     {
       "employee_name": "Nguyễn Thị Thanh Thủy",

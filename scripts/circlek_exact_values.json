@@ -1,0 +1,218 @@
+{
+  "CVS_CIRCLEK.75.4325": {
+    "employee_name": "Lê Thị Thùy Châu",
+    "store_code": "CVS_CIRCLEK.75.4325",
+    "store_address": "373, Hồ Thị Hương, P.Xuân Thanh, TP.Long Khánh, T.Đồng Nai",
+    "mat": 1899708,
+    "kho_kho": 1872261,
+    "actual": 3771969
+  },
+  "CVS_CIRCLEK.75.4326": {
+    "employee_name": "Lê Thị Thùy Châu",
+    "store_code": "CVS_CIRCLEK.75.4326",
+    "store_address": "Số 22, Cách Mạng Tháng Tám, P.Long Khánh, T.Đồng Nai",
+    "mat": 2042896,
+    "kho_kho": 1872261,
+    "actual": 3915157
+  },
+  "CVS_CIRCLEK.79.4052": {
+    "employee_name": "Não Thị Anh Đào",
+    "store_code": "CVS_CIRCLEK.79.4052",
+    "store_address": "105, Lê Trọng Tấn, P.Dĩ An, TP.Hồ Chí Minh",
+    "mat": 4357100,
+    "kho_kho": 1872261,
+    "actual": 6229361
+  },
+  "CVS_CIRCLEK.75.4159": {
+    "employee_name": "Não Thị Anh Đào",
+    "store_code": "CVS_CIRCLEK.75.4159",
+    "store_address": "1347, Nguyễn Ái Quốc, P.Tân Tiến, TP.Biên Hòa, T.Đồng Nai",
+    "mat": 675600,
+    "kho_kho": 1872261,
+    "actual": 2547861
+  },
+  "CVS_CIRCLEK.75.4160": {
+    "employee_name": "Não Thị Anh Đào",
+    "store_code": "CVS_CIRCLEK.75.4160",
+    "store_address": "144, Phan Trung, Khu phố 7, P.Tân Tiến, TP.Biên Hòa, T.Đồng Nai",
+    "mat": 2000892,
+    "kho_kho": 1872261,
+    "actual": 3873153
+  },
+  "CVS_CIRCLEK.75.4097": {
+    "employee_name": "Não Thị Anh Đào",
+    "store_code": "CVS_CIRCLEK.75.4097",
+    "store_address": "Số 78, Võ Thị Sáu, P.Quyết Thắng, TP.Biên Hòa, T.Đồng Nai",
+    "mat": 0,
+    "kho_kho": 0,
+    "actual": 0
+  },
+  "CVS_CIRCLEK.79.4100": {
+    "employee_name": "Nguyễn Đức Hoà",
+    "store_code": "CVS_CIRCLEK.79.4100",
+    "store_address": "Ô 8, DC35, Giao Lộ đường D1 và đường D33, P.An Phú, TP.Hồ Chí Minh",
+    "mat": 0,
+    "kho_kho": 0,
+    "actual": 0
+  },
+  "CVS_CIRCLEK.79.4098": {
+    "employee_name": "Nguyễn Đức Hoà",
+    "store_code": "CVS_CIRCLEK.79.4098",
+    "store_address": "Số 174, Trần Văn Ơn, P.Phú Lợi, TP.Hồ Chí Minh",
+    "mat": 1118280,
+    "kho_kho": 1872261,
+    "actual": 2990541
+  },
+  "CVS_CIRCLEK.79.4099": {
+    "employee_name": "Nguyễn Đức Hoà",
+    "store_code": "CVS_CIRCLEK.79.4099",
+    "store_address": "Số 508, Cách Mạng Tháng Tám, P.Thủ Dầu Một, TP.Hồ Chí Minh",
+    "mat": 1462080,
+    "kho_kho": 1872261,
+    "actual": 3334341
+  },
+  "CVS_CIRCLEK.79.4253": {
+    "employee_name": "Nguyễn Thị Thanh Thủy",
+    "store_code": "CVS_CIRCLEK.79.4253",
+    "store_address": "1, Thùy Vân, P.Vũng Tàu, TP.Hồ Chí Minh",
+    "mat": 2404236,
+    "kho_kho": 1872261,
+    "actual": 4276497
+  },
+  "CVS_CIRCLEK.79.4263": {
+    "employee_name": "Nguyễn Thị Thanh Thủy",
+    "store_code": "CVS_CIRCLEK.79.4263",
+    "store_address": "1001, Bình Giã, P.Rạch Dừa, TP.Hồ Chí Minh",
+    "mat": 443880,
+    "kho_kho": 1872261,
+    "actual": 2316141
+  },
+  "CVS_CIRCLEK.79.4261": {
+    "employee_name": "Nguyễn Thị Thanh Thủy",
+    "store_code": "CVS_CIRCLEK.79.4261",
+    "store_address": "103, Thùy Vân, P.Vũng Tàu, TP.Hồ Chí Minh",
+    "mat": 950808,
+    "kho_kho": 1872261,
+    "actual": 2823069
+  },
+  "CVS_CIRCLEK.79.4260": {
+    "employee_name": "Nguyễn Thị Thanh Thủy",
+    "store_code": "CVS_CIRCLEK.79.4260",
+    "store_address": "117/21, Thùy Vân, P.Vũng Tàu, TP.Hồ Chí Minh",
+    "mat": 1113696,
+    "kho_kho": 1872261,
+    "actual": 2985957
+  },
+  "CVS_CIRCLEK.79.4267": {
+    "employee_name": "Nguyễn Thị Thanh Thủy",
+    "store_code": "CVS_CIRCLEK.79.4267",
+    "store_address": "126A1, Hoàng Hoa Thám, P.Vũng Tàu, TP.Hồ Chí Minh",
+    "mat": 1625736,
+    "kho_kho": 1872261,
+    "actual": 3497997
+  },
+  "CVS_CIRCLEK.79.4252": {
+    "employee_name": "Nguyễn Thị Thanh Thủy",
+    "store_code": "CVS_CIRCLEK.79.4252",
+    "store_address": "15, La Văn Cầu, P.Vũng Tàu, TP.Hồ Chí Minh",
+    "mat": 494856,
+    "kho_kho": 1872261,
+    "actual": 2367117
+  },
+  "CVS_CIRCLEK.79.4262": {
+    "employee_name": "Nguyễn Thị Thanh Thủy",
+    "store_code": "CVS_CIRCLEK.79.4262",
+    "store_address": "152, Hoàng Hoa Thám, P.Vũng Tàu, TP.Hồ Chí Minh",
+    "mat": 853896,
+    "kho_kho": 1872261,
+    "actual": 2726157
+  },
+  "CVS_CIRCLEK.79.4265": {
+    "employee_name": "Nguyễn Thị Thanh Thủy",
+    "store_code": "CVS_CIRCLEK.79.4265",
+    "store_address": "18, Nguyễn Trường Tộ, P.Vũng Tàu, TP.Hồ Chí Minh",
+    "mat": 0,
+    "kho_kho": 0,
+    "actual": 0
+  },
+  "CVS_CIRCLEK.79.4268": {
+    "employee_name": "Nguyễn Thị Thanh Thủy",
+    "store_code": "CVS_CIRCLEK.79.4268",
+    "store_address": "186, Hoàng Hoa Thám, P.Vũng Tàu, TP.Hồ Chí Minh",
+    "mat": 499848,
+    "kho_kho": 1872261,
+    "actual": 2372109
+  },
+  "CVS_CIRCLEK.79.4255": {
+    "employee_name": "Nguyễn Thị Thanh Thủy",
+    "store_code": "CVS_CIRCLEK.79.4255",
+    "store_address": "205, Nam Kỳ Khởi Nghĩa, P.Vũng Tàu, TP.Hồ Chí Minh",
+    "mat": 1047240,
+    "kho_kho": 1872261,
+    "actual": 2919501
+  },
+  "CVS_CIRCLEK.79.4254": {
+    "employee_name": "Nguyễn Thị Thanh Thủy",
+    "store_code": "CVS_CIRCLEK.79.4254",
+    "store_address": "26, Phan Văn Trị, P.Vũng Tàu, TP.Hồ Chí Minh",
+    "mat": 194568,
+    "kho_kho": 1872261,
+    "actual": 2066829
+  },
+  "CVS_CIRCLEK.79.4269": {
+    "employee_name": "Nguyễn Thị Thanh Thủy",
+    "store_code": "CVS_CIRCLEK.79.4269",
+    "store_address": "273, Lê Hồng Phong, P.Vũng Tàu, TP.Hồ Chí Minh",
+    "mat": 1297056,
+    "kho_kho": 1872261,
+    "actual": 3169317
+  },
+  "CVS_CIRCLEK.79.4258": {
+    "employee_name": "Nguyễn Thị Thanh Thủy",
+    "store_code": "CVS_CIRCLEK.79.4258",
+    "store_address": "4, Lê Lợi, P.Vũng Tàu, TP.Hồ Chí Minh",
+    "mat": 0,
+    "kho_kho": 0,
+    "actual": 0
+  },
+  "CVS_CIRCLEK.79.4259": {
+    "employee_name": "Nguyễn Thị Thanh Thủy",
+    "store_code": "CVS_CIRCLEK.79.4259",
+    "store_address": "43, Thuỳ Vân, P.Vũng Tàu, TP.Hồ Chí Minh",
+    "mat": 494856,
+    "kho_kho": 1872261,
+    "actual": 2367117
+  },
+  "CVS_CIRCLEK.79.4256": {
+    "employee_name": "Nguyễn Thị Thanh Thủy",
+    "store_code": "CVS_CIRCLEK.79.4256",
+    "store_address": "6, Quang Trung, P.Vũng Tàu, TP.Hồ Chí Minh",
+    "mat": 1134648,
+    "kho_kho": 1872261,
+    "actual": 3006909
+  },
+  "CVS_CIRCLEK.79.4266": {
+    "employee_name": "Nguyễn Thị Thanh Thủy",
+    "store_code": "CVS_CIRCLEK.79.4266",
+    "store_address": "78, Trần Hưng Đạo, P.Vũng Tàu, TP.Hồ Chí Minh",
+    "mat": 0,
+    "kho_kho": 0,
+    "actual": 0
+  },
+  "CVS_CIRCLEK.79.4257": {
+    "employee_name": "Nguyễn Thị Thanh Thủy",
+    "store_code": "CVS_CIRCLEK.79.4257",
+    "store_address": "Số 12 Khu Nhà DV 15 Tầng, Nguyễn Thái Học, P.Tam Thắng, TP.Hồ Chí Minh",
+    "mat": 194568,
+    "kho_kho": 1872261,
+    "actual": 2066829
+  },
+  "CVS_CIRCLEK.79.4566": {
+    "employee_name": "Nguyễn Thị Thanh Thủy",
+    "store_code": "CVS_CIRCLEK.79.4566",
+    "store_address": "Tầng 1, Chung Cư Kim Ngân, 275 Lê Hồng Phong, Phường Vũng Tàu, Thành phố Hồ Chí Minh, Việt Nam.",
+    "mat": 1961448,
+    "kho_kho": 1872261,
+    "actual": 3833709
+  }
+}

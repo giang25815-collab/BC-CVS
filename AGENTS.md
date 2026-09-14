@@ -14,3 +14,4 @@ For complete business logic, store distribution, SKU discovery engine, and histo
 - FamilyMart NPP sheet parsing: Dynamic auto-discovery of new SKUs outside static 46 list under category "SẢN PHẨM MỚI PHÁT SINH / KHÁC".
 - Sync constraint: Any edits to `index.html`, `view.html`, `master_data.js` must be copied to `android/app/src/main/assets/www/`.
 - Release APKs: Built via `build_apk.bat` -> `BaoCaoDoanhSo_TeamCamGiang.apk` and `BaoCaoThucDat.apk`.
+- Circle K formula (sheet SO): Kho Khô (VT4050 / 230 CH có đơn = 1,872,261 đ/CH) + Hàng Mát của từng cửa hàng có đơn. Cửa hàng không đơn = 0 đ. Tổng Circle K: 69,457,638 đ.

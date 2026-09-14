@@ -70,6 +70,26 @@ Dự án là một giải pháp báo cáo doanh số đa kênh tích hợp, kế
   - Tự động sinh thêm cột trong ma trận hiển thị (Web app, Link online `view.html`, và xuất Excel).
   - Đóng gói danh mục động vào tham số `cats` trong URL rút gọn `compactObj` để khi nhân viên mở link chia sẻ, giao diện vẫn hiển thị đầy đủ các SKU mới mà không bị lỗi.
 
+### 4. Công thức chuẩn tính Doanh số Circle K (Trích xuất từ sheet SO):
+- **Nguồn dữ liệu:** Sheet `SO` trong file `HNTRINH_KD6-Doanh so Nhap - Ban theo Mien Kenh Nhom hang_sent...`.
+- **Mã khách hàng chuỗi Circle K:** `VT4050`, `VT3013`, `VT3014`, `VT3015`.
+- **Phân bổ Kho Khô:**
+  - Kho Khô định vị tại: `Lô G1-9, Đường N3, N4, D2, KCN Nam Tân Uyên...` với mã `VT4050`. Doanh số Kho Khô toàn hệ thống: `430,620,084 đ`.
+  - Số lượng cửa hàng Circle K phát sinh đơn hàng mát trong toàn hệ thống miền: `230 cửa hàng`.
+  - Đơn giá chia bình quân Kho Khô cho mỗi cửa hàng có phát sinh đơn:  
+    $$tCk = \text{round}(430,620,084 / 230) = 1,872,261 \text{ đ/CH}$$
+- **Quy tắc tính doanh số từng cửa hàng:**
+  - Cửa hàng có phát sinh đơn hàng mát (`Hàng Mát > 0`):  
+    $$\text{Doanh số Thực đạt} = 1,872,261 \text{ đ} + \text{Thành tiền Hàng Mát của CH}$$
+  - Cửa hàng không phát sinh đơn (`Hàng Mát = 0`):  
+    $$\text{Doanh số Thực đạt} = 0 \text{ đ}$$
+- **Chi tiết Thực đạt 27 Cửa hàng Circle K Team Cẩm Giang:**
+  - **Lê Thị Thùy Châu (2 CH có đơn):** 7,687,126 đ (`CVS_CIRCLEK.75.4325`: 3,771,969 đ; `CVS_CIRCLEK.75.4326`: 3,915,157 đ).
+  - **Não Thị Anh Đào (4 CH - 3 có đơn, 1 không đơn):** 12,650,375 đ (`CVS_CIRCLEK.79.4052`: 6,229,361 đ; `CVS_CIRCLEK.75.4159`: 2,547,861 đ; `CVS_CIRCLEK.75.4160`: 3,873,153 đ; `CVS_CIRCLEK.75.4097`: 0 đ).
+  - **Nguyễn Đức Hoà (3 CH - 2 có đơn, 1 không đơn):** 6,324,882 đ (`CVS_CIRCLEK.79.4098`: 2,990,541 đ; `CVS_CIRCLEK.79.4099`: 3,334,341 đ; `CVS_CIRCLEK.79.4100`: 0 đ).
+  - **Nguyễn Thị Thanh Thủy (18 CH - 15 có đơn, 3 không đơn):** 42,795,255 đ.
+  - **TỔNG CỘNG CIRCLE K TOÀN TEAM:** **69,457,638 đ** (Đồng bộ chuẩn xác 100% giữa sheet `SO`, `Team_CamGiang_Report.xlsx`, `master_data.js`, App Web và APK).
+
 ---
 
 ## ⚡ 4. NGUYÊN TẮC BẤT BIẾN KHI ĐỒNG BỘ DỰ ÁN (CRITICAL RULES)
