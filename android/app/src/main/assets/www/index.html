@@ -1021,6 +1021,9 @@
           <span>Mục Cập Nhật KPI / Target Tháng Mới</span>
         </div>
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn btn-outline" onclick="resetToDefaultMonth9Target()" style="border-color:#10b981; color:#047857;" title="Khôi phục về bảng chỉ tiêu chuẩn Tháng 9 (7.6 Tỷ)">
+            🔄 Target Chuẩn T9 (7.6 Tỷ)
+          </button>
           <button class="btn btn-telegram-nav" onclick="openTelegramConfigModal()" title="Cài đặt Bot Token & Chat ID nhận báo cáo">
             🤖 Cấu Hình Bot Telegram
           </button>
@@ -2379,9 +2382,16 @@ const DEFAULT_FM_STORES = [
       return (Math.round(num || 0)).toLocaleString('vi-VN');
     }
 
+    function removeVietnameseDiacritics(str) {
+      if (!str) return '';
+      return String(str).normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/đ/g, 'd').replace(/Đ/g, 'D');
+    }
+
     function normalizeText(text) {
       if (!text) return '';
-      return String(text).toLowerCase().replace(/[,.\s\-_/()]/g, '');
+      return removeVietnameseDiacritics(String(text)).toLowerCase().replace(/[,.\s\-_/()]/g, '');
     }
 
     function calculateRealtimeTimegone(month, year) {
@@ -2551,25 +2561,43 @@ const DEFAULT_FM_STORES = [
             let foundTargets = {};
             let foundBhxStores = {};
 
-            // Ưu tiên cao nhất tìm sheet Tổng Hợp Team (chứa bảng tổng kết chuẩn của 10 nhân viên)
+            // 2. Tìm sheet Tổng Hợp Team (ưu tiên tuyệt đối vì chứa bảng tổng kết chuẩn của 10 nhân viên)
             let summarySheetName = wb.SheetNames.find(s => {
-              const norm = normalizeText(s).toLowerCase();
-              return norm.includes('tong hop') || norm.includes('summary') || norm.includes('chitieuteam');
+              const norm = normalizeText(s);
+              return norm.includes('tonghop') || norm.includes('chitieuteam') || norm.includes('summary');
             });
 
-            const sheetsToParse = summarySheetName ? [summarySheetName] : wb.SheetNames;
+            // QUY TẮC BẮT BUỘC: CHỈ ĐỌC DUY NHẤT 1 SHEET ĐÍCH!
+            // Tuyệt đối không duyệt qua nhiều sheet để cộng dồn khiến Target bị nhân dồn (nhân ba lên 32.5 tỷ)!
+            let sheetToParse = summarySheetName;
+            if (!sheetToParse) {
+              for (let sname of wb.SheetNames) {
+                const ws = wb.Sheets[sname];
+                const rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
+                for (let r = 0; r < Math.min(10, rows.length); r++) {
+                  const rowStr = (rows[r] || []).map(c => normalizeText(c).toUpperCase());
+                  if (rowStr.some(c => c.includes('PG') || c.includes('NHANVIEN') || c.includes('HOTEN')) &&
+                      rowStr.some(c => c.includes('CHITIEU') || c.includes('TARGET') || c.includes('DOANHSO'))) {
+                    sheetToParse = sname;
+                    break;
+                  }
+                }
+                if (sheetToParse) break;
+              }
+            }
+            if (!sheetToParse) sheetToParse = wb.SheetNames[0];
 
-            for (let sname of sheetsToParse) {
-              const ws = wb.Sheets[sname];
-              const rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
-              if (rows.length < 2) continue;
+            const isSummary = (sheetToParse === summarySheetName);
+            const ws = wb.Sheets[sheetToParse];
+            const rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
 
+            if (rows.length >= 2) {
               let headerRowIdx = -1;
               let headers = [];
               for (let r = 0; r < Math.min(10, rows.length); r++) {
-                const rowStr = (rows[r] || []).map(c => String(c || '').trim().toUpperCase());
-                if (rowStr.some(c => c.includes('PG') || c.includes('NHÂN VIÊN') || c.includes('HỌ TÊN')) &&
-                    rowStr.some(c => c.includes('CHỈ TIÊU') || c.includes('TARGET') || c.includes('DOANH SỐ'))) {
+                const rowStr = (rows[r] || []).map(c => normalizeText(c).toUpperCase());
+                if (rowStr.some(c => c.includes('PG') || c.includes('NHANVIEN') || c.includes('HOTEN')) &&
+                    rowStr.some(c => c.includes('CHITIEU') || c.includes('TARGET') || c.includes('DOANHSO'))) {
                   headerRowIdx = r;
                   headers = rowStr;
                   break;
@@ -2578,57 +2606,70 @@ const DEFAULT_FM_STORES = [
 
               if (headerRowIdx >= 0) {
                 // Ưu tiên cột họ tên PG (tránh cột Mã PG, Mã PG Leader)
-                let pgCol = headers.findIndex(h => (h.includes('HỌ TÊN') || h.includes('HỌ VÀ TÊN') || h.includes('TÊN PG') || h.includes('TÊN NHÂN VIÊN')) && !h.includes('LEADER'));
+                let pgCol = headers.findIndex(h => (h.includes('HOTEN') || h.includes('HOVATEN') || h.includes('TENPG') || h.includes('TENNHANVIEN')) && !h.includes('LEADER'));
                 if (pgCol < 0) {
-                  pgCol = headers.findIndex(h => (h.includes('NHÂN VIÊN') || h.includes('PG')) && !h.includes('MÃ') && !h.includes('LEADER'));
+                  pgCol = headers.findIndex(h => (h.includes('NHANVIEN') || h.includes('PG')) && !h.includes('MA') && !h.includes('LEADER'));
                 }
 
-                // Ưu tiên cột Target tháng cần nạp (vd "T9", "THÁNG 9", "CHÍNH THỨC")
-                let tgtCol = headers.findIndex(h => (h.includes('T' + detectedMonth) || h.includes('THÁNG ' + detectedMonth) || h.includes('CHÍNH THỨC')) && (h.includes('TARGET') || h.includes('CHỈ TIÊU')));
+                // QUY TẮC BẮT BUỘC: LẤY TARGET THÁNG HIỆN TẠI (vd T9 / Tháng 9 / Chính thức)
+                // TUYỆT ĐỐI LOẠI TRỪ THÁNG CŨ (T8/Tháng 8), CỘT CHÊNH LỆCH VÀ % THAY ĐỔI
+                let tgtCol = headers.findIndex(h => (h.includes('T' + detectedMonth) || h.includes('THANG' + detectedMonth) || h.includes('CHINHTHUC') || h.includes('HIENTAI')) && (h.includes('TARGET') || h.includes('CHITIEU')));
+                if (tgtCol < 0) {
+                  tgtCol = headers.findIndex(h => (h.includes('TARGET') || h.includes('CHITIEU')) &&
+                    !h.includes('T' + (detectedMonth - 1)) &&
+                    !h.includes('THANG' + (detectedMonth - 1)) &&
+                    !h.includes('T8') &&
+                    !h.includes('THANG8') &&
+                    !h.includes('CHENHLECH') &&
+                    !h.includes('THAYDOI')
+                  );
+                }
                 if (tgtCol < 0) {
                   for (let c = headers.length - 1; c >= 0; c--) {
-                    if (headers[c].includes('CHỈ TIÊU') || headers[c].includes('TARGET') || headers[c].includes('DOANH SỐ')) {
+                    if ((headers[c].includes('CHITIEU') || headers[c].includes('TARGET')) && !headers[c].includes('CHENHLECH') && !headers[c].includes('THAYDOI')) {
                       tgtCol = c;
                       break;
                     }
                   }
                 }
 
-                let bhxCol = headers.findIndex(h => h.includes('BHX') && (h.includes('SỐ CH') || h.includes('CH') || h.includes('CỬA HÀNG')));
-                let storeCol = headers.findIndex(h => h.includes('TÊN ST') || h.includes('STORE') || h.includes('CỬA HÀNG'));
-                let leadCol = headers.findIndex(h => h.includes('LEADER') || h.includes('QUẢN LÝ'));
+                let bhxCol = headers.findIndex(h => h.includes('BHX') && (h.includes('SOCH') || h.includes('CH') || h.includes('CUAHANG')));
+                let storeCol = headers.findIndex(h => h.includes('TENST') || h.includes('STORE') || h.includes('CUAHANG'));
+                let leadCol = headers.findIndex(h => h.includes('LEADER') || h.includes('QUANLY'));
 
                 for (let r = headerRowIdx + 1; r < rows.length; r++) {
                   const row = rows[r];
                   if (!row) continue;
                   const pgVal = String(row[pgCol] || '').trim();
-                  if (!pgVal || pgVal.toUpperCase().startsWith('TỔNG') || pgVal.toUpperCase().startsWith('TOTAL')) continue;
+                  const normPg = normalizeText(pgVal).toUpperCase();
+                  if (!pgVal || normPg.startsWith('TONG') || normPg.startsWith('TOTAL') || normPg.includes('CONGTEAM')) continue;
 
                   const tgtVal = parseFloat(row[tgtCol]) || 0;
-                  const storeVal = storeCol >= 0 ? String(row[storeCol] || '').toUpperCase() : '';
-                  const leadVal = leadCol >= 0 ? String(row[leadCol] || '').toUpperCase() : '';
+                  const storeVal = storeCol >= 0 ? normalizeText(row[storeCol]).toUpperCase() : '';
+                  const leadVal = leadCol >= 0 ? normalizeText(row[leadCol]).toUpperCase() : '';
 
-                  if (leadCol >= 0 && !leadVal.includes('CẨM GIANG') && !currentMaster.employees.some(e => e.name.toLowerCase() === pgVal.toLowerCase())) {
+                  if (leadCol >= 0 && !leadVal.includes('CAMGIANG') && !currentMaster.employees.some(e => normalizeText(e.name) === normPg)) {
                     continue;
                   }
 
-                  let matchedEmp = currentMaster.employees.find(e => e.name.toLowerCase() === pgVal.toLowerCase());
+                  let matchedEmp = currentMaster.employees.find(e => normalizeText(e.name) === normPg);
                   if (!matchedEmp) {
-                    matchedEmp = currentMaster.employees.find(e => normalizeText(e.name) === normalizeText(pgVal) || e.name.toLowerCase().includes(pgVal.toLowerCase()) || pgVal.toLowerCase().includes(e.name.toLowerCase()));
+                    matchedEmp = currentMaster.employees.find(e => normalizeText(e.name).includes(normPg) || normPg.includes(normalizeText(e.name)));
                   }
 
                   if (matchedEmp) {
-                    foundTargets[matchedEmp.name] = Math.round(tgtVal);
-                    if (bhxCol >= 0 && row[bhxCol] !== undefined && row[bhxCol] !== null && row[bhxCol] !== '') {
-                      foundBhxStores[matchedEmp.name] = parseInt(row[bhxCol]) || 0;
-                    } else if (storeVal.includes('BHX') || storeVal.includes('BÁCH HOÁ XANH') || storeVal.includes('BÁCH HÓA XANH')) {
-                      foundBhxStores[matchedEmp.name] = (foundBhxStores[matchedEmp.name] || 0) + 1;
+                    if (isSummary) {
+                      foundTargets[matchedEmp.name] = Math.round(tgtVal);
+                      if (bhxCol >= 0 && row[bhxCol] !== undefined && row[bhxCol] !== null && row[bhxCol] !== '') {
+                        foundBhxStores[matchedEmp.name] = parseInt(row[bhxCol]) || 0;
+                      }
+                    } else {
+                      foundTargets[matchedEmp.name] = (foundTargets[matchedEmp.name] || 0) + tgtVal;
+                      if (storeVal.includes('BHX') || storeVal.includes('BACHHOAXANH')) {
+                        foundBhxStores[matchedEmp.name] = (foundBhxStores[matchedEmp.name] || 0) + 1;
+                      }
                     }
                   }
-                }
-
-                if (Object.keys(foundTargets).length >= 8) {
-                  break;
                 }
               }
             }
@@ -2807,6 +2848,22 @@ const DEFAULT_FM_STORES = [
       alert('✅ Đã lưu cấu hình Target Tháng ' + currentMaster.month + '/' + currentMaster.year + ' thành công!');
       if (processedReportData) {
         processUploadedFiles();
+      }
+    }
+
+    function resetToDefaultMonth9Target() {
+      if (confirm('Bạn có chắc muốn khôi phục lại bảng Target chuẩn Tháng 9 (Tổng: 7,605,871,595 đ - 178 CH BHX)?')) {
+        localStorage.removeItem('CUSTOM_MASTER_DATA');
+        currentMaster = JSON.parse(JSON.stringify(DEFAULT_MASTER));
+        updateTargetBannerUI();
+        if (document.getElementById('editTargetModal') && document.getElementById('editTargetModal').classList.contains('active')) {
+          closeModal('editTargetModal');
+        }
+        alert('✅ ĐÃ KHÔI PHỤC THÀNH CÔNG TARGET CHUẨN THÁNG 9!\n\n• Tổng Target: ' + formatNumber(currentMaster.employees.reduce((a,b)=>a+(b.target||0),0)) + ' đ\n• Số CH BHX: ' + currentMaster.total_stores_bhx + ' CH\n\nToàn bộ 10 nhân sự đã được áp dụng target chuẩn!');
+        if (processedReportData) {
+          calculateReportData();
+          renderAllReports();
+        }
       }
     }
 
@@ -7207,7 +7264,16 @@ const DEFAULT_FM_STORES = [
         if (savedMaster) {
           const parsed = JSON.parse(savedMaster);
           if (parsed && parsed.employees) {
-            currentMaster = parsed;
+            const sumTgt = parsed.employees.reduce((a, b) => a + (b.target || 0), 0);
+            // Kiểm tra tính hợp lệ: Target toàn team chuẩn là 7.6 tỷ - 10.8 tỷ.
+            // Nếu cache cũ bị cộng dồn vượt quá 15 tỷ (do lỗi nhân 3 cũ) hoặc sai tháng, tự động xóa cache và nạp chuẩn Target Tháng 9!
+            if (sumTgt > 15000000000 || parsed.month !== 9) {
+              console.warn('Phát hiện cache Target cũ không chính xác (>15 tỷ hoặc sai tháng), tự động reset về Target chuẩn Tháng 9!');
+              localStorage.removeItem('CUSTOM_MASTER_DATA');
+              currentMaster = JSON.parse(JSON.stringify(DEFAULT_MASTER));
+            } else {
+              currentMaster = parsed;
+            }
           }
         }
       } catch (e) {
